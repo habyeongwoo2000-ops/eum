@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이음 — 사업장 변경 안내</title>
+<meta name="description" content="고용허가제(E-9) 외국인근로자를 위한 사업장 변경 기한·사유 안내 서비스">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230E7A57'/><path d='M28 34h44M28 50h30M28 66h44' stroke='white' stroke-width='9' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#deadline" data-i18n="skip">본문으로 건너뛰기</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <strong>이음</strong>
+        <em data-i18n="brandSub">사업장 변경 안내</em>
+      </span>
+    </a>
+    <div class="lang">
+      <label class="lang-label" for="langSelect" data-i18n="langLabel">언어</label>
+      <select id="langSelect" aria-label="Language">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="th">ไทย</option>
+        <option value="id">Bahasa Indonesia</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<div id="langToast" class="toast" hidden>
+  <span data-i18n="langAuto">기기 설정에 맞춰 언어를 골랐습니다.</span>
+  <button type="button" id="toastClose" data-i18n="ok">확인</button>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow" data-i18n="heroEyebrow">고용허가제 · E-9</p>
+      <h1 class="hero-title" data-i18n="heroTitle">사업장 변경, 이제 헤매지 마세요</h1>
+      <p class="hero-lead" data-i18n="heroLead">퇴사일만 넣으면 남은 기한이 보입니다. 내 언어로, 근거와 함께 확인하세요.</p>
+      <div class="hero-cta">
+        <a class="btn btn-go" href="#deadline" data-i18n="heroCta">내 기한 계산하기</a>
+        <a class="btn btn-ghost" href="#ask" data-i18n="heroCta2">질문하기</a>
+      </div>
+
+      <div class="ribbon" aria-hidden="true">
+        <div class="ribbon-track">
+          <span class="ribbon-seg seg-a"></span>
+          <span class="ribbon-seg seg-b"></span>
+        </div>
+        <div class="ribbon-marks">
+          <span class="rm" style="left:0%"><b data-i18n="tlLeave">퇴사일</b></span>
+          <span class="rm" style="left:25%"><b data-i18n="tlApply">신청 마감</b><i>+1</i></span>
+          <span class="rm rm-end" style="left:100%"><b data-i18n="tlJob">구직 마감</b><i>+3</i></span>
+        </div>
+      </div>
+      <p class="ribbon-cap" data-i18n="heroNote">퇴사 후 1개월 안에 신청, 신청 후 3개월 안에 새 직장. 두 기한은 따로 흐릅니다.</p>
+    </div>
+  </section>
+
+  <!-- 1. D-DAY -->
+  <section id="deadline" class="band">
+    <div class="wrap">
+      <p class="sec-no" data-i18n="secNo1">기능 1</p>
+      <h2 data-i18n="dlTitle">기한 계산</h2>
+      <p class="sec-lead" data-i18n="dlLead">퇴사일을 넣으면 신청 마감일과 구직 마감일을 계산합니다. 입력한 날짜는 이 기기에만 저장됩니다.</p>
+
+      <form class="form" id="ddayForm" autocomplete="off">
+        <div class="field">
+          <label for="leaveDate" data-i18n="dlLeaveDate">퇴사일 (근로계약이 끝난 날)</label>
+          <input type="date" id="leaveDate" required>
+        </div>
+        <div class="field">
+          <label for="applyDate" data-i18n="dlApplyDate">사업장 변경을 신청한 날 <span class="opt" data-i18n="optional">(선택)</span></label>
+          <input type="date" id="applyDate">
+          <p class="hint" data-i18n="dlApplyHint">아직 신청 전이면 비워 두세요. 신청 마감일을 기준으로 계산합니다.</p>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-go" data-i18n="dlCalc">기한 보기</button>
+          <button type="button" class="btn btn-ghost" id="ddayReset" data-i18n="reset">지우기</button>
+        </div>
+      </form>
+
+      <div id="ddayResult" class="dday" hidden>
+        <div class="dday-cards">
+          <article class="dcard" id="cardApply">
+            <p class="dcard-k" data-i18n="dlCardApply">사업장 변경 신청 마감</p>
+            <p class="dcard-n"><span class="num" id="applyNum">–</span><span class="unit" data-i18n="daysUnit">일 남음</span></p>
+            <p class="dcard-d" id="applyDateOut">–</p>
+            <p class="dcard-r" data-i18n="dlRuleApply">근로계약 종료일부터 1개월</p>
+          </article>
+          <article class="dcard" id="cardJob">
+            <p class="dcard-k" data-i18n="dlCardJob">새 직장 구하기 마감</p>
+            <p class="dcard-n"><span class="num" id="jobNum">–</span><span class="unit" data-i18n="daysUnit">일 남음</span></p>
+            <p class="dcard-d" id="jobDateOut">–</p>
+            <p class="dcard-r" data-i18n="dlRuleJob">사업장 변경 신청일부터 3개월</p>
+          </article>
+        </div>
+
+        <div class="live" id="liveTimeline">
+          <div class="live-track">
+            <span class="live-fill" id="liveFill"></span>
+            <span class="live-pin" id="livePin"><b data-i18n="tlToday">오늘</b></span>
+          </div>
+          <div class="live-labels">
+            <span id="lbLeave">–</span>
+            <span id="lbApply">–</span>
+            <span id="lbJob">–</span>
+          </div>
+        </div>
+
+        <p class="callout" id="ddayMsg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SELF CHECK -->
+  <section id="check" class="band band-alt">
+    <div class="wrap">
+      <p class="sec-no" data-i18n="secNo2">기능 2</p>
+      <h2 data-i18n="ckTitle">사유 자가진단</h2>
+      <p class="sec-lead" data-i18n="ckLead">세 가지만 고르면, 내 상황이 어떤 유형에 가까운지와 무엇을 준비하면 되는지 알려 줍니다. 판정이 아니라 안내입니다.</p>
+
+      <form class="quiz" id="quizForm">
+        <fieldset class="q">
+          <legend><span class="qn">1</span><span data-i18n="ckQ1">회사를 그만두게 된 이유는 무엇에 가장 가깝나요?</span></legend>
+          <label class="opt-row"><input type="radio" name="q1" value="wage" required><span data-i18n="ckQ1a">임금을 못 받았거나 계속 늦게 받았다</span></label>
+          <label class="opt-row"><input type="radio" name="q1" value="abuse"><span data-i18n="ckQ1b">폭행·폭언·성희롱을 당했다</span></label>
+          <label class="opt-row"><input type="radio" name="q1" value="terms"><span data-i18n="ckQ1c">계약서와 실제 일·숙소·근로조건이 달랐다</span></label>
+          <label class="opt-row"><input type="radio" name="q1" value="closed"><span data-i18n="ckQ1d">회사가 휴업·폐업했거나 일감이 없어졌다</span></label>
+          <label class="opt-row"><input type="radio" name="q1" value="own"><span data-i18n="ckQ1e">내가 원해서 그만두었다 / 계약기간이 끝났다</span></label>
+        </fieldset>
+
+        <fieldset class="q">
+          <legend><span class="qn">2</span><span data-i18n="ckQ2">증거가 될 자료를 가지고 있나요?</span></legend>
+          <label class="opt-row"><input type="radio" name="q2" value="yes" required><span data-i18n="ckQ2a">있다 (계약서, 급여 기록, 문자·사진 등)</span></label>
+          <label class="opt-row"><input type="radio" name="q2" value="some"><span data-i18n="ckQ2b">일부만 있다</span></label>
+          <label class="opt-row"><input type="radio" name="q2" value="no"><span data-i18n="ckQ2c">없다</span></label>
+        </fieldset>
+
+        <fieldset class="q">
+          <legend><span class="qn">3</span><span data-i18n="ckQ3">지금까지 사업장을 몇 번 바꿨나요?</span></legend>
+          <label class="opt-row"><input type="radio" name="q3" value="0" required><span data-i18n="ckQ3a">한 번도 없다</span></label>
+          <label class="opt-row"><input type="radio" name="q3" value="1"><span data-i18n="ckQ3b">1번</span></label>
+          <label class="opt-row"><input type="radio" name="q3" value="2"><span data-i18n="ckQ3c">2번</span></label>
+          <label class="opt-row"><input type="radio" name="q3" value="3"><span data-i18n="ckQ3d">3번 이상</span></label>
+        </fieldset>
+
+        <div class="upload">
+          <label class="up-drop" for="docFile">
+            <span class="up-ic" aria-hidden="true">＋</span>
+            <span data-i18n="ckUpload">계약서나 통지서 사진 올리기 (선택)</span>
+          </label>
+          <input type="file" id="docFile" accept="image/*" hidden>
+          <p class="hint" data-i18n="ckUploadNote">이 데모에서 사진은 기기 밖으로 전송되지 않습니다. 화면에서 확인만 하고, 서류에 적힌 날짜를 위 계산기에 옮겨 적어 주세요.</p>
+          <div id="docPreview" class="up-prev" hidden><img alt="" id="docImg"><button type="button" id="docClear" class="btn btn-ghost btn-sm" data-i18n="remove">삭제</button></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-go" data-i18n="ckSubmit">결과 보기</button>
+          <button type="button" class="btn btn-ghost" id="quizReset" data-i18n="reset">지우기</button>
+        </div>
+      </form>
+
+      <div id="quizResult" class="result" hidden>
+        <p class="result-tag" id="resultTag"></p>
+        <h3 id="resultTitle"></h3>
+        <p id="resultBody"></p>
+        <div class="result-docs">
+          <p class="rd-h" data-i18n="ckDocsTitle">준비하면 좋은 자료</p>
+          <ul id="resultDocs"></ul>
+        </div>
+        <p class="src" id="resultSrc"></p>
+        <p class="disclaim" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. NOTICES -->
+  <section id="notices" class="band">
+    <div class="wrap">
+      <p class="sec-no" data-i18n="secNo3">기능 3</p>
+      <h2 data-i18n="ntTitle">공지 쉽게 읽기</h2>
+      <p class="sec-lead" data-i18n="ntLead">길고 어려운 공문을 핵심만 추려 옮겼습니다. 원문 링크와 확인한 날짜를 함께 적어 둡니다.</p>
+      <p class="sample-note" data-i18n="ntSample">아래 글은 시연용 예시입니다. 실제 서비스에서는 공식 채널에서 받아 온 공지가 올라갑니다.</p>
+      <div class="notice-list" id="noticeList"></div>
+    </div>
+  </section>
+
+  <!-- 4. ASK -->
+  <section id="ask" class="band band-alt">
+    <div class="wrap">
+      <p class="sec-no" data-i18n="secNo4">기능 4</p>
+      <h2 data-i18n="askTitle">질문하기</h2>
+      <p class="sec-lead" data-i18n="askLead">궁금한 점을 적어 주세요. 확인된 법령과 공지 안에서만 답하고, 답할 수 없으면 공식 창구를 알려 줍니다.</p>
+
+      <div class="chips" id="askChips"></div>
+
+      <form class="ask-form" id="askForm">
+        <label class="sr" for="askInput" data-i18n="askTitle">질문하기</label>
+        <input type="text" id="askInput" placeholder="예: 신청 기한이 며칠인가요?" data-i18n-ph="askPlaceholder">
+        <button type="submit" class="btn btn-go" data-i18n="askSend">보내기</button>
+      </form>
+
+      <div class="thread" id="thread"></div>
+    </div>
+  </section>
+
+  <!-- OFFICIAL -->
+  <section class="band band-ink">
+    <div class="wrap">
+      <h2 data-i18n="ofTitle">공식 창구</h2>
+      <p class="sec-lead" data-i18n="ofLead">확정된 답은 아래에서 받으세요. 이 서비스는 그 전 단계를 돕습니다.</p>
+      <ul class="official">
+        <li><b>1345</b><span data-i18n="of1345">외국인종합안내센터 · 20개 언어 상담</span></li>
+        <li><b>1350</b><span data-i18n="of1350">고용노동부 고객상담센터 · 임금체불 신고</span></li>
+        <li><b><a href="https://www.eps.go.kr" target="_blank" rel="noopener">eps.go.kr</a></b><span data-i18n="ofEps">고용허가제 공식 누리집</span></li>
+        <li><b><a href="https://www.hikorea.go.kr" target="_blank" rel="noopener">hikorea.go.kr</a></b><span data-i18n="ofHi">체류·비자 민원</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- NOT DOING -->
+  <section class="band">
+    <div class="wrap">
+      <h2 data-i18n="ndTitle">이 서비스가 하지 않는 것</h2>
+      <ul class="notdo">
+        <li data-i18n="nd1">법적 판정이나 승인 여부를 대신 결정하지 않습니다. 안내만 합니다.</li>
+        <li data-i18n="nd2">회원가입과 로그인을 요구하지 않습니다.</li>
+        <li data-i18n="nd3">여권번호, 계좌번호 같은 개인정보를 저장하지 않습니다.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-dis" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+    <p class="foot-meta">이음 (E-um) · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
+    <p class="foot-meta" data-i18n="ftChecked">지식 최종 확인일: 2026-08-10</p>
+  </div>
+</footer>
+
+<script src="assets/i18n.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+# 이음 (E-um) — EPS 외국인근로자 사업장 변경 안내
+
+고용허가제(E-9)로 일하는 외국인근로자가 **사업장 변경 기한과 사유를 자기 언어로** 확인할 수 있게 돕는 웹사이트입니다.
+빌드 도구 없이 HTML/CSS/JS 파일만으로 동작하므로 GitHub Pages에 그대로 올릴 수 있습니다.
+
+---
+
+## 1. 들어 있는 기능
+
+| PRD 항목 | 구현 |
+|---|---|
+| 자동 언어 감지 + 원탭 전환 | `navigator.languages` 로 첫 언어 결정, 상단 고정 선택기, 미지원 언어는 영어로 |
+| D-day 계산 | 퇴사일 → 신청 마감(+1개월), 신청일 → 구직 마감(+3개월), 7일 이내 주의색·마감 후 경고색 |
+| 공지 요약 게시판 | 요약 카드 + 원문 링크 + 출처 + 확인일, 각 글에서 바로 질문 연결 |
+| 질문 답변 (RAG-lite) | 검증된 지식베이스 안에서만 답변, 출처 100% 표기, 근거 없으면 1345 안내로 회피 |
+| 서류 자가진단 | 3문항 규칙 엔진 + 사진 미리보기(기기 밖 전송 없음) |
+
+지원 언어: 한국어 · English · Tiếng Việt · ไทย · Bahasa Indonesia
+
+---
+
+## 2. GitHub Pages 올리는 법
+
+### 방법 A — 웹에서 (터미널 없이)
+
+1. GitHub에서 **New repository** → 이름 예: `eum` → Public → Create.
+2. 저장소 화면에서 **Add file → Upload files**.
+3. 이 폴더 안의 `index.html`, `assets` 폴더, `.nojekyll` 을 **통째로 드래그**해서 올리고 Commit.
+4. **Settings → Pages** → Source를 `Deploy from a branch`, Branch를 `main` / `/ (root)` 로 두고 Save.
+5. 1~2분 뒤 `https://<아이디>.github.io/eum/` 에서 열립니다.
+
+### 방법 B — 터미널에서
+
+```bash
+cd eum
+git init
+git add .
+git commit -m "이음 첫 배포"
+git branch -M main
+git remote add origin https://github.com/<아이디>/eum.git
+git push -u origin main
+```
+
+이후 Settings → Pages에서 위 4번과 동일하게 설정합니다.
+
+> `.nojekyll` 파일은 지우지 마세요. GitHub Pages가 폴더를 Jekyll로 처리하지 않게 막아 줍니다.
+
+### 로컬에서 미리 보기
+
+```bash
+python3 -m http.server 8000
+# 브라우저에서 http://localhost:8000
+```
+
+---
+
+## 3. 파일 구조
+
+```
+index.html          화면 구조 (data-i18n 속성으로 번역 연결)
+assets/style.css    디자인 토큰과 전체 스타일
+assets/i18n.js      UI 문자열 5개 언어
+assets/data.js      공지 샘플 + 질문 답변 지식베이스
+assets/app.js       언어 감지, 날짜 계산, 규칙 엔진, 질문 답변
+.nojekyll           GitHub Pages 설정
+```
+
+---
+
+## 4. 내용 고치기
+
+### 공지 추가
+`assets/data.js` 의 `NOTICES` 배열에 항목을 하나 복사해 붙이고, `key`·`source`·`url`·`checked` 와 각 언어의 `title`, `points` 를 채웁니다.
+
+### 답변 지식 추가
+같은 파일의 `KB` 배열에 추가합니다. **`src`(근거)는 반드시 채워야 합니다.** 근거가 없는 답변은 이 서비스의 원칙에 어긋납니다.
+`review: true` 를 넣으면 답변 위에 "실무자 검수" 표시가 붙습니다.
+
+### 언어 추가
+1. `assets/i18n.js` 에 같은 키 구조로 언어 객체를 하나 더 추가
+2. `assets/data.js` 의 각 항목에 같은 언어 코드 필드 추가
+3. `index.html` 의 `<select id="langSelect">` 에 `<option>` 추가
+
+### 확인일 갱신
+`assets/i18n.js` 맨 위 `CHECKED_ON` 값과 `assets/data.js` 의 각 `checked` 값을 함께 고칩니다.
+
+---
+
+## 5. 지금은 안 되는 것 (의도한 범위)
+
+- **실시간 공지 수집**: 정적 사이트라 스크래핑·API 호출이 없습니다. 현재 공지는 시연용 샘플입니다.
+- **LLM 실시간 답변**: GitHub Pages에는 서버가 없어 API 키를 둘 수 없습니다. 지금은 지식베이스 키워드 검색으로 답합니다. 나중에 Claude API를 붙이려면 Vercel·Cloudflare Workers 같은 곳에 얇은 서버 함수를 하나 두고, `assets/app.js` 의 `answer()` 안에서 그 주소로 요청을 보내면 됩니다. 그때도 지식베이스를 근거로 넘겨 주는 구조는 유지하세요.
+- **서류 사진 자동 판독**: 위와 같은 이유로 지금은 화면 미리보기만 합니다. 판정은 규칙 엔진이 담당한다는 워크시트 결정을 그대로 따릅니다.
+- **알림 발송**: 이메일·SMS는 서버가 필요합니다. 지금은 화면 색상 강조로 대신합니다.
+
+---
+
+## 6. 확인이 필요한 부분
+
+법령 내용(1개월 / 3개월 / 3회 / 2회, 법정 사유)은 PRD에 적힌 팀 확인 결과를 옮긴 것입니다.
+**발표 전에 공식 출처로 한 번 더 확인하고 `CHECKED_ON` 을 갱신하세요.**
+사업장 변경 제도는 최근 개정 논의가 이어지는 영역입니다.
+
+---
+
+모든 화면에 "참고용 정보이며 법률 자문이 아니다"라는 문구와 1345·고용센터 안내가 고정으로 붙습니다.
