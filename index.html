@@ -189,8 +189,54 @@
     </div>
   </section>
 
-  <!-- 3. NOTICES -->
-  <section id="notices" class="band">
+  <!-- 3. DEPARTURE PAYOUT -->
+  <section id="payout" class="band">
+    <div class="wrap">
+      <p class="sec-no" data-i18n="secNoPay">출국 정산</p>
+      <h2 data-i18n="pyTitle">떠나기 전에 받을 돈 확인하기</h2>
+      <p class="sec-lead" data-i18n="pyLead">한국을 떠나기 전에 챙겨야 할 돈이 있습니다. 신고와 신청에 각각 기한이 있어서, 모르고 나가면 받기 어려워집니다.</p>
+
+      <h3 class="sub-h" data-i18n="pyListTitle">떠나기 전에 확인할 네 가지</h3>
+      <div class="pay-list" id="payList"></div>
+
+      <p class="callout is-warn" data-i18n="pyLimit">보험금은 받을 사유가 생긴 날부터 3년 안에 청구해야 합니다.</p>
+
+      <form class="form form-inline" id="payForm" autocomplete="off">
+        <div class="field">
+          <label for="exitDate" data-i18n="pyDateLabel">출국 예정일</label>
+          <input type="date" id="exitDate" required>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-go" data-i18n="pyCalc">남은 기한 보기</button>
+          <button type="button" class="btn btn-ghost" id="payReset" data-i18n="reset">지우기</button>
+        </div>
+      </form>
+
+      <div id="payResult" class="dday" hidden>
+        <div class="dday-cards">
+          <article class="dcard" id="cardReport">
+            <p class="dcard-k" data-i18n="pyCardReport">고용센터 출국예정신고</p>
+            <p class="dcard-n"><span class="num" id="reportNum">–</span><span class="unit" data-i18n="daysUnit">일 남음</span></p>
+            <p class="dcard-d" id="reportDateOut">–</p>
+            <p class="dcard-r" data-i18n="pyRuleReport">출국 예정일 1개월 전</p>
+          </article>
+          <article class="dcard" id="cardClaim">
+            <p class="dcard-k" data-i18n="pyCardClaim">보험금 지급 신청</p>
+            <p class="dcard-n"><span class="num" id="claimNum">–</span><span class="unit" data-i18n="daysUnit">일 남음</span></p>
+            <p class="dcard-d" id="claimDateOut">–</p>
+            <p class="dcard-r" data-i18n="pyRuleClaim">출국 예정일 7일 전</p>
+          </article>
+        </div>
+        <p class="callout" id="payMsg"></p>
+      </div>
+
+      <p class="src" id="paySrc"></p>
+      <p class="disclaim" data-i18n="pyNoCalc">이 서비스는 금액을 계산해 주지 않습니다.</p>
+    </div>
+  </section>
+
+  <!-- 4. NOTICES -->
+  <section id="notices" class="band band-alt">
     <div class="wrap">
       <p class="sec-no" data-i18n="secNo3">기능 3</p>
       <h2 data-i18n="ntTitle">공지 쉽게 읽기</h2>
@@ -200,8 +246,8 @@
     </div>
   </section>
 
-  <!-- 4. ASK -->
-  <section id="ask" class="band band-alt">
+  <!-- 5. ASK -->
+  <section id="ask" class="band">
     <div class="wrap">
       <p class="sec-no" data-i18n="secNo4">기능 4</p>
       <h2 data-i18n="askTitle">질문하기</h2>

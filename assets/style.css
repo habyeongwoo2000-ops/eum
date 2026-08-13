@@ -237,6 +237,24 @@ input[type=date]:focus,input[type=text]:focus{border-color:var(--go)}
 .src{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);margin:0 0 10px!important}
 .disclaim{font-size:13px;color:var(--ink-3);margin:0!important;border-top:1px solid var(--line-2);padding-top:12px}
 
+/* ---------- 출국 정산 ---------- */
+.sub-h{font-family:var(--f-disp);font-size:19px;margin:0 0 14px;letter-spacing:-.01em}
+.pay-list{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:24px}
+.pay-item{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.pay-item h4{margin:0 0 8px;font-size:16px;font-weight:700;display:flex;gap:10px;align-items:flex-start}
+.pay-check{
+  flex:none;width:22px;height:22px;border-radius:6px;background:var(--go-l);color:var(--go-d);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;
+}
+.pay-item p{margin:0 0 10px;font-size:15px;color:var(--ink-2)}
+.pay-item .pay-where{
+  margin:0;font-family:var(--f-mono);font-size:12px;color:var(--ink-3);
+  border-top:1px solid var(--line-2);padding-top:10px;line-height:1.6;
+}
+#payout .form-inline{margin:24px 0 0;max-width:420px}
+#payout .src{margin-top:24px!important}
+#payout .disclaim{max-width:60ch}
+
 /* ---------- notices ---------- */
 .sample-note{
   display:inline-block;font-size:13px;background:var(--warn-l);

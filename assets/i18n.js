@@ -3,6 +3,9 @@
    index.html 의 <select id="langSelect"> 에 <option> 을 추가하면 됩니다. */
 
 const CHECKED_ON = '2026-08-10';
+/* 출국 정산 항목은 공식 자료로 따로 확인한 날짜입니다. */
+const PAY_CHECKED = '2026-08-13';
+const PAY_SRC = '외국인근로자의 고용 등에 관한 법률 제13조·제15조, 같은 법 시행령 제21조·제22조 · 근로기준법 제49조';
 
 const I18N = {
 
@@ -81,6 +84,27 @@ ko: {
   countLine: '지금까지 {n}번 바꿨습니다.',
   docs: ['근로계약서', '급여 명세서 또는 통장 입금 기록', '출퇴근·근무시간 기록', '회사와 주고받은 문자·메신저 화면', '이직확인서 또는 고용변동 신고 서류'],
 
+  secNoPay: '출국 정산',
+  pyTitle: '떠나기 전에 받을 돈 확인하기',
+  pyLead: '한국을 떠나기 전에 챙겨야 할 돈이 있습니다. 신고와 신청에 각각 기한이 있어서, 모르고 나가면 받기 어려워집니다.',
+  pyDateLabel: '출국 예정일',
+  pyCalc: '남은 기한 보기',
+  pyCardReport: '고용센터 출국예정신고',
+  pyCardClaim: '보험금 지급 신청',
+  pyRuleReport: '출국 예정일 1개월 전',
+  pyRuleClaim: '출국 예정일 7일 전',
+  pyMsgOk: '아직 여유가 있습니다. 여권, 외국인등록증, 본인 명의 통장 사본을 미리 챙겨 두세요.',
+  pyMsgWarn: '신청 기한이 곧입니다. 삼성화재 외국인근로자보험 전용 콜센터 1600-0266으로 오늘 전화하세요.',
+  pyMsgOver: '권장 기한이 지났습니다. 출국한 뒤에도 신청할 수 있지만 지급이 늦어집니다. 1600-0266이나 고용센터에 바로 연락하세요.',
+  pyListTitle: '떠나기 전에 확인할 네 가지',
+  pyItems: [
+    { t: '출국만기보험 (퇴직금)', w: '회사가 매달 넣어 둔 돈입니다. 한 사업장에서 1년 이상 일했다면 본인이 청구합니다.', r: '삼성화재 전용 콜센터 1600-0266 · 출국한 때부터 14일 이내 지급' },
+    { t: '퇴직금과의 차액', w: '출국만기보험금이 법에서 정한 퇴직금보다 적으면, 그 차액은 회사가 따로 줘야 합니다.', r: '회사에 먼저 요청 · 주지 않으면 1350 상담' },
+    { t: '못 받은 임금과 수당', w: '밀린 임금, 연장·야간·휴일수당, 쓰지 못한 연차수당은 출국한 뒤에도 청구할 수 있습니다.', r: '지방고용노동관서 진정 · 1350 · 3년 안에' },
+    { t: '귀국비용보험', w: '입국한 뒤에 본인이 낸 돈입니다. 출국할 때 돌려받습니다.', r: '삼성화재 전용 콜센터 1600-0266' }
+  ],
+  pyLimit: '보험금은 받을 사유가 생긴 날부터 3년 안에 청구해야 합니다. 3년이 지나면 청구권이 사라지고 한국산업인력공단으로 넘어갑니다.',
+  pyNoCalc: '이 서비스는 금액을 계산해 주지 않습니다. 정확한 금액은 전용 콜센터 1600-0266이나 관할 고용센터에서 확인하세요.',
   ntTitle: '공지 쉽게 읽기',
   ntLead: '길고 어려운 공문을 핵심만 추려 옮겼습니다. 원문 링크와 확인한 날짜를 함께 적어 둡니다.',
   ntSample: '아래 글은 시연용 예시입니다. 실제 서비스에서는 공식 채널에서 받아 온 공지가 올라갑니다.',
@@ -185,6 +209,27 @@ en: {
   countLine: 'You have changed workplaces {n} time(s).',
   docs: ['Employment contract', 'Pay slips or bank deposit records', 'Records of your working hours', 'Messages with the company', 'Separation or employment-change forms'],
 
+  secNoPay: 'Money before leaving',
+  pyTitle: 'Check what you are owed before you go',
+  pyLead: 'There is money to collect before you leave Korea. Both the report and the claim have deadlines, and leaving without them makes the money hard to reach.',
+  pyDateLabel: 'Planned departure date',
+  pyCalc: 'Show my deadlines',
+  pyCardReport: 'Report departure to the Employment Center',
+  pyCardClaim: 'Claim your insurance payout',
+  pyRuleReport: '1 month before your departure date',
+  pyRuleClaim: '7 days before your departure date',
+  pyMsgOk: 'You still have room. Get your passport, alien registration card and a copy of your own bankbook ready.',
+  pyMsgWarn: 'The claim deadline is very close. Call the Samsung Fire foreign worker insurance line at 1600-0266 today.',
+  pyMsgOver: 'The recommended deadline has passed. You can still claim after leaving, but payment will be slower. Contact 1600-0266 or your Employment Center now.',
+  pyListTitle: 'Four things to check before you leave',
+  pyItems: [
+    { t: 'Departure guarantee insurance (severance)', w: 'Money your employer paid in every month. If you worked at one workplace for a year or more, you claim it yourself.', r: 'Samsung Fire line 1600-0266 · paid within 14 days of your departure' },
+    { t: 'The gap against legal severance', w: 'If the insurance payout is smaller than the severance pay set by law, your employer must pay you the difference.', r: 'Ask the employer first · if refused, call 1350' },
+    { t: 'Unpaid wages and allowances', w: 'Unpaid wages, overtime, night and holiday pay, and unused annual leave pay can still be claimed after you leave.', r: 'File at the local labor office · 1350 · within 3 years' },
+    { t: 'Return cost insurance', w: 'Money you paid yourself after arriving. You get it back when you leave.', r: 'Samsung Fire line 1600-0266' }
+  ],
+  pyLimit: 'Insurance must be claimed within 3 years of the day the entitlement arises. After 3 years the right is lost and the money passes to HRD Korea.',
+  pyNoCalc: 'This service does not calculate amounts. Confirm the exact figure with the insurance line 1600-0266 or your Employment Center.',
   ntTitle: 'Notices, made readable',
   ntLead: 'Long official notices, cut down to what matters. The original link and the date we checked are always shown.',
   ntSample: 'These posts are demo samples. In the live service, notices come from official channels.',
@@ -289,6 +334,27 @@ vi: {
   countLine: 'Bạn đã đổi nơi làm việc {n} lần.',
   docs: ['Hợp đồng lao động', 'Bảng lương hoặc sao kê ngân hàng', 'Ghi chép giờ làm việc', 'Tin nhắn trao đổi với công ty', 'Giấy xác nhận nghỉ việc hoặc khai báo biến động lao động'],
 
+  secNoPay: 'Tiền trước khi về',
+  pyTitle: 'Kiểm tra khoản tiền bạn được nhận trước khi về nước',
+  pyLead: 'Trước khi rời Hàn Quốc có những khoản tiền cần nhận. Việc khai báo và việc nộp đơn đều có thời hạn, nếu không biết mà về thì rất khó lấy lại.',
+  pyDateLabel: 'Ngày dự định xuất cảnh',
+  pyCalc: 'Xem hạn còn lại',
+  pyCardReport: 'Khai báo xuất cảnh tại Trung tâm việc làm',
+  pyCardClaim: 'Nộp đơn nhận tiền bảo hiểm',
+  pyRuleReport: 'Trước ngày xuất cảnh 1 tháng',
+  pyRuleClaim: 'Trước ngày xuất cảnh 7 ngày',
+  pyMsgOk: 'Bạn vẫn còn thời gian. Hãy chuẩn bị hộ chiếu, thẻ đăng ký người nước ngoài và bản sao sổ tài khoản mang tên bạn.',
+  pyMsgWarn: 'Sắp hết hạn nộp đơn. Hãy gọi ngay hôm nay tới tổng đài bảo hiểm dành cho lao động nước ngoài của Samsung Fire: 1600-0266.',
+  pyMsgOver: 'Đã quá thời hạn khuyến nghị. Bạn vẫn có thể nộp đơn sau khi về nước nhưng tiền sẽ về chậm hơn. Hãy liên hệ ngay 1600-0266 hoặc Trung tâm việc làm.',
+  pyListTitle: 'Bốn điều cần kiểm tra trước khi về',
+  pyItems: [
+    { t: 'Bảo hiểm mãn hạn xuất cảnh (trợ cấp thôi việc)', w: 'Là khoản tiền công ty đóng hằng tháng. Nếu bạn làm ở một nơi từ 1 năm trở lên, chính bạn là người nộp đơn nhận.', r: 'Tổng đài Samsung Fire 1600-0266 · chi trả trong 14 ngày kể từ khi xuất cảnh' },
+    { t: 'Phần chênh lệch với trợ cấp thôi việc', w: 'Nếu tiền bảo hiểm ít hơn mức trợ cấp thôi việc theo luật, công ty phải trả phần chênh lệch cho bạn.', r: 'Yêu cầu công ty trước · nếu không trả thì gọi 1350' },
+    { t: 'Lương và phụ cấp chưa nhận', w: 'Lương còn nợ, tiền làm thêm, làm đêm, làm ngày nghỉ và tiền phép năm chưa dùng vẫn có thể đòi sau khi về nước.', r: 'Khiếu nại tại cơ quan lao động địa phương · 1350 · trong vòng 3 năm' },
+    { t: 'Bảo hiểm chi phí hồi hương', w: 'Là tiền chính bạn đã đóng sau khi nhập cảnh. Bạn nhận lại khi xuất cảnh.', r: 'Tổng đài Samsung Fire 1600-0266' }
+  ],
+  pyLimit: 'Tiền bảo hiểm phải được yêu cầu trong vòng 3 năm kể từ ngày phát sinh quyền nhận. Quá 3 năm thì mất quyền và tiền chuyển về Cơ quan Phát triển Nhân lực Hàn Quốc.',
+  pyNoCalc: 'Dịch vụ này không tính số tiền. Hãy xác nhận con số chính xác qua tổng đài 1600-0266 hoặc Trung tâm việc làm.',
   ntTitle: 'Thông báo dễ đọc',
   ntLead: 'Những công văn dài và khó được rút gọn còn phần quan trọng. Luôn kèm link gốc và ngày kiểm tra.',
   ntSample: 'Các bài dưới đây là mẫu để trình diễn. Trong dịch vụ thật, thông báo được lấy từ kênh chính thức.',
@@ -393,6 +459,27 @@ th: {
   countLine: 'คุณเปลี่ยนมาแล้ว {n} ครั้ง',
   docs: ['สัญญาจ้างงาน', 'สลิปเงินเดือนหรือรายการเงินเข้าบัญชี', 'บันทึกเวลาทำงาน', 'ข้อความที่ติดต่อกับบริษัท', 'หนังสือรับรองการออกจากงานหรือแบบแจ้งการเปลี่ยนแปลงการจ้าง'],
 
+  secNoPay: 'เงินก่อนกลับ',
+  pyTitle: 'ตรวจสอบเงินที่ควรได้ก่อนเดินทางกลับ',
+  pyLead: 'ก่อนออกจากเกาหลีมีเงินที่ต้องไปรับ ทั้งการแจ้งและการยื่นคำขอมีกำหนดเวลา หากกลับไปโดยไม่รู้ จะรับเงินได้ยาก',
+  pyDateLabel: 'วันที่จะเดินทางออก',
+  pyCalc: 'ดูเวลาที่เหลือ',
+  pyCardReport: 'แจ้งกำหนดเดินทางออกที่ศูนย์จัดหางาน',
+  pyCardClaim: 'ยื่นคำขอรับเงินประกัน',
+  pyRuleReport: 'ก่อนวันเดินทางออก 1 เดือน',
+  pyRuleClaim: 'ก่อนวันเดินทางออก 7 วัน',
+  pyMsgOk: 'ยังพอมีเวลา เตรียมหนังสือเดินทาง บัตรประจำตัวคนต่างด้าว และสำเนาสมุดบัญชีในชื่อของคุณไว้ล่วงหน้า',
+  pyMsgWarn: 'ใกล้ครบกำหนดยื่นคำขอแล้ว โทรหาสายด่วนประกันแรงงานต่างชาติของซัมซุงไฟร์ 1600-0266 วันนี้',
+  pyMsgOver: 'เลยกำหนดที่แนะนำแล้ว ยังยื่นได้หลังเดินทางออก แต่เงินจะออกช้าลง ติดต่อ 1600-0266 หรือศูนย์จัดหางานทันที',
+  pyListTitle: 'สี่เรื่องที่ต้องตรวจก่อนกลับ',
+  pyItems: [
+    { t: 'ประกันครบกำหนดเดินทางออก (เงินชดเชย)', w: 'เป็นเงินที่บริษัทจ่ายสมทบทุกเดือน หากทำงานที่เดียวครบ 1 ปีขึ้นไป คุณเป็นผู้ยื่นขอรับเอง', r: 'สายด่วนซัมซุงไฟร์ 1600-0266 · จ่ายภายใน 14 วันนับจากเดินทางออก' },
+    { t: 'ส่วนต่างจากเงินชดเชยตามกฎหมาย', w: 'หากเงินประกันน้อยกว่าเงินชดเชยที่กฎหมายกำหนด บริษัทต้องจ่ายส่วนต่างให้คุณ', r: 'ขอจากบริษัทก่อน · หากไม่จ่ายให้โทร 1350' },
+    { t: 'ค่าจ้างและเบี้ยเลี้ยงที่ยังไม่ได้รับ', w: 'ค่าจ้างค้างจ่าย ค่าล่วงเวลา ค่าทำงานกลางคืนและวันหยุด รวมถึงค่าวันลาพักร้อนที่ไม่ได้ใช้ ยังเรียกร้องได้หลังเดินทางกลับ', r: 'ยื่นเรื่องที่สำนักงานแรงงานท้องถิ่น · 1350 · ภายใน 3 ปี' },
+    { t: 'ประกันค่าเดินทางกลับประเทศ', w: 'เป็นเงินที่คุณจ่ายเองหลังเข้าประเทศ และจะได้คืนเมื่อเดินทางออก', r: 'สายด่วนซัมซุงไฟร์ 1600-0266' }
+  ],
+  pyLimit: 'ต้องยื่นขอรับเงินประกันภายใน 3 ปีนับจากวันที่เกิดสิทธิ หากเกิน 3 ปี สิทธิจะหมดไปและเงินจะโอนไปยังสถาบันพัฒนาทรัพยากรมนุษย์เกาหลี',
+  pyNoCalc: 'บริการนี้ไม่คำนวณจำนวนเงิน โปรดตรวจสอบยอดที่แน่นอนกับสายด่วน 1600-0266 หรือศูนย์จัดหางาน',
   ntTitle: 'ประกาศที่อ่านง่าย',
   ntLead: 'หนังสือราชการที่ยาวและเข้าใจยาก ถูกย่อเหลือเฉพาะส่วนสำคัญ พร้อมลิงก์ต้นฉบับและวันที่ตรวจสอบ',
   ntSample: 'บทความด้านล่างเป็นตัวอย่างสำหรับสาธิต ในบริการจริงจะนำประกาศจากช่องทางราชการมาลง',
@@ -497,6 +584,27 @@ id: {
   countLine: 'Anda sudah pindah {n} kali.',
   docs: ['Kontrak kerja', 'Slip gaji atau mutasi rekening', 'Catatan jam kerja', 'Pesan dengan perusahaan', 'Surat keterangan berhenti atau laporan perubahan kerja'],
 
+  secNoPay: 'Uang sebelum pulang',
+  pyTitle: 'Periksa uang yang menjadi hak Anda sebelum pulang',
+  pyLead: 'Ada uang yang harus diambil sebelum meninggalkan Korea. Pelaporan dan pengajuan sama-sama punya batas waktu; bila pulang tanpa mengurusnya, uang itu sulit dijangkau.',
+  pyDateLabel: 'Rencana tanggal keberangkatan',
+  pyCalc: 'Lihat sisa waktu',
+  pyCardReport: 'Lapor rencana kepulangan ke Pusat Ketenagakerjaan',
+  pyCardClaim: 'Ajukan pencairan asuransi',
+  pyRuleReport: '1 bulan sebelum tanggal keberangkatan',
+  pyRuleClaim: '7 hari sebelum tanggal keberangkatan',
+  pyMsgOk: 'Masih ada waktu. Siapkan paspor, kartu izin tinggal, dan salinan buku rekening atas nama Anda sendiri.',
+  pyMsgWarn: 'Batas pengajuan sudah dekat. Telepon layanan asuransi pekerja asing Samsung Fire di 1600-0266 hari ini.',
+  pyMsgOver: 'Batas yang dianjurkan sudah lewat. Anda masih bisa mengajukan setelah pulang, tetapi pencairannya lebih lambat. Hubungi 1600-0266 atau Pusat Ketenagakerjaan sekarang.',
+  pyListTitle: 'Empat hal yang harus diperiksa sebelum pulang',
+  pyItems: [
+    { t: 'Asuransi jaminan kepulangan (pesangon)', w: 'Uang yang disetor perusahaan setiap bulan. Bila Anda bekerja di satu tempat selama satu tahun atau lebih, Anda sendiri yang mengajukan.', r: 'Layanan Samsung Fire 1600-0266 · dibayar dalam 14 hari sejak keberangkatan' },
+    { t: 'Selisih dengan pesangon menurut hukum', w: 'Bila dana asuransi lebih kecil daripada pesangon yang ditetapkan hukum, perusahaan wajib membayar selisihnya.', r: 'Minta ke perusahaan dulu · bila ditolak, telepon 1350' },
+    { t: 'Upah dan tunjangan yang belum dibayar', w: 'Upah tertunggak, lembur, kerja malam dan hari libur, serta uang cuti tahunan yang tidak terpakai masih bisa dituntut setelah Anda pulang.', r: 'Laporkan ke kantor ketenagakerjaan daerah · 1350 · dalam 3 tahun' },
+    { t: 'Asuransi biaya kepulangan', w: 'Uang yang Anda bayar sendiri setelah tiba di Korea. Dikembalikan saat Anda pulang.', r: 'Layanan Samsung Fire 1600-0266' }
+  ],
+  pyLimit: 'Asuransi harus diklaim dalam 3 tahun sejak hak itu timbul. Setelah 3 tahun hak tersebut hilang dan dananya beralih ke HRD Korea.',
+  pyNoCalc: 'Layanan ini tidak menghitung jumlah uang. Pastikan angka tepatnya lewat layanan 1600-0266 atau Pusat Ketenagakerjaan.',
   ntTitle: 'Pengumuman yang mudah dibaca',
   ntLead: 'Surat resmi yang panjang diringkas ke bagian pentingnya. Tautan asli dan tanggal pemeriksaan selalu dicantumkan.',
   ntSample: 'Tulisan di bawah adalah contoh untuk demo. Pada layanan sebenarnya, pengumuman diambil dari kanal resmi.',

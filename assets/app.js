@@ -49,6 +49,8 @@
     $('#langSelect').value = lang;
     renderNotices();
     renderChips();
+    renderPayList();
+    if (!$('#payResult').hidden) calcPay();
     if (!$('#ddayResult').hidden) calcDday();
     if (!$('#quizResult').hidden) showQuizResult();
     clearThread();
@@ -173,6 +175,47 @@
     T.docs.forEach(function (d) { ul.appendChild(el('li', null, d)); });
     $('#resultSrc').textContent = T.askSourceLabel + ': 외국인근로자의 고용 등에 관한 법률 제25조 · ' +
       T.ntCheckedLabel + ' ' + CHECKED_ON;
+  }
+
+  /* ---------- 출국 정산 ---------- */
+  function renderPayList() {
+    var box = $('#payList');
+    box.innerHTML = '';
+    (T.pyItems || []).forEach(function (it) {
+      var card = el('div', 'pay-item');
+      var h = el('h4');
+      h.appendChild(el('span', 'pay-check', '✓'));
+      h.appendChild(el('span', null, it.t));
+      card.appendChild(h);
+      card.appendChild(el('p', null, it.w));
+      card.appendChild(el('p', 'pay-where', it.r));
+      box.appendChild(card);
+    });
+    $('#paySrc').textContent = T.askSourceLabel + ': ' + PAY_SRC + ' · ' + T.ntCheckedLabel + ' ' + PAY_CHECKED;
+  }
+
+  function calcPay() {
+    var v = $('#exitDate').value;
+    if (!v) return;
+    var exit = midnight(new Date(v + 'T00:00:00'));
+    var now = today();
+
+    var reportDue = addMonths(exit, -1);
+    var claimDue = new Date(exit.getFullYear(), exit.getMonth(), exit.getDate() - 7);
+    var reportDays = diffDays(reportDue, now);
+    var claimDays = diffDays(claimDue, now);
+
+    save('exit', v);
+    $('#payResult').hidden = false;
+    paintCard($('#cardReport'), $('#reportNum'), reportDays);
+    paintCard($('#cardClaim'), $('#claimNum'), claimDays);
+    $('#reportDateOut').textContent = fmt(reportDue);
+    $('#claimDateOut').textContent = fmt(claimDue);
+
+    var msg = $('#payMsg');
+    if (claimDays < 0) { msg.className = 'callout is-stop'; msg.textContent = T.pyMsgOver; }
+    else if (claimDays <= 7 || reportDays < 0) { msg.className = 'callout is-warn'; msg.textContent = T.pyMsgWarn; }
+    else { msg.className = 'callout'; msg.textContent = T.pyMsgOk; }
   }
 
   /* ---------- 공지 ---------- */
@@ -302,6 +345,16 @@
       $('#ddayForm').reset();
       $('#ddayResult').hidden = true;
       drop('leave'); drop('apply');
+    });
+
+    // 출국 정산
+    var savedExit = load('exit');
+    if (savedExit) { $('#exitDate').value = savedExit; calcPay(); }
+    $('#payForm').addEventListener('submit', function (e) { e.preventDefault(); calcPay(); });
+    $('#payReset').addEventListener('click', function () {
+      $('#payForm').reset();
+      $('#payResult').hidden = true;
+      drop('exit');
     });
 
     // 자가진단
