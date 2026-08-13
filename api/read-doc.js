@@ -8,7 +8,7 @@
 
 const { LANG_NAME } = require('./_kb');
 
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemini-flash-latest';
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 const CATEGORIES = ['wage', 'abuse', 'terms', 'closed', 'own', 'unknown'];
 
