@@ -166,7 +166,14 @@
           </label>
           <input type="file" id="docFile" accept="image/*" hidden>
           <p class="hint" data-i18n="ckUploadNote">이 데모에서 사진은 기기 밖으로 전송되지 않습니다. 화면에서 확인만 하고, 서류에 적힌 날짜를 위 계산기에 옮겨 적어 주세요.</p>
-          <div id="docPreview" class="up-prev" hidden><img alt="" id="docImg"><button type="button" id="docClear" class="btn btn-ghost btn-sm" data-i18n="remove">삭제</button></div>
+          <div id="docPreview" class="up-prev" hidden>
+            <img alt="" id="docImg">
+            <div class="up-acts">
+              <button type="button" id="docRead" class="btn btn-go btn-sm" data-i18n="ckRead">사진에서 읽기</button>
+              <button type="button" id="docClear" class="btn btn-ghost btn-sm" data-i18n="remove">삭제</button>
+            </div>
+          </div>
+          <div id="docReadOut" class="read-out" hidden></div>
         </div>
 
         <div class="form-actions">

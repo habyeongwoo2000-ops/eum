@@ -292,25 +292,132 @@
     return bestScore > 0 ? best : null;
   }
 
+  function apiPost(path, payload) {
+    return fetch(path, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    });
+  }
+
   function answer(question) {
     var thread = $('#thread');
     thread.appendChild(el('div', 'bubble bubble-u', question));
 
-    var hit = findEntry(question);
     var box = el('div', 'bubble bubble-a');
-
-    if (hit && hit.review) box.appendChild(el('span', 'flag', T.askReview));
-
-    if (hit) {
-      box.appendChild(el('p', null, hit[lang] || hit.en));
-      box.appendChild(el('p', 'bubble-src', T.askSourceLabel + ': ' + hit.src));
-    } else {
-      box.appendChild(el('p', null, T.askFallback));
-    }
-    box.appendChild(el('p', 'bubble-dis', T.disclaimer));
-
+    var wait = el('p');
+    wait.appendChild(el('span', 'spin'));
+    wait.appendChild(document.createTextNode(T.askThinking));
+    box.appendChild(wait);
     thread.appendChild(box);
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    apiPost('/api/ask', { question: question, lang: lang })
+      .then(function (data) {
+        if (!data || !data.answer) throw new Error('empty');
+        fillAnswer(box, data.answer, null, false);
+      })
+      .catch(function () {
+        // 서버가 없거나 실패하면 브라우저 안의 지식베이스로 답합니다.
+        var hit = findEntry(question);
+        if (hit) fillAnswer(box, hit[lang] || hit.en, hit.src, true, hit.review);
+        else fillAnswer(box, T.askFallback, null, true);
+      });
+  }
+
+  function fillAnswer(box, text, src, offline, review) {
+    box.innerHTML = '';
+    if (review) box.appendChild(el('span', 'flag', T.askReview));
+    String(text).split('\n').forEach(function (line) {
+      if (line.trim()) box.appendChild(el('p', null, line.trim()));
+    });
+    if (src) box.appendChild(el('p', 'bubble-src', T.askSourceLabel + ': ' + src));
+    if (offline) box.appendChild(el('p', 'bubble-dis', T.askOffline));
+    box.appendChild(el('p', 'bubble-dis', T.disclaimer));
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ---------- 사진에서 읽기 ---------- */
+  function shrink(file) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1600;
+        var scale = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        var url = c.toDataURL('image/jpeg', 0.82);
+        URL.revokeObjectURL(img.src);
+        resolve(url.split(',')[1]);
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  function readDoc() {
+    var f = $('#docFile').files && $('#docFile').files[0];
+    if (!f) return;
+    var out = $('#docReadOut');
+    var btn = $('#docRead');
+
+    out.hidden = false;
+    out.className = 'read-out';
+    out.innerHTML = '';
+    var wait = el('p');
+    wait.appendChild(el('span', 'spin'));
+    wait.appendChild(document.createTextNode(T.ckReading));
+    out.appendChild(wait);
+    btn.disabled = true;
+
+    shrink(f)
+      .then(function (b64) {
+        return apiPost('/api/read-doc', { image: b64, mediaType: 'image/jpeg', lang: lang });
+      })
+      .then(function (d) { showRead(d); })
+      .catch(function () {
+        out.className = 'read-out is-warn';
+        out.innerHTML = '';
+        out.appendChild(el('p', null, T.ckReadFail));
+      })
+      .then(function () { btn.disabled = false; });
+  }
+
+  function showRead(d) {
+    var out = $('#docReadOut');
+    out.className = 'read-out';
+    out.innerHTML = '';
+    out.appendChild(el('h5', null, T.ckReadOk + (d.docType ? ' — ' + d.docType : '')));
+
+    var dl = el('dl');
+    function row(k, v) {
+      dl.appendChild(el('dt', null, k));
+      dl.appendChild(el('dd', null, v || T.ckReadNone));
+    }
+    row(T.ckReadEmployer, d.employer);
+    row(T.ckReadEnd, d.endDate);
+    row(T.ckReadReason, d.statedReason);
+    out.appendChild(dl);
+
+    // 읽은 값을 화면에 채워 넣습니다. 판단은 아래 규칙 엔진이 합니다.
+    var applied = false;
+    if (d.endDate && !$('#leaveDate').value) {
+      $('#leaveDate').value = d.endDate;
+      calcDday();
+      applied = true;
+    }
+    if (d.reasonCategory && d.reasonCategory !== 'unknown') {
+      var radio = document.querySelector('input[name=q1][value=' + d.reasonCategory + ']');
+      if (radio) { radio.checked = true; applied = true; }
+    }
+    if (applied) out.appendChild(el('p', 'read-note', T.ckReadApplied));
+    if (d.note) out.appendChild(el('p', 'read-note', d.note));
+    out.appendChild(el('p', 'read-note', T.ckReadNote));
   }
 
   /* ---------- 시작 ---------- */
@@ -373,6 +480,7 @@
       lastQuiz = null;
       $('#quizResult').hidden = true;
       $('#docPreview').hidden = true;
+      $('#docReadOut').hidden = true;
     });
 
     // 서류 미리보기 (기기 안에서만)
@@ -381,10 +489,13 @@
       if (!f) return;
       $('#docImg').src = URL.createObjectURL(f);
       $('#docPreview').hidden = false;
+      $('#docReadOut').hidden = true;
     });
+    $('#docRead').addEventListener('click', readDoc);
     $('#docClear').addEventListener('click', function () {
       $('#docFile').value = '';
       $('#docPreview').hidden = true;
+      $('#docReadOut').hidden = true;
     });
 
     // 질문
