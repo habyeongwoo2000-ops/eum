@@ -52,8 +52,7 @@ ${KB_TEXT}`;
         contents: [{ role: 'user', parts: [{ text: question }] }],
         generationConfig: {
           maxOutputTokens: 800,
-          temperature: 0.2,
-          thinkingConfig: { thinkingBudget: 0 }
+          temperature: 0.2
         }
       })
     });
