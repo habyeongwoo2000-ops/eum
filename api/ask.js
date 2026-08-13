@@ -51,7 +51,7 @@ ${KB_TEXT}`;
         system_instruction: { parts: [{ text: system }] },
         contents: [{ role: 'user', parts: [{ text: question }] }],
         generationConfig: {
-          maxOutputTokens: 800,
+          maxOutputTokens: 3000,
           temperature: 0.2
         }
       })
