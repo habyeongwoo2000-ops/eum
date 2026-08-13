@@ -8,7 +8,7 @@
 
 const { KB_TEXT, CHECKED_ON, LANG_NAME } = require('./_kb');
 
-const MODEL = 'gemini-2.5-flash';   // 한도가 더 큰 'gemini-2.5-flash-lite' 로 바꿔도 됩니다
+const MODEL = 'gemini-flash-latest';   // 한도가 더 큰 'gemini-2.5-flash-lite' 로 바꿔도 됩니다
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
