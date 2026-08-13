@@ -72,8 +72,7 @@ Rules:
         generationConfig: {
           maxOutputTokens: 900,
           temperature: 0,
-          responseMimeType: 'application/json',
-          thinkingConfig: { thinkingBudget: 0 }
+          responseMimeType: 'application/json'
         }
       })
     });
