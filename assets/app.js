@@ -102,6 +102,9 @@
     renderPayList();
     renderBoard();
     boardMsg(boardMsgKey, boardMsgKind); // 안내 문구도 새 언어로 다시 씁니다
+    authMsg(authMsgKey, authMsgKind);
+    paintAuth();
+    paintPager();
     syncStick();                         // 라벨 길이가 바뀌면 헤더 높이도 바뀝니다
     if (shown('#payResult')) calcPay();
     if (shown('#ddayResult')) calcDday();
@@ -379,39 +382,65 @@
     box.className = 'board-msg' + (boardMsgKind ? ' is-' + boardMsgKind : '');
   }
 
+  /* 글 한 장. 답변이 아직 없을 수도 있습니다. */
   function boardCard(it) {
     var art = el('article', 'board-item');
-    art.appendChild(el('h3', 'board-q', it.title));
-    if (it.body) art.appendChild(el('p', 'board-body', it.body));
 
-    var a = el('div', 'board-a');
-    a.appendChild(el('span', 'board-a-label', T.boardAnswer));
-    a.appendChild(el('span', null, it.answer));
-    art.appendChild(a);
+    var head = el('div', 'board-head');
+    head.appendChild(el('span', 'board-user', it.username || '—'));
+    if (it.at) head.appendChild(el('span', 'board-at', String(it.at).slice(0, 10)));
+    art.appendChild(head);
 
-    // 근거와 확인일은 공지 카드와 같은 규칙으로 붙입니다.
-    if (it.src || it.checked) {
-      var meta = el('div', 'board-meta');
-      if (it.src) meta.appendChild(el('span', null, T.ntSourceLabel + ': ' + it.src));
-      if (it.checked) meta.appendChild(el('span', null, T.ntCheckedLabel + ': ' + it.checked));
-      art.appendChild(meta);
+    art.appendChild(el('p', 'board-body', it.body || ''));
+
+    if (it.answer) {
+      var a = el('div', 'board-a');
+      a.appendChild(el('span', 'board-a-label', T.boardAnswer));
+      a.appendChild(el('span', null, it.answer));
+      art.appendChild(a);
+      if (it.src || it.checked) {
+        var meta = el('div', 'board-meta');
+        if (it.src) meta.appendChild(el('span', null, T.ntSourceLabel + ': ' + it.src));
+        if (it.checked) meta.appendChild(el('span', null, T.ntCheckedLabel + ': ' + it.checked));
+        art.appendChild(meta);
+      }
+    } else {
+      art.appendChild(el('p', 'board-pending', T.boardNoAnswerYet));
     }
     return art;
   }
 
-  function renderBoard() {
+  /* 쪽 넘김. 한 쪽에 10개씩 서버가 잘라 보냅니다. */
+  var boardPage = 1, boardPages = 1;
+
+  function paintPager() {
+    var nav = $('#boardPager');
+    if (!nav) return;
+    nav.hidden = boardPages <= 1;
+    $('#pageNow').textContent = boardPage + ' ' + (T.boardPageOf || '/') + ' ' + boardPages;
+    $('#pagePrev').disabled = boardPage <= 1;
+    $('#pageNext').disabled = boardPage >= boardPages;
+  }
+
+  function renderBoard(page) {
     var list = $('#boardList');
     if (!list) return;
+    if (page) boardPage = page;
     var seq = ++boardSeq;
 
-    fetch('api/qna?lang=' + encodeURIComponent(lang), { headers: { accept: 'application/json' } })
+    fetch('api/posts?page=' + boardPage + '&lang=' + encodeURIComponent(lang),
+      { headers: { accept: 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
       .then(function (data) {
         if (seq !== boardSeq) return;
         var items = (data && data.items) || [];
+        boardPage = (data && data.page) || 1;
+        boardPages = (data && data.pages) || 1;
         list.innerHTML = '';
-        if (!items.length) { list.appendChild(el('p', 'board-empty', T.boardEmpty)); return; }
-        items.forEach(function (it) { list.appendChild(boardCard(it)); });
+        if (!items.length) list.appendChild(el('p', 'board-empty', T.boardEmpty));
+        else items.forEach(function (it) { list.appendChild(boardCard(it)); });
+        paintPager();
+        if (page) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
       })
       .catch(function (e) {
         if (seq !== boardSeq) return;
@@ -420,6 +449,8 @@
         console.warn('board list unavailable', e);
         list.innerHTML = '';
         list.appendChild(el('p', 'board-empty', T.boardListFail));
+        boardPages = 1;
+        paintPager();
       });
   }
 
@@ -428,21 +459,113 @@
     btn.disabled = true;
     boardMsg('boardSending');
 
-    fetch('api/qna', {
+    fetch('api/posts', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ question: text, lang: lang })
+      body: JSON.stringify({ body: text, lang: lang })
     })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
-      .then(function () {
+      .then(function (r) {
+        return r.json().then(function (d) { return { ok: r.ok, data: d }; });
+      })
+      .then(function (out) {
+        if (!out.ok) {
+          // 로그인이 풀렸으면 글쓰기 상자를 닫고 안내로 바꿉니다.
+          if (out.data && out.data.error === 'errNeedLogin') { setUser(null); paintAuth(); }
+          boardMsg((out.data && out.data.error) || 'boardFail', 'bad');
+          return;
+        }
         $('#boardInput').value = '';
         boardMsg('boardSent', 'good');
+        renderBoard(1);
       })
       .catch(function (e) {
         console.warn('board submit failed', e);
         boardMsg('boardFail', 'bad');
       })
       .then(function () { btn.disabled = false; });
+  }
+
+  /* ---------- 로그인 ---------- */
+  /* 로그인 여부만 화면에 반영합니다. 실제 확인은 서버가 쿠키로 합니다.
+     브라우저 쪽 값은 표시용일 뿐이라, 고쳐도 글이 써지지는 않습니다. */
+  var me = null;
+
+  function setUser(u) { me = u || null; }
+
+  function paintAuth() {
+    var slot = $('#authSlot');
+    if (slot) {
+      slot.innerHTML = '';
+      if (me) {
+        slot.appendChild(el('span', 'auth-who', me.username + (T.authHello || '')));
+        var out = el('button', 'auth-btn', T.navLogout);
+        out.type = 'button';
+        out.addEventListener('click', logout);
+        slot.appendChild(out);
+      } else {
+        var a = el('a', 'auth-btn', T.navLogin);
+        a.href = 'login.html';
+        slot.appendChild(a);
+      }
+    }
+    // 게시판: 로그인했으면 글쓰기 상자, 아니면 안내
+    var form = $('#boardForm'), gate = $('#boardGate');
+    if (form && gate) { form.hidden = !me; gate.hidden = !!me; }
+  }
+
+  function loadMe() {
+    return fetch('api/auth', { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : { user: null }; })
+      .then(function (d) { setUser(d && d.user); })
+      .catch(function () { setUser(null); })
+      .then(function () { paintAuth(); });
+  }
+
+  function logout() {
+    fetch('api/auth', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'logout' })
+    })
+      .catch(function () {})
+      .then(function () { setUser(null); paintAuth(); });
+  }
+
+  var authMsgKey = null, authMsgKind = null;
+
+  function authMsg(key, kind) {
+    authMsgKey = key || null;
+    authMsgKind = kind || null;
+    var box = $('#authMsg');
+    if (!box) return;
+    box.textContent = authMsgKey ? (T[authMsgKey] || T.errNet) : '';
+    box.className = 'auth-msg' + (authMsgKind ? ' is-' + authMsgKind : '');
+  }
+
+  function authSend(action, payload, okKey, after) {
+    authMsg('authWorking');
+    fetch('api/auth', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(Object.assign({ action: action }, payload))
+    })
+      .then(function (r) {
+        return r.json().then(function (d) { return { ok: r.ok, data: d }; });
+      })
+      .then(function (out) {
+        if (!out.ok || !out.data || !out.data.ok) {
+          authMsg((out.data && out.data.error) || 'errNet', 'bad');
+          return;
+        }
+        setUser(out.data.user || null);
+        authMsg(okKey, 'good');
+        paintAuth();
+        setTimeout(after, 700);
+      })
+      .catch(function (e) {
+        console.warn('auth failed', e);
+        authMsg('errNet', 'bad');
+      });
   }
 
   /* ---------- 질문 답변 ---------- */
@@ -680,12 +803,39 @@
     initSecNav();
     window.addEventListener('resize', syncStick);
 
+    // 로그인 상태는 모든 페이지에서 확인합니다 (헤더 표시용)
+    loadMe();
+
     // 묻고 답하기
     on('#boardForm', 'submit', function (e) {
       e.preventDefault();
       var text = $('#boardInput').value.trim();
       if (text.length < 5) { boardMsg('boardTooShort', 'bad'); return; }
+      if (text.length > 1000) { boardMsg('boardTooLong', 'bad'); return; }
       submitQuestion(text);
+    });
+    on('#pagePrev', 'click', function () { if (boardPage > 1) renderBoard(boardPage - 1); });
+    on('#pageNext', 'click', function () { if (boardPage < boardPages) renderBoard(boardPage + 1); });
+
+    // 로그인
+    on('#loginForm', 'submit', function (e) {
+      e.preventDefault();
+      authSend('login', {
+        username: $('#authId').value.trim(),
+        password: $('#authPw').value
+      }, 'authLoginOk', function () { location.href = 'board.html'; });
+    });
+
+    // 회원가입 — 비밀번호 확인은 보내기 전에 브라우저에서 먼저 거릅니다
+    on('#signupForm', 'submit', function (e) {
+      e.preventDefault();
+      var pw = $('#authPw').value, pw2 = $('#authPw2').value;
+      if (pw !== pw2) { authMsg('errPwMatch', 'bad'); return; }
+      if (pw.length < 8) { authMsg('errPwRule', 'bad'); return; }
+      authSend('signup', {
+        username: $('#authId').value.trim(),
+        password: pw
+      }, 'authSignupOk', function () { location.href = 'board.html'; });
     });
 
     // 기한

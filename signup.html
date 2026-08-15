@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>사유 자가진단 · 이음</title>
-<meta name="description" content="사업장 변경 사유가 어떤 유형에 가까운지, 무엇을 준비하면 되는지 세 문항으로 확인합니다.">
+<title>회원가입 · 이음</title>
+<meta name="description" content="아이디와 비밀번호만으로 가입할 수 있습니다.">
 <meta name="color-scheme" content="light">
 <!-- ▼ 공통 부트 코드 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
 <script>
@@ -19,7 +19,7 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230E7A57'/><path d='M28 34h44M28 50h30M28 66h44' stroke='white' stroke-width='9' stroke-linecap='round'/></svg>">
 </head>
-<body data-page-title="ckTitle">
+<body data-page-title="authSignupTitle">
 
 <a class="skip" href="#top" data-i18n="skip">본문으로 건너뛰기</a>
 
@@ -67,75 +67,39 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 
 <main id="top">
 
-  <section id="check" class="band">
-    <div class="wrap">
-      <p class="sec-no" data-i18n="secNo2">사유</p>
-      <h2 data-i18n="ckTitle">사유 자가진단</h2>
-      <p class="sec-lead" data-i18n="ckLead">세 가지만 고르면, 내 상황이 어떤 유형에 가까운지와 무엇을 준비하면 되는지 알려 줍니다. 판정이 아니라 안내입니다.</p>
+  <section id="auth" class="band">
+    <div class="wrap wrap-narrow">
+      <p class="sec-no" data-i18n="navLogin">로그인</p>
+      <h2 data-i18n="authSignupTitle">회원가입</h2>
+      <p class="sec-lead" data-i18n="authSignupLead">아이디와 비밀번호만 정하면 됩니다. 이름, 여권번호, 전화번호는 묻지 않습니다.</p>
 
-      <form class="quiz" id="quizForm">
-        <fieldset class="q">
-          <legend><span class="qn">1</span><span data-i18n="ckQ1">회사를 그만두게 된 이유는 무엇에 가장 가깝나요?</span></legend>
-          <label class="opt-row"><input type="radio" name="q1" value="wage" required><span data-i18n="ckQ1a">임금을 못 받았거나 계속 늦게 받았다</span></label>
-          <label class="opt-row"><input type="radio" name="q1" value="abuse"><span data-i18n="ckQ1b">폭행·폭언·성희롱을 당했다</span></label>
-          <label class="opt-row"><input type="radio" name="q1" value="terms"><span data-i18n="ckQ1c">계약서와 실제 일·숙소·근로조건이 달랐다</span></label>
-          <label class="opt-row"><input type="radio" name="q1" value="closed"><span data-i18n="ckQ1d">회사가 휴업·폐업했거나 일감이 없어졌다</span></label>
-          <label class="opt-row"><input type="radio" name="q1" value="own"><span data-i18n="ckQ1e">내가 원해서 그만두었다 / 계약기간이 끝났다</span></label>
-        </fieldset>
-
-        <fieldset class="q">
-          <legend><span class="qn">2</span><span data-i18n="ckQ2">증거가 될 자료를 가지고 있나요?</span></legend>
-          <label class="opt-row"><input type="radio" name="q2" value="yes" required><span data-i18n="ckQ2a">있다 (계약서, 급여 기록, 문자·사진 등)</span></label>
-          <label class="opt-row"><input type="radio" name="q2" value="some"><span data-i18n="ckQ2b">일부만 있다</span></label>
-          <label class="opt-row"><input type="radio" name="q2" value="no"><span data-i18n="ckQ2c">없다</span></label>
-        </fieldset>
-
-        <fieldset class="q">
-          <legend><span class="qn">3</span><span data-i18n="ckQ3">지금까지 사업장을 몇 번 바꿨나요?</span></legend>
-          <label class="opt-row"><input type="radio" name="q3" value="0" required><span data-i18n="ckQ3a">한 번도 없다</span></label>
-          <label class="opt-row"><input type="radio" name="q3" value="1"><span data-i18n="ckQ3b">1번</span></label>
-          <label class="opt-row"><input type="radio" name="q3" value="2"><span data-i18n="ckQ3c">2번</span></label>
-          <label class="opt-row"><input type="radio" name="q3" value="3"><span data-i18n="ckQ3d">3번 이상</span></label>
-        </fieldset>
-
-        <div class="upload">
-          <label class="up-drop" for="docFile">
-            <span class="up-ic" aria-hidden="true">＋</span>
-            <span data-i18n="ckUpload">계약서나 통지서 사진 올리기 (선택)</span>
-          </label>
-          <input type="file" id="docFile" accept="image/*" hidden>
-          <p class="hint" data-i18n="ckUploadNote">사진은 글자를 읽기 위해 외부 AI 서비스로 보내집니다. 여권번호, 외국인등록번호, 계좌번호는 가리고 찍어 주세요.</p>
-          <div id="docPreview" class="up-prev" hidden>
-            <img alt="" id="docImg">
-            <div class="up-acts">
-              <button type="button" id="docRead" class="btn btn-go btn-sm" data-i18n="ckRead">사진에서 읽기</button>
-              <button type="button" id="docClear" class="btn btn-ghost btn-sm" data-i18n="remove">삭제</button>
-            </div>
-          </div>
-          <div id="docReadOut" class="read-out" hidden></div>
+      <form class="auth-form" id="signupForm" autocomplete="on">
+        <div class="field">
+          <label for="authId" data-i18n="authIdLabel">아이디</label>
+          <input type="text" id="authId" name="username" autocomplete="username"
+                 autocapitalize="off" autocorrect="off" spellcheck="false" required>
+          <p class="hint" data-i18n="authIdHint">영문 소문자, 숫자, _ 를 써서 4~20자.</p>
         </div>
-
+        <div class="field">
+          <label for="authPw" data-i18n="authPwLabel">비밀번호</label>
+          <input type="password" id="authPw" name="password" autocomplete="new-password" required>
+          <p class="hint" data-i18n="authPwHint">8자 이상.</p>
+        </div>
+        <div class="field">
+          <label for="authPw2" data-i18n="authPw2Label">비밀번호 다시 입력</label>
+          <input type="password" id="authPw2" name="password2" autocomplete="new-password" required>
+        </div>
+        <p class="auth-safety" data-i18n="authSafety">본인 이름이나 여권번호를 아이디로 쓰지 마세요. 아무 글자나 정하면 됩니다.</p>
         <div class="form-actions">
-          <button type="submit" class="btn btn-go" data-i18n="ckSubmit">결과 보기</button>
-          <button type="button" class="btn btn-ghost" id="quizReset" data-i18n="reset">지우기</button>
+          <button type="submit" class="btn btn-go" data-i18n="authSignupBtn">가입하기</button>
         </div>
+        <p class="auth-msg" id="authMsg" role="status" aria-live="polite"></p>
       </form>
 
-      <div id="quizResult" class="result" hidden>
-        <p class="result-tag" id="resultTag"></p>
-        <h3 id="resultTitle"></h3>
-        <p id="resultBody"></p>
-        <div class="result-docs">
-          <p class="rd-h" data-i18n="ckDocsTitle">준비하면 좋은 자료</p>
-          <ul id="resultDocs"></ul>
-        </div>
-        <p class="src" id="resultSrc"></p>
-        <p class="disclaim" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
-      </div>
+      <p class="auth-swap"><a href="login.html" data-i18n="authGoLogin">이미 계정이 있으신가요? 로그인</a></p>
     </div>
   </section>
 
-  <!-- ▼ 공통 공식 창구 — 모든 페이지에 같은 내용 -->
   <section class="band band-ink">
     <div class="wrap">
       <h2 data-i18n="ofTitle">공식 창구</h2>
