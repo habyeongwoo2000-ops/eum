@@ -22,22 +22,64 @@
   }
 
   /* ---------- 언어 ---------- */
+  /* 언어를 고르는 순서
+     1) ?lang=vi 같은 주소 지정 — 상담사나 지인이 링크로 언어를 정해 보낼 때
+     2) 이 기기에 저장된 선택
+     3) 기기 언어 목록 (전체 태그 → 기본 코드 → 옛 코드)
+     4) 셋 다 없으면 영어로 보여주고, 아직 지원하지 않는 언어라고 알립니다
+
+     화면 문자열은 전부 i18n.js 에 박아 둡니다. 실시간 번역을 부르지 않으므로
+     언어를 바꿔도 추가 비용이 없고 오프라인에서도 동작합니다.
+     언어를 늘리려면 i18n.js·data.js·index.html 세 곳을 함께 고쳐야 합니다
+     (README 4장 "언어 추가"). */
+
+  // 브라우저가 옛 코드나 세 글자 코드를 보내는 경우를 흡수합니다.
+  var LANG_ALIAS = { in: 'id', ind: 'id', vie: 'vi', tha: 'th', kor: 'ko', eng: 'en' };
+
+  // I18N 에 실제로 있는 키만 통과시킵니다. ?lang=constructor 같은 입력도 여기서 막힙니다.
+  function isLang(code) {
+    return typeof code === 'string' && Object.prototype.hasOwnProperty.call(I18N, code);
+  }
+
+  function pickLang(tag) {
+    var t = String(tag || '').toLowerCase().replace(/_/g, '-').trim();
+    if (!t) return null;
+    if (isLang(t)) return t;                                // 나중에 zh-tw 처럼 지역까지 넣을 때
+    var base = t.split('-')[0];
+    if (isLang(base)) return base;                          // vi-VN → vi
+    if (isLang(LANG_ALIAS[base])) return LANG_ALIAS[base];  // in → id
+    return null;
+  }
+
   function detect() {
-    var stored = load('lang');
-    if (stored && I18N[stored]) return { code: stored, auto: false };
-    var list = navigator.languages || [navigator.language || 'ko'];
+    var fromUrl = null;
+    try { fromUrl = pickLang(new URLSearchParams(location.search).get('lang')); } catch (e) {}
+    if (fromUrl) return { code: fromUrl, auto: false, matched: true, source: 'url' };
+
+    var stored = pickLang(load('lang'));
+    if (stored) return { code: stored, auto: false, matched: true, source: 'stored' };
+
+    var list = (navigator.languages && navigator.languages.length)
+      ? navigator.languages
+      : [navigator.language || ''];
     for (var i = 0; i < list.length; i++) {
-      var base = String(list[i]).toLowerCase().split('-')[0];
-      if (I18N[base]) return { code: base, auto: true };
-      if (base === 'in') return { code: 'id', auto: true }; // 구형 인도네시아어 코드
+      var hit = pickLang(list[i]);
+      if (hit) return { code: hit, auto: true, matched: true, source: 'device' };
     }
-    return { code: 'en', auto: true }; // 지원하지 않는 언어는 영어로
+
+    return { code: 'en', auto: true, matched: false, source: 'fallback' };
   }
 
   function applyLang(code) {
-    lang = I18N[code] ? code : 'en';
+    lang = isLang(code) ? code : 'en';
     T = I18N[lang];
     document.documentElement.lang = lang;
+    /* 탭 제목: "사유 자가진단 · 이음 — 사업장 변경 안내" 처럼 페이지 이름을 앞에 붙입니다.
+       페이지 이름 키는 <body data-page-title="ckTitle"> 로 지정합니다 (홈은 없음). */
+    if (T.docTitle) {
+      var pk = document.body.getAttribute('data-page-title');
+      document.title = (pk && T[pk]) ? (T[pk] + ' · ' + T.docTitle) : T.docTitle;
+    }
     $$('[data-i18n]').forEach(function (n) {
       var v = T[n.getAttribute('data-i18n')];
       if (typeof v === 'string') n.textContent = v;
@@ -46,14 +88,34 @@
       var v = T[n.getAttribute('data-i18n-ph')];
       if (typeof v === 'string') n.placeholder = v;
     });
-    $('#langSelect').value = lang;
+    $$('[data-i18n-aria]').forEach(function (n) {
+      var v = T[n.getAttribute('data-i18n-aria')];
+      if (typeof v === 'string') n.setAttribute('aria-label', v);
+    });
+    var sel = $('#langSelect');
+    if (sel) sel.value = lang;
+
+    /* 페이지마다 들어 있는 기능이 다릅니다. 각 함수가 자기 요소가 없으면
+       조용히 넘어가므로 여기서는 그냥 다 부릅니다. */
     renderNotices();
     renderChips();
     renderPayList();
-    if (!$('#payResult').hidden) calcPay();
-    if (!$('#ddayResult').hidden) calcDday();
-    if (!$('#quizResult').hidden) showQuizResult();
+    renderBoard();
+    boardMsg(boardMsgKey, boardMsgKind); // 안내 문구도 새 언어로 다시 씁니다
+    syncStick();                         // 라벨 길이가 바뀌면 헤더 높이도 바뀝니다
+    if (shown('#payResult')) calcPay();
+    if (shown('#ddayResult')) calcDday();
+    if (shown('#quizResult')) showQuizResult();
     clearThread();
+
+    /* 첫 화면 깜빡임 가리개를 걷습니다. HTML 에는 한국어가 박혀 있어서
+       다른 언어 사용자는 이 시점 전까지 한국어를 보게 됩니다. (head 의 부트 코드 참고) */
+    document.documentElement.removeAttribute('data-lang-pending');
+  }
+
+  function shown(sel) {
+    var n = $(sel);
+    return !!n && !n.hidden;
   }
 
   /* ---------- 날짜 ---------- */
@@ -71,6 +133,32 @@
     return d.getFullYear() + '-' + m + '-' + day;
   }
 
+  /* 화면에 보여줄 마감일. 숫자는 ISO 그대로 둡니다 — 근로자가 대조할 고용센터
+     서류와 EPS 누리집이 같은 표기를 쓰기 때문입니다. 요일만 사용자 언어로 붙입니다.
+     고용센터는 주말에 닫으므로 마감일이 무슨 요일인지가 실제 행동을 바꿉니다. */
+  var weekdayFmt = {};
+
+  function weekdayOf(d) {
+    if (!(lang in weekdayFmt)) {
+      /* 태국어는 기본 달력이 불교력이라 2026년이 2569년으로 나옵니다.
+         서류의 연도와 어긋나면 안 되므로 그레고리력을 못박습니다.
+         (요일 자체는 달력과 무관하지만 표기 규칙을 한곳에 모아 둡니다.) */
+      var loc = lang === 'th' ? 'th-TH-u-ca-gregory' : lang;
+      try {
+        weekdayFmt[lang] = new Intl.DateTimeFormat(loc, { weekday: 'long' });
+      } catch (e) {
+        weekdayFmt[lang] = null; // Intl 이 없거나 언어를 모르면 요일 없이 갑니다
+      }
+    }
+    if (!weekdayFmt[lang]) return '';
+    try { return weekdayFmt[lang].format(d); } catch (e) { return ''; }
+  }
+
+  function fmtDay(d) {
+    var w = weekdayOf(d);
+    return w ? fmt(d) + ' (' + w + ')' : fmt(d);
+  }
+
   /* ---------- 기한 계산 ---------- */
   function paintCard(card, numEl, days) {
     card.classList.remove('is-ok', 'is-warn', 'is-stop');
@@ -86,7 +174,9 @@
   }
 
   function calcDday() {
-    var leaveV = $('#leaveDate').value;
+    var leaveIn = $('#leaveDate');
+    if (!leaveIn) return;              // 이 페이지에 기한 계산기가 없습니다
+    var leaveV = leaveIn.value;
     if (!leaveV) return;
     var leave = midnight(new Date(leaveV + 'T00:00:00'));
     var now = today();
@@ -117,8 +207,9 @@
     $('#ddayResult').hidden = false;
     paintCard($('#cardApply'), $('#applyNum'), applyDays);
     paintCard($('#cardJob'), $('#jobNum'), jobDays);
-    $('#applyDateOut').textContent = fmt(applyDue);
-    $('#jobDateOut').textContent = fmt(jobDue);
+    $('#applyDateOut').textContent = fmtDay(applyDue);
+    $('#jobDateOut').textContent = fmtDay(jobDue);
+    // 아래 타임라인 라벨은 자리가 좁아 요일 없이 날짜만 둡니다.
     $('#lbLeave').textContent = fmt(leave);
     $('#lbApply').textContent = fmt(applied || applyDue);
     $('#lbJob').textContent = fmt(jobDue);
@@ -180,6 +271,7 @@
   /* ---------- 출국 정산 ---------- */
   function renderPayList() {
     var box = $('#payList');
+    if (!box) return;
     box.innerHTML = '';
     (T.pyItems || []).forEach(function (it) {
       var card = el('div', 'pay-item');
@@ -195,7 +287,9 @@
   }
 
   function calcPay() {
-    var v = $('#exitDate').value;
+    var exitIn = $('#exitDate');
+    if (!exitIn) return;
+    var v = exitIn.value;
     if (!v) return;
     var exit = midnight(new Date(v + 'T00:00:00'));
     var now = today();
@@ -209,8 +303,8 @@
     $('#payResult').hidden = false;
     paintCard($('#cardReport'), $('#reportNum'), reportDays);
     paintCard($('#cardClaim'), $('#claimNum'), claimDays);
-    $('#reportDateOut').textContent = fmt(reportDue);
-    $('#claimDateOut').textContent = fmt(claimDue);
+    $('#reportDateOut').textContent = fmtDay(reportDue);
+    $('#claimDateOut').textContent = fmtDay(claimDue);
 
     var msg = $('#payMsg');
     if (claimDays < 0) { msg.className = 'callout is-stop'; msg.textContent = T.pyMsgOver; }
@@ -221,6 +315,7 @@
   /* ---------- 공지 ---------- */
   function renderNotices() {
     var list = $('#noticeList');
+    if (!list) return;
     list.innerHTML = '';
     NOTICES.forEach(function (n) {
       var body = n[lang] || n.en;
@@ -229,7 +324,8 @@
       var head = el('button', 'notice-head');
       head.type = 'button';
       head.setAttribute('aria-expanded', 'false');
-      head.appendChild(el('span', 'notice-tag', n.tag));
+      var tagLabel = (T.noticeTags && T.noticeTags[n.tagKey]) || n.tagKey;
+      head.appendChild(el('span', 'notice-tag', tagLabel));
       head.appendChild(el('p', 'notice-t', body.title));
       head.appendChild(el('span', 'notice-arrow', '⌄'));
       head.addEventListener('click', function () {
@@ -242,12 +338,14 @@
       body.points.forEach(function (p) { ul.appendChild(el('li', null, p)); });
       wrap.appendChild(ul);
 
-      var ask = el('button', 'btn btn-ghost btn-sm', T.ntAskBtn);
-      ask.type = 'button';
+      /* 질문 기능이 다른 페이지로 갈라져서 링크로 넘깁니다.
+         진짜 <a> 라야 새 탭 열기와 JS 없는 환경에서도 동작합니다. */
+      var ask = el('a', 'btn btn-ghost btn-sm', T.ntAskBtn);
+      ask.href = 'ask.html?q=' + encodeURIComponent(body.title);
+      /* 일부 호스트는 .html 을 clean URL 로 넘기면서 쿼리를 버립니다(로컬 serve 가 그렇습니다).
+         같은 값을 sessionStorage 에도 넣어 두고 질문 페이지에서 남은 쪽을 씁니다. */
       ask.addEventListener('click', function () {
-        $('#askInput').value = body.title;
-        document.getElementById('ask').scrollIntoView({ behavior: 'smooth' });
-        setTimeout(function () { answer(body.title); }, 350);
+        try { sessionStorage.setItem('eum.carryQ', body.title); } catch (e) {}
       });
       wrap.appendChild(ask);
 
@@ -265,9 +363,92 @@
     });
   }
 
+  /* ---------- 묻고 답하기 ---------- */
+  /* 목록은 서버가 이미 해당 언어로 만들어 보내 줍니다. 여기서는 번역하지 않습니다.
+     번역은 질문 등록 때와 답변 게시 때 각 1회뿐이고, 조회는 저장된 문자열을 그대로
+     씁니다. 언어를 바꾸면 다시 받아 오지만 응답이 캐시되므로 비용이 늘지 않습니다. */
+  var boardSeq = 0;                       // 늦게 온 응답이 새 화면을 덮지 않게
+  var boardMsgKey = null, boardMsgKind = null;
+
+  function boardMsg(key, kind) {
+    boardMsgKey = key || null;
+    boardMsgKind = kind || null;
+    var box = $('#boardMsg');
+    if (!box) return;
+    box.textContent = boardMsgKey ? (T[boardMsgKey] || '') : '';
+    box.className = 'board-msg' + (boardMsgKind ? ' is-' + boardMsgKind : '');
+  }
+
+  function boardCard(it) {
+    var art = el('article', 'board-item');
+    art.appendChild(el('h3', 'board-q', it.title));
+    if (it.body) art.appendChild(el('p', 'board-body', it.body));
+
+    var a = el('div', 'board-a');
+    a.appendChild(el('span', 'board-a-label', T.boardAnswer));
+    a.appendChild(el('span', null, it.answer));
+    art.appendChild(a);
+
+    // 근거와 확인일은 공지 카드와 같은 규칙으로 붙입니다.
+    if (it.src || it.checked) {
+      var meta = el('div', 'board-meta');
+      if (it.src) meta.appendChild(el('span', null, T.ntSourceLabel + ': ' + it.src));
+      if (it.checked) meta.appendChild(el('span', null, T.ntCheckedLabel + ': ' + it.checked));
+      art.appendChild(meta);
+    }
+    return art;
+  }
+
+  function renderBoard() {
+    var list = $('#boardList');
+    if (!list) return;
+    var seq = ++boardSeq;
+
+    fetch('api/qna?lang=' + encodeURIComponent(lang), { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
+      .then(function (data) {
+        if (seq !== boardSeq) return;
+        var items = (data && data.items) || [];
+        list.innerHTML = '';
+        if (!items.length) { list.appendChild(el('p', 'board-empty', T.boardEmpty)); return; }
+        items.forEach(function (it) { list.appendChild(boardCard(it)); });
+      })
+      .catch(function (e) {
+        if (seq !== boardSeq) return;
+        /* 서버가 없는 배포(GitHub Pages)에서도 화면이 깨지지 않게 안내만 남깁니다.
+           나머지 기능은 그대로 동작합니다. */
+        console.warn('board list unavailable', e);
+        list.innerHTML = '';
+        list.appendChild(el('p', 'board-empty', T.boardListFail));
+      });
+  }
+
+  function submitQuestion(text) {
+    var btn = $('#boardSend');
+    btn.disabled = true;
+    boardMsg('boardSending');
+
+    fetch('api/qna', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ question: text, lang: lang })
+    })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
+      .then(function () {
+        $('#boardInput').value = '';
+        boardMsg('boardSent', 'good');
+      })
+      .catch(function (e) {
+        console.warn('board submit failed', e);
+        boardMsg('boardFail', 'bad');
+      })
+      .then(function () { btn.disabled = false; });
+  }
+
   /* ---------- 질문 답변 ---------- */
   function renderChips() {
     var box = $('#askChips');
+    if (!box) return;
     box.innerHTML = '';
     (T.chips || []).forEach(function (c) {
       var b = el('button', 'chip', c);
@@ -277,7 +458,7 @@
     });
   }
 
-  function clearThread() { $('#thread').innerHTML = ''; }
+  function clearThread() { var t = $('#thread'); if (t) t.innerHTML = ''; }
 
   function findEntry(q) {
     var text = q.toLowerCase();
@@ -305,6 +486,7 @@
 
   function answer(question) {
     var thread = $('#thread');
+    if (!thread) return;
     thread.appendChild(el('div', 'bubble bubble-u', question));
 
     var box = el('div', 'bubble bubble-a');
@@ -420,52 +602,124 @@
     out.appendChild(el('p', 'read-note', T.ckReadNote));
   }
 
+  /* ---------- 섹션 바로가기 ---------- */
+  /* 스티키 헤더 높이는 언어와 화면폭에 따라 달라집니다. 고정값으로 두면
+     어떤 언어에서는 눌러서 이동했을 때 제목이 헤더에 가려집니다.
+     실제 높이를 재서 CSS 변수로 넘기고, 거기서 scroll-margin-top 을 잡습니다. */
+  function syncStick() {
+    var bar = document.querySelector('.topbar');
+    if (!bar) return;
+    document.documentElement.style.setProperty('--stick', bar.offsetHeight + 'px');
+  }
+
+  function initSecNav() {
+    var nav = $('#secnav');
+    if (!nav) return;
+
+    // 화면이 좁으면 활성 항목이 가로 스크롤 밖으로 나갑니다. 보이는 자리로 끌어옵니다.
+    function keepInView(chip) {
+      var left = chip.offsetLeft, right = left + chip.offsetWidth;
+      var from = nav.scrollLeft, to = from + nav.clientWidth;
+      if (left < from + 12) nav.scrollLeft = Math.max(0, left - 12);
+      else if (right > to - 12) nav.scrollLeft = right - nav.clientWidth + 12;
+    }
+
+    /* 기능마다 페이지가 따로 있으므로 지금 열려 있는 파일 이름으로 현재 위치를 정합니다.
+       Vercel 과 로컬 serve 는 기본이 clean URL 이라 주소에서 .html 이 사라집니다
+       (reason.html → /reason). 그래서 양쪽 다 확장자를 떼고 비교합니다.
+       주소가 "/" 로 끝나면 index 로 봅니다. */
+    function fileOf(path) {
+      var name = String(path || '').split(/[?#]/)[0].split('/').pop();
+      name = (name || '').toLowerCase().replace(/\.html?$/, '');
+      return name || 'index';
+    }
+
+    var here = fileOf(location.pathname);
+    Array.prototype.forEach.call(nav.querySelectorAll('a[href]'), function (a) {
+      var on = fileOf(a.getAttribute('href')) === here;
+      a.classList.toggle('is-on', on);
+      if (on) { a.setAttribute('aria-current', 'page'); keepInView(a); }
+      else { a.removeAttribute('aria-current'); }
+    });
+  }
+
   /* ---------- 시작 ---------- */
+  /* 기능마다 페이지가 따로 있어서, 지금 열린 페이지에 없는 요소가 늘 있습니다.
+     on() 은 요소가 있을 때만 연결합니다. */
+  function on(sel, ev, fn) {
+    var n = $(sel);
+    if (n) n.addEventListener(ev, fn);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     var d = detect();
+    // 링크(?lang=)로 들어온 선택도 다음 방문까지 유지합니다.
+    if (d.source === 'url') save('lang', d.code);
+    // 아직 지원하지 않는 언어면 안내 문구를 바꿔 끼웁니다 (화면은 영어로 나옵니다).
+    if (!d.matched) {
+      var toastText = $('#langToastText');
+      if (toastText) toastText.setAttribute('data-i18n', 'langUnsupported');
+    }
     applyLang(d.code);
 
-    if (d.auto && d.code !== 'ko') {
-      var toast = $('#langToast');
+    var toast = $('#langToast');
+    if (toast && d.auto && d.code !== 'ko') {
       toast.hidden = false;
       setTimeout(function () { toast.hidden = true; }, 7000);
     }
-    $('#toastClose').addEventListener('click', function () { $('#langToast').hidden = true; });
+    on('#toastClose', 'click', function () { if (toast) toast.hidden = true; });
 
-    $('#langSelect').addEventListener('change', function () {
+    on('#langSelect', 'change', function () {
       save('lang', this.value);
       applyLang(this.value);
-      $('#langToast').hidden = true;
+      if (toast) toast.hidden = true;
+    });
+
+    // 섹션 바로가기 (모든 페이지 공통)
+    syncStick();
+    initSecNav();
+    window.addEventListener('resize', syncStick);
+
+    // 묻고 답하기
+    on('#boardForm', 'submit', function (e) {
+      e.preventDefault();
+      var text = $('#boardInput').value.trim();
+      if (text.length < 5) { boardMsg('boardTooShort', 'bad'); return; }
+      submitQuestion(text);
     });
 
     // 기한
-    $('#leaveDate').max = fmt(today());
-    $('#applyDate').max = fmt(today());
-    var savedLeave = load('leave'), savedApply = load('apply');
-    if (savedLeave) {
-      $('#leaveDate').value = savedLeave;
-      if (savedApply) $('#applyDate').value = savedApply;
-      calcDday();
+    if ($('#ddayForm')) {
+      $('#leaveDate').max = fmt(today());
+      $('#applyDate').max = fmt(today());
+      var savedLeave = load('leave'), savedApply = load('apply');
+      if (savedLeave) {
+        $('#leaveDate').value = savedLeave;
+        if (savedApply) $('#applyDate').value = savedApply;
+        calcDday();
+      }
+      on('#ddayForm', 'submit', function (e) { e.preventDefault(); calcDday(); });
+      on('#ddayReset', 'click', function () {
+        $('#ddayForm').reset();
+        $('#ddayResult').hidden = true;
+        drop('leave'); drop('apply');
+      });
     }
-    $('#ddayForm').addEventListener('submit', function (e) { e.preventDefault(); calcDday(); });
-    $('#ddayReset').addEventListener('click', function () {
-      $('#ddayForm').reset();
-      $('#ddayResult').hidden = true;
-      drop('leave'); drop('apply');
-    });
 
     // 출국 정산
-    var savedExit = load('exit');
-    if (savedExit) { $('#exitDate').value = savedExit; calcPay(); }
-    $('#payForm').addEventListener('submit', function (e) { e.preventDefault(); calcPay(); });
-    $('#payReset').addEventListener('click', function () {
-      $('#payForm').reset();
-      $('#payResult').hidden = true;
-      drop('exit');
-    });
+    if ($('#payForm')) {
+      var savedExit = load('exit');
+      if (savedExit) { $('#exitDate').value = savedExit; calcPay(); }
+      on('#payForm', 'submit', function (e) { e.preventDefault(); calcPay(); });
+      on('#payReset', 'click', function () {
+        $('#payForm').reset();
+        $('#payResult').hidden = true;
+        drop('exit');
+      });
+    }
 
     // 자가진단
-    $('#quizForm').addEventListener('submit', function (e) {
+    on('#quizForm', 'submit', function (e) {
       e.preventDefault();
       lastQuiz = {
         q1: $('input[name=q1]:checked').value,
@@ -475,7 +729,7 @@
       showQuizResult();
       $('#quizResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
-    $('#quizReset').addEventListener('click', function () {
+    on('#quizReset', 'click', function () {
       $('#quizForm').reset();
       lastQuiz = null;
       $('#quizResult').hidden = true;
@@ -484,27 +738,39 @@
     });
 
     // 서류 미리보기 (기기 안에서만)
-    $('#docFile').addEventListener('change', function () {
+    on('#docFile', 'change', function () {
       var f = this.files && this.files[0];
       if (!f) return;
       $('#docImg').src = URL.createObjectURL(f);
       $('#docPreview').hidden = false;
       $('#docReadOut').hidden = true;
     });
-    $('#docRead').addEventListener('click', readDoc);
-    $('#docClear').addEventListener('click', function () {
+    on('#docRead', 'click', readDoc);
+    on('#docClear', 'click', function () {
       $('#docFile').value = '';
       $('#docPreview').hidden = true;
       $('#docReadOut').hidden = true;
     });
 
     // 질문
-    $('#askForm').addEventListener('submit', function (e) {
+    on('#askForm', 'submit', function (e) {
       e.preventDefault();
       var q = $('#askInput').value.trim();
       if (!q) return;
       answer(q);
       $('#askInput').value = '';
     });
+
+    /* 공지에서 "이 공지에 대해 질문하기" 를 눌러 넘어온 경우입니다.
+       페이지가 갈라지면서 같은 화면 스크롤이 아니라 ask.html?q=... 이동이 됐습니다. */
+    var carried = null;
+    try { carried = new URLSearchParams(location.search).get('q'); } catch (e) {}
+    if (!carried) { try { carried = sessionStorage.getItem('eum.carryQ'); } catch (e) {} }
+    try { sessionStorage.removeItem('eum.carryQ'); } catch (e) {}
+    if (carried && $('#askInput')) {
+      carried = carried.slice(0, 600);
+      $('#askInput').value = carried;
+      setTimeout(function () { answer(carried); }, 300);
+    }
   });
 })();

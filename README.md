@@ -9,12 +9,14 @@
 
 | PRD 항목 | 구현 |
 |---|---|
-| 자동 언어 감지 + 원탭 전환 | `navigator.languages` 로 첫 언어 결정, 상단 고정 선택기, 미지원 언어는 영어로 |
+| 자동 언어 감지 + 원탭 전환 | `?lang=` → 저장된 선택 → `navigator.languages` 순서로 결정, 상단 고정 선택기, 미지원 언어는 영어로 안내와 함께 |
+| 섹션 바로가기 | 상단 고정 바에서 기능 6개로 바로 이동, 현재 위치 자동 표시, 좁은 화면에서는 가로 스크롤 |
 | D-day 계산 | 퇴사일 → 신청 마감(+1개월), 신청일 → 구직 마감(+3개월), 7일 이내 주의색·마감 후 경고색 |
 | 출국 전 정산 확인 | 받을 돈 네 가지 체크리스트 + 청구 경로 + 출국 예정일 기준 신고·신청 D-day (금액 계산 없음) |
 | 공지 요약 게시판 | 요약 카드 + 원문 링크 + 출처 + 확인일, 각 글에서 바로 질문 연결 |
 | 질문 답변 (RAG-lite) | 검증된 지식베이스 안에서만 답변, 출처 100% 표기, 근거 없으면 1345 안내로 회피 |
 | 서류 자가진단 | 3문항 규칙 엔진 + 사진 미리보기(기기 밖 전송 없음) |
+| 묻고 답하기 게시판 | 사용자가 자기 언어로 질문 → 관리자가 익명화·답변 → 게시 시 5개 언어 저장. 조회는 AI 호출 없음 |
 
 지원 언어: 한국어 · English · Tiếng Việt · ไทย · Bahasa Indonesia
 
@@ -26,7 +28,7 @@
 
 1. GitHub에서 **New repository** → 이름 예: `eum` → Public → Create.
 2. 저장소 화면에서 **Add file → Upload files**.
-3. 이 폴더 안의 `index.html`, `assets` 폴더, `.nojekyll` 을 **통째로 드래그**해서 올리고 Commit.
+3. 이 폴더 안의 **`.html` 파일 여섯 개 전부**와 `assets` 폴더, `.nojekyll` 을 **통째로 드래그**해서 올리고 Commit.
 4. **Settings → Pages** → Source를 `Deploy from a branch`, Branch를 `main` / `/ (root)` 로 두고 Save.
 5. 1~2분 뒤 `https://<아이디>.github.io/eum/` 에서 열립니다.
 
@@ -58,7 +60,14 @@ python3 -m http.server 8000
 ## 3. 파일 구조
 
 ```
-index.html          화면 구조 (data-i18n 속성으로 번역 연결)
+index.html          첫 화면 — 기한 계산기 + 나머지 기능 카드
+reason.html         사유 자가진단
+payout.html         출국 정산
+notices.html        공지
+ask.html            질문하기 (AI)
+board.html          묻고 답하기
+                    ↑ 여섯 파일 모두 머리말·내비게이션·꼬리말이 같습니다.
+                      "▼ 공통" 주석으로 표시해 두었으니 고칠 때 전부 함께 고치세요.
 assets/style.css    디자인 토큰과 전체 스타일
 assets/i18n.js      UI 문자열 5개 언어
 assets/data.js      공지 샘플 + 오프라인용 지식베이스
@@ -66,6 +75,12 @@ assets/app.js       언어 감지, 날짜 계산, 규칙 엔진, API 호출
 api/_kb.js          서버가 들고 있는 지식베이스 (답변의 근거)
 api/ask.js          자유 질문 답변 함수
 api/read-doc.js     서류 사진 판독 함수 (추출만)
+api/_qna.js         게시판 공용 유틸 (Supabase 호출 + 번역)
+api/qna.js          게시판 조회(GET) / 질문 접수(POST)
+api/qna-publish.js  관리자 전용 — 답변 번역 후 공개
+docs/qna_schema.sql 게시판 표 스키마 (Supabase SQL Editor 에 붙여 실행)
+api/ask.anthropic.js.bak       위 두 함수의 Claude 버전 (4-2장 마지막 참고)
+api/read-doc.anthropic.js.bak
 package.json        Node 버전 지정
 .env.example        환경변수 이름 예시 (실제 키는 넣지 말 것)
 .gitignore          .env 등 업로드 제외
@@ -77,7 +92,9 @@ package.json        Node 버전 지정
 ## 4. 내용 고치기
 
 ### 공지 추가
-`assets/data.js` 의 `NOTICES` 배열에 항목을 하나 복사해 붙이고, `key`·`source`·`url`·`checked` 와 각 언어의 `title`, `points` 를 채웁니다.
+`assets/data.js` 의 `NOTICES` 배열에 항목을 하나 복사해 붙이고, `key`·`tagKey`·`source`·`url`·`checked` 와 각 언어의 `title`, `points` 를 채웁니다.
+
+`tagKey` 는 카드 왼쪽 배지의 **번역 키**입니다(글자가 아닙니다). 현재 쓰는 값은 `eps` 와 `wage` 두 개이고, 실제로 화면에 찍히는 글자는 `assets/i18n.js` 의 각 언어 `noticeTags` 에 있습니다. 새 배지를 만들려면 `noticeTags` 에 5개 언어 모두 같은 키를 추가하세요. 배지는 좁아서 한 단어가 좋습니다.
 
 ### 답변 지식 추가
 같은 파일의 `KB` 배열에 추가합니다. **`src`(근거)는 반드시 채워야 합니다.** 근거가 없는 답변은 이 서비스의 원칙에 어긋납니다.
@@ -87,6 +104,21 @@ package.json        Node 버전 지정
 1. `assets/i18n.js` 에 같은 키 구조로 언어 객체를 하나 더 추가
 2. `assets/data.js` 의 각 항목에 같은 언어 코드 필드 추가
 3. `index.html` 의 `<select id="langSelect">` 에 `<option>` 추가
+
+`docTitle`(브라우저 탭 제목)과 `noticeTags`(공지 배지)는 화면 본문이 아니라서 빼먹기 쉽습니다. 두 키가 없으면 그 언어에서 탭 제목이 이전 언어로 남고 배지가 키 이름 그대로 찍힙니다.
+
+### 링크로 언어 지정하기
+
+`https://.../?lang=vi` 처럼 붙이면 기기 설정과 무관하게 그 언어로 열립니다. 상담사가 베트남 근로자에게 링크를 보낼 때 쓰세요. 한 번 열면 그 선택이 기기에 저장돼 다음 방문에도 유지됩니다.
+
+쓸 수 있는 값은 `ko` `en` `vi` `th` `id` 입니다. `vi-VN` 처럼 지역까지 붙여도, `in`(옛 인도네시아어 코드)처럼 보내도 알아서 맞춥니다. 목록에 없는 값은 무시하고 원래 순서(저장된 선택 → 기기 언어)로 넘어갑니다.
+
+> ⚠️ **공유 링크에는 `.html` 을 빼세요.** Vercel 과 로컬 `serve` 는 `board.html` 을 `/board` 로 정리하는데, 그 과정에서 서버에 따라 뒤의 `?lang=vi` 가 사라집니다.
+>
+> - ✅ `https://.../?lang=vi` · `https://.../board?lang=vi`
+> - ⚠️ `https://.../board.html?lang=vi` — 호스트에 따라 언어 지정이 무시됩니다
+>
+> 사이트 안의 링크는 `.html` 을 그대로 씁니다. GitHub Pages 는 clean URL 을 만들지 않아서 `.html` 이 있어야 열리기 때문입니다. 화면에서 어느 메뉴가 켜져 있는지 판단할 때는 양쪽 다 확장자를 떼고 비교하므로 두 형태 모두 정상 동작합니다.
 
 ### 확인일 갱신
 `assets/i18n.js` 맨 위 `CHECKED_ON` 값과 `assets/data.js` 의 각 `checked` 값을 함께 고칩니다.
@@ -145,9 +177,15 @@ package.json        Node 버전 지정
 
 ### Claude 로 되돌리려면
 
-`api/ask.anthropic.js.bak`, `api/read-doc.anthropic.js.bak` 이 원래 버전입니다.
-`.bak` 을 떼고 `ask.js` / `read-doc.js` 로 덮어쓴 뒤 환경 변수 이름을 `ANTHROPIC_API_KEY` 로 바꾸면 됩니다.
-Anthropic API 는 카드 등록과 충전이 필요합니다.
+`api/ask.anthropic.js.bak`, `api/read-doc.anthropic.js.bak` 이 Claude 버전입니다. 모델은 `claude-opus-5` 를 씁니다.
+
+1. 공식 SDK를 설치합니다 — `npm i @anthropic-ai/sdk` (Gemini 버전은 의존성이 없어서 `package.json` 에 넣어 두지 않았습니다).
+2. `.bak` 을 떼고 `ask.js` / `read-doc.js` 로 덮어씁니다.
+3. 환경 변수 이름을 `ANTHROPIC_API_KEY` 로 바꾸고 재배포합니다.
+
+Anthropic API 는 카드 등록과 충전이 필요합니다. 무료 등급이 없으니 데모 목적이라면 Gemini 버전을 그대로 두세요.
+
+Gemini 버전과 다른 점은 두 가지입니다. 사진 판독은 `responseMimeType` 대신 **구조화 출력(JSON 스키마)** 으로 응답 모양을 보장하고, `temperature` 를 넘기지 않습니다(이 모델은 받지 않습니다). 대신 `effort: 'low'` 로 비용과 지연을 잡습니다.
 
 ### 안전장치
 
@@ -158,10 +196,58 @@ Anthropic API 는 카드 등록과 충전이 필요합니다.
 
 ---
 
+## 4-3. 묻고 답하기 게시판 (Supabase)
+
+사용자가 자기 언어로 질문을 남기고, 우리가 직접 답변을 올리는 기능입니다. 저장은 Supabase, 접수·조회·게시는 `api/` 함수 세 개가 맡습니다. **Vercel 배포에서만 동작합니다** — GitHub Pages에서는 목록 자리에 "불러오지 못했습니다"만 뜨고 나머지 기능은 그대로 돌아갑니다.
+
+### 왜 이 구조인가 — 번역 비용
+
+조회할 때 번역하면 사용자가 볼 때마다 돈이 나갑니다. 그래서 **번역을 게시 시점으로 한 번 옮겼습니다.**
+
+| 시점 | 번역 호출 |
+|---|---|
+| 사용자가 질문 접수 | 1회 (관리자가 읽을 한국어) |
+| 관리자가 답변 게시 | 1회 (나머지 4개 언어를 한 번에) |
+| 사용자가 목록 조회 | **0회** — 저장된 문자열을 그대로 내보냄 |
+
+글 하나당 평생 2회입니다. 조회수가 1만이어도 2회입니다. 게시된 뒤에는 `i18n.js` 에 박아 둔 문자열과 동일하게 동작합니다.
+
+### 설치 순서
+
+1. `supabase.com` 에서 프로젝트를 만듭니다 (무료 등급).
+2. **SQL Editor** 에 `docs/qna_schema.sql` 을 붙여 실행합니다.
+3. **Settings → API** 에서 `SUPABASE_URL` 과 **service_role** 키를 복사합니다. anon 키가 아닙니다.
+4. `ADMIN_TOKEN` 을 직접 만듭니다 — `openssl rand -hex 32` 정도로 길게.
+5. Vercel **Settings → Environments → Production** 에 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_TOKEN` 을 넣고 **Redeploy** 합니다.
+
+### 답변하는 순서
+
+1. Supabase **Table Editor → qna** 에서 `status = 'pending'` 행의 `asked_body_ko` 를 읽습니다. 사용자가 어떤 언어로 썼든 한국어로 번역돼 있습니다.
+2. `draft_title_ko`, `draft_body_ko`, `draft_answer_ko`, `src`, `checked` 를 채웁니다.
+3. `status` 를 `ready` 로 바꿉니다.
+4. 게시 명령을 실행합니다. 번역이 끝나면 `published` 로 바뀌고 화면에 올라갑니다.
+
+```bash
+curl -X POST https://<도메인>/api/qna-publish -H "x-admin-token: <ADMIN_TOKEN>"
+```
+
+한 번에 3건까지 처리합니다(서버리스 실행 시간 제한). 남으면 같은 명령을 또 실행하세요. 공개하지 않을 질문은 `status` 를 `rejected` 로 두면 됩니다.
+
+### 지켜야 하는 두 가지
+
+**`draft_body_ko` 는 반드시 다시 씁니다.** 사용자가 쓴 원문(`asked_body`)은 어떤 경로로도 공개되지 않습니다 — 공개되는 것은 우리가 새로 쓴 `draft_*` 뿐입니다. 회사명, 정확한 날짜, 지역, 이름을 지우세요. 근로자가 남긴 질문에는 신원이 특정될 정보가 들어갑니다. 그대로 올리면 해고나 체류 문제로 이어질 수 있습니다.
+
+**`src` 없이 게시되지 않습니다.** 근거가 비어 있으면 게시 함수가 건너뜁니다. 근거를 댈 수 없는 질문은 답변에 1345 안내를 넣고 `src` 에 그 출처를 적으세요. 이 서비스의 원칙을 코드에서도 막아 둔 것입니다.
+
+`qna` 표는 RLS 를 켜고 정책을 하나도 만들지 않았습니다. 그래서 브라우저에 노출되는 anon 키로는 이 표를 읽을 수도 쓸 수도 없고, 모든 접근이 서버리스 함수를 거칩니다.
+
+---
+
 ## 5. 지금은 안 되는 것 (의도한 범위)
 
 - **실시간 공지 수집**: 정적 사이트라 스크래핑·API 호출이 없습니다. 현재 공지는 시연용 샘플입니다.
-- **GitHub Pages에서의 AI 기능**: GitHub Pages에 올리면 `api/` 함수가 돌지 않아 자유 질문은 브라우저 안 키워드 검색으로, 사진 업로드는 미리보기만 동작합니다. AI 기능을 켜려면 4-2장의 Vercel 배포가 필요합니다.
+- **GitHub Pages에서의 AI 기능과 게시판**: GitHub Pages에 올리면 `api/` 함수가 돌지 않아 자유 질문은 브라우저 안 키워드 검색으로, 사진 업로드는 미리보기만 동작하고, 묻고 답하기는 목록 자리에 안내 문구만 뜹니다. 켜려면 4-2장(AI)과 4-3장(게시판)의 Vercel 배포가 필요합니다.
+- **게시판 실시간 알림**: 답변이 올라와도 알려 줄 방법이 없습니다. 사용자가 다시 들어와야 봅니다. 로그인을 요구하지 않기로 한 결정의 대가입니다.
 - **알림 발송**: 이메일·SMS는 서버가 필요합니다. 지금은 화면 색상 강조로 대신합니다.
 - **예상 수령액 계산**: 일부러 넣지 않았습니다. 출국만기보험금은 사업장별 가입 이력과 납입 내역에 따라 달라져서, 화면 숫자와 실제가 다르면 그 자체가 사용자 피해가 됩니다. "AI가 직접 판정하지 않는다"는 워크시트 결정과도 어긋납니다. 대신 **무엇을 받을 수 있는지 · 어디에 청구하는지 · 언제까지인지** 세 가지만 안내합니다.
 
@@ -186,3 +272,26 @@ Anthropic API 는 카드 등록과 충전이 필요합니다.
 ---
 
 모든 화면에 "참고용 정보이며 법률 자문이 아니다"라는 문구와 1345·고용센터 안내가 고정으로 붙습니다.
+
+---
+
+## 페이지 구성 (다중 페이지 구조)
+
+| 파일 | 화면 | 핵심 기능 |
+|---|---|---|
+| `index.html` | 첫 화면 | 기한 계산 + 다른 기능으로 가는 카드 |
+| `reason.html` | 사유 자가진단 | 3문항 규칙 엔진 + 서류 사진 판독 |
+| `payout.html` | 출국 정산 | 받을 돈 네 가지 + 신고·신청 D-day |
+| `notices.html` | 공지 쉽게 읽기 | 공문 요약 + 출처·확인일 |
+| `ask.html` | 질문하기 | Gemini 기반 자유 질문, 근거 줄 표시 |
+| `board.html` | 묻고 답하기 | 사용자 질문 접수 → 실무자 검수 후 게시 |
+| `legal.html` | 법률 자문 | 무료 창구 / 유료 선임 구분 안내 |
+
+상단 네비게이션은 7개 페이지에 동일하게 들어갑니다. 항목을 바꿀 때는 **7개 파일을 함께** 고쳐야 합니다.
+
+## 법률 자문 페이지에 대해
+
+- **무료와 유료를 화면에서 분리**했습니다. 무료로 해결되는 사람이 유료로 새지 않게 하는 것이 목적입니다.
+- 유료 항목에는 "광고가 아니며 수임을 보장하지 않는다"는 문구가 고정으로 붙습니다. PRD 12장의 직업안정법·광고 리스크 대응과 같은 맥락입니다.
+- 확인일은 `assets/i18n.js` 상단 `LEGAL_CHECKED` 한 곳에서 관리합니다.
+- **발표 전 확인 필요**: 132·1331 상담 조건과 소송대리 무료 기준(평균임금 400만원 미만)은 공단 공식 안내로 재확인하고 `LEGAL_CHECKED` 를 갱신하세요.

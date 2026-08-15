@@ -133,6 +133,46 @@ a{color:var(--go-d)}
 }
 
 /* ---------- sections ---------- */
+/* HTML 에는 한국어가 박혀 있어서, 다른 언어 사용자는 app.js 가 문자열을 바꾸기
+   전까지 한국어를 보게 됩니다. head 의 부트 코드가 이 표시를 달아 두면 잠깐 가리고,
+   applyLang 이 끝나면 걷습니다. JS 가 꺼져 있으면 표시 자체가 안 붙으므로
+   한국어 화면이 그대로 보입니다 (빈 화면이 되지 않습니다). */
+html[data-lang-pending] body{visibility:hidden}
+
+/* ---------- 섹션 바로가기 ---------- */
+/* 화면이 좁으면 가로로 밀어서 봅니다. 스크롤바는 숨기고 활성 항목을
+   app.js 가 자동으로 보이는 위치까지 밀어 줍니다. */
+.secnav{border-top:1px solid var(--line-2)}
+.secnav-in{
+  position:relative;display:flex;gap:6px;align-items:center;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.secnav-in::-webkit-scrollbar{display:none}
+.secnav-in a{
+  flex:none;text-decoration:none;color:var(--ink-2);white-space:nowrap;
+  font-size:14px;font-weight:600;line-height:1;padding:10px 14px;margin:5px 0;
+  border:1.5px solid transparent;border-radius:999px;
+}
+.secnav-in a:hover{color:var(--ink);background:rgba(20,32,27,.05)}
+.secnav-in a.is-on{color:var(--go-d);background:var(--go-l);border-color:var(--go)}
+
+/* 스티키 헤더가 섹션 제목을 가리지 않게 합니다.
+   --stick 은 app.js 가 헤더 실제 높이로 갱신합니다 (언어·화면폭에 따라 달라져서). */
+section[id]{scroll-margin-top:var(--stick,104px)}
+
+/* ---------- 첫 화면의 기능 카드 ---------- */
+.home-cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.hcard{
+  display:grid;gap:6px;align-content:start;text-decoration:none;color:var(--ink);
+  background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:20px;
+}
+.band-alt .hcard{background:#fbfcfa}
+.hcard:hover{border-color:var(--go);background:var(--go-l)}
+.hcard-k{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--go-d)}
+.hcard strong{font-size:18px;line-height:1.35}
+.hcard-d{font-size:14px;line-height:1.6;color:var(--ink-2)}
+
 .band{padding:56px 0;border-bottom:1px solid var(--line)}
 .band-alt{background:#fff}
 .band h2{
@@ -316,6 +356,51 @@ input[type=date]:focus,input[type=text]:focus{border-color:var(--go)}
 }
 
 /* ---------- official / notdo ---------- */
+/* ---------- 묻고 답하기 ---------- */
+.board-form{display:grid;gap:12px;max-width:680px;margin-bottom:34px}
+.board-form textarea{
+  width:100%;box-sizing:border-box;font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding:14px 16px;border:1.5px solid var(--line);border-radius:var(--r);
+  background:#fff;color:var(--ink);resize:vertical;min-height:96px;
+}
+.board-form textarea:focus{outline:2px solid var(--go);outline-offset:1px;border-color:var(--go)}
+.board-warn{
+  margin:0;font-size:13px;line-height:1.6;color:var(--ink-2);
+  background:var(--go-l);border-radius:10px;padding:12px 14px;
+}
+.board-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.board-msg{font-size:14px;line-height:1.5;color:var(--ink-2);max-width:44ch}
+.board-msg.is-good{color:var(--go-d)}
+.board-msg.is-bad{color:#b4342a}
+
+.board-list{display:grid;gap:14px;max-width:680px}
+.board-item{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:20px}
+.band-alt .board-item{background:#fbfcfa}
+.board-q{margin:0 0 10px;font-weight:700;font-size:17px;line-height:1.4}
+.board-body{margin:0 0 14px;color:var(--ink-2);font-size:15px;line-height:1.6;white-space:pre-wrap}
+.board-a{
+  margin:0;padding:14px 16px;background:#fff;border:1.5px solid var(--line);
+  border-left:3px solid var(--go);border-radius:0 10px 10px 0;
+  font-size:15px;line-height:1.65;white-space:pre-wrap;
+}
+.board-a-label{
+  display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--go-d);margin-bottom:6px;
+}
+.board-meta{
+  display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;margin:14px 0 0;padding-top:12px;
+  font-family:var(--f-mono);font-size:12px;color:var(--ink-3);border-top:1px solid var(--line-2);
+}
+.board-empty{margin:0;color:var(--ink-3);font-size:15px}
+
+/* ---------- 법률 자문 ---------- */
+.band-legal{background:var(--go-l)}
+.band-legal .pay-item{border-color:#c9e6d8}
+.band-legal .disclaim{border-top-color:#c9e6d8}
+.band-legal .sub-h{margin-top:34px}
+.band-legal .sub-h:first-of-type{margin-top:0}
+.band-legal .pay-where a{color:var(--go-d);word-break:break-all}
+
 .band-ink{background:var(--ink);color:#e8efe9;border-bottom:0}
 .band-ink h2{color:#fff}
 .band-ink .sec-lead{color:#a9bcb2}

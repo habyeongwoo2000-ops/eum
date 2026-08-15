@@ -10,7 +10,7 @@
 const NOTICES = [
   {
     key: 'n1',
-    tag: 'EPS',
+    tagKey: 'eps',
     source: '고용노동부 · EPS',
     url: 'https://www.eps.go.kr',
     checked: '2026-08-10',
@@ -47,7 +47,7 @@ const NOTICES = [
   },
   {
     key: 'n2',
-    tag: 'EPS',
+    tagKey: 'eps',
     source: '고용노동부 · EPS',
     url: 'https://www.eps.go.kr',
     checked: '2026-08-10',
@@ -84,7 +84,7 @@ const NOTICES = [
   },
   {
     key: 'n3',
-    tag: '체불',
+    tagKey: 'wage',
     source: '고용노동부',
     url: 'https://www.moel.go.kr',
     checked: '2026-08-10',
