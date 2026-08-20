@@ -389,6 +389,7 @@
     var head = el('div', 'board-head');
     head.appendChild(el('span', 'board-user', it.username || '—'));
     if (it.at) head.appendChild(el('span', 'board-at', String(it.at).slice(0, 10)));
+    if (it.isPrivate) head.appendChild(el('span', 'board-badge is-private', T.boardPrivateBadge));
     art.appendChild(head);
 
     art.appendChild(el('p', 'board-body', it.body || ''));
@@ -407,7 +408,72 @@
     } else {
       art.appendChild(el('p', 'board-pending', T.boardNoAnswerYet));
     }
+
+    // 관리자에게만 보이는 답변 작성/수정 칸. 비공개 글도 관리자는 볼 수 있으므로
+    // 여기서 바로 답할 수 있습니다.
+    if (me && me.isAdmin) art.appendChild(boardAdminBox(it));
+
     return art;
+  }
+
+  function boardAdminBox(it) {
+    var box = el('div', 'board-admin');
+    box.appendChild(el('p', 'board-admin-label', T.adminAnswerLabel));
+
+    var ta = document.createElement('textarea');
+    ta.className = 'board-admin-ta';
+    ta.rows = 3;
+    ta.maxLength = 2000;
+    ta.placeholder = T.adminAnswerPh || '';
+    ta.value = it.answer || '';
+    box.appendChild(ta);
+
+    var src = document.createElement('input');
+    src.type = 'text';
+    src.className = 'board-admin-src';
+    src.placeholder = T.adminSrcLabel || '';
+    src.value = it.src || '';
+    box.appendChild(src);
+
+    var row = el('div', 'board-admin-row');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn-ghost btn-sm';
+    btn.textContent = T.adminSaveBtn;
+    row.appendChild(btn);
+    var msg = el('span', 'board-admin-msg');
+    row.appendChild(msg);
+    box.appendChild(row);
+
+    btn.addEventListener('click', function () {
+      var text = ta.value.trim();
+      if (text.length < 5 || text.length > 2000) {
+        msg.textContent = T.errAnswerRule; msg.className = 'board-admin-msg is-bad';
+        return;
+      }
+      btn.disabled = true;
+      msg.textContent = T.authWorking; msg.className = 'board-admin-msg';
+      submitAnswer(it.id, text, src.value.trim())
+        .then(function (ok) {
+          msg.textContent = ok ? T.adminAnswerOk : T.errNet;
+          msg.className = 'board-admin-msg' + (ok ? ' is-good' : ' is-bad');
+          if (ok) renderBoard(boardPage);
+        })
+        .then(function () { btn.disabled = false; });
+    });
+
+    return box;
+  }
+
+  function submitAnswer(id, answer, src) {
+    return fetch('api/posts', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'answer', id: id, answer: answer, src: src })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (out) { return !!(out.ok && out.data && out.data.ok); })
+      .catch(function (e) { console.warn('answer submit failed', e); return false; });
   }
 
   /* 쪽 넘김. 한 쪽에 10개씩 서버가 잘라 보냅니다. */
@@ -454,7 +520,7 @@
       });
   }
 
-  function submitQuestion(text) {
+  function submitQuestion(text, isPrivate) {
     var btn = $('#boardSend');
     btn.disabled = true;
     boardMsg('boardSending');
@@ -462,7 +528,7 @@
     fetch('api/posts', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ body: text, lang: lang })
+      body: JSON.stringify({ body: text, lang: lang, private: !!isPrivate })
     })
       .then(function (r) {
         return r.json().then(function (d) { return { ok: r.ok, data: d }; });
@@ -475,6 +541,7 @@
           return;
         }
         $('#boardInput').value = '';
+        if ($('#boardPrivate')) $('#boardPrivate').checked = false;
         boardMsg('boardSent', 'good');
         renderBoard(1);
       })
@@ -568,7 +635,41 @@
         methods = (d && d.methods) || [];
       })
       .catch(function () { setUser(null); methods = []; })
-      .then(function () { paintAuth(); paintSocial(); });
+      .then(function () {
+        paintAuth(); paintSocial();
+        syncAccountLang();
+        // 관리자 답변 칸은 로그인 여부를 알아야 그리므로, 로그인 확인이
+        // 끝난 뒤 게시판을 한 번 더(비로그인 상태로 이미 그렸다면) 그립니다.
+        if ($('#boardList')) renderBoard(boardPage);
+      });
+  }
+
+  /* 로그인한 계정의 언어를 화면 언어와 맞춥니다.
+     · 계정에 저장된 언어가 있고 지금 화면과 다르면 → 계정 쪽을 따릅니다
+       (다른 기기에서 로그인해도 저장해 둔 언어로 바로 보이게 됩니다).
+     · 계정에 아직 저장된 언어가 없으면 → 지금 화면 언어(대개 이 기기 언어를
+       자동 감지한 값)를 계정에 저장해, 다음에 다른 기기로 로그인할 때부터
+       이 값을 따르게 합니다. */
+  function syncAccountLang() {
+    if (!me) return;
+    if (me.lang && isLang(me.lang) && me.lang !== lang) {
+      save('lang', me.lang);
+      applyLang(me.lang);
+      return;
+    }
+    if (!me.lang) pushAccountLang(lang);
+  }
+
+  function pushAccountLang(code) {
+    if (!me || !isLang(code)) return;
+    fetch('api/auth', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'lang', lang: code })
+    })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.ok && me) me.lang = d.lang || code; })
+      .catch(function (e) { console.warn('lang sync failed', e); });
   }
 
   function logout() {
@@ -578,7 +679,10 @@
       body: JSON.stringify({ action: 'logout' })
     })
       .catch(function () {})
-      .then(function () { setUser(null); paintAuth(); });
+      .then(function () {
+        setUser(null); paintAuth();
+        if ($('#boardList')) renderBoard(boardPage);
+      });
   }
 
   var authMsgKey = null, authMsgKind = null;
@@ -974,6 +1078,7 @@
       save('lang', this.value);
       applyLang(this.value);
       if (toast) toast.hidden = true;
+      if (me) pushAccountLang(this.value);
     });
 
     // 섹션 바로가기 (모든 페이지 공통)
@@ -991,7 +1096,8 @@
       var text = $('#boardInput').value.trim();
       if (text.length < 5) { boardMsg('boardTooShort', 'bad'); return; }
       if (text.length > 1000) { boardMsg('boardTooLong', 'bad'); return; }
-      submitQuestion(text);
+      var priv = $('#boardPrivate') ? $('#boardPrivate').checked : false;
+      submitQuestion(text, priv);
     });
     on('#pagePrev', 'click', function () { if (boardPage > 1) renderBoard(boardPage - 1); });
     on('#pageNext', 'click', function () { if (boardPage < boardPages) renderBoard(boardPage + 1); });
@@ -1068,7 +1174,8 @@
       if (pw.length < 8) { authMsg('errPwRule', 'bad'); return; }
       authSend('signup', {
         username: $('#authId').value.trim(),
-        password: pw
+        password: pw,
+        lang: lang            // 이 기기가 지금 쓰고 있는 언어를 함께 저장합니다
       }, 'authSignupOk', function () { location.href = 'board.html'; });
     });
 

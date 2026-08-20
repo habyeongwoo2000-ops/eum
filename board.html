@@ -87,6 +87,11 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
                   placeholder="예: 회사가 사업장 변경 신청서에 도장을 안 찍어 주면 어떻게 하나요?"
                   data-i18n-ph="boardPlaceholder"></textarea>
         <p class="board-warn" data-i18n="boardPublicWarn">남긴 글은 모든 사람이 볼 수 있습니다. 회사 이름, 정확한 날짜, 사는 곳, 여권번호, 외국인등록번호, 계좌번호는 적지 마세요.</p>
+        <label class="board-private">
+          <input type="checkbox" id="boardPrivate">
+          <span data-i18n="boardPrivateLabel">비공개로 남기기</span>
+        </label>
+        <p class="hint" data-i18n="boardPrivateHint">체크하면 나와 관리자만 이 글을 볼 수 있습니다.</p>
         <div class="board-actions">
           <button type="submit" class="btn btn-go" id="boardSend" data-i18n="boardSend">질문 남기기</button>
           <span class="board-msg" id="boardMsg" role="status" aria-live="polite"></span>

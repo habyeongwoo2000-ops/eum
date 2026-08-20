@@ -181,7 +181,7 @@ async function fetchUid(c, accessToken) {
    처음이면 무작위 아이디로 새 계정을 만듭니다.
    아이디가 우연히 겹치면 몇 번 다시 뽑습니다. */
 async function findOrCreateUser(provider, uid) {
-  const q = 'eum_users?select=id,username,nickname&provider=eq.' + encodeURIComponent(provider) +
+  const q = 'eum_users?select=id,username,nickname,is_admin,lang&provider=eq.' + encodeURIComponent(provider) +
     '&provider_uid=eq.' + encodeURIComponent(uid) + '&limit=1';
 
   const found = await sb(q);

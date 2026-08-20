@@ -381,6 +381,9 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
 .board-msg.is-good{color:var(--go-d)}
 .board-msg.is-bad{color:#b4342a}
 
+.board-private{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;cursor:pointer}
+.board-private input{width:18px;height:18px;accent-color:var(--go)}
+
 .board-list{display:grid;gap:14px;max-width:680px}
 .board-item{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:20px}
 .band-alt .board-item{background:#fbfcfa}
@@ -400,6 +403,30 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
   font-family:var(--f-mono);font-size:12px;color:var(--ink-3);border-top:1px solid var(--line-2);
 }
 .board-empty{margin:0;color:var(--ink-3);font-size:15px}
+
+.board-badge{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;font-weight:600;
+  padding:2px 8px;border-radius:999px;
+}
+.board-badge.is-private{background:var(--warn-l);color:#8a5a00}
+
+.board-admin{
+  margin-top:16px;padding-top:16px;border-top:1.5px dashed var(--line-2);
+  display:grid;gap:10px;
+}
+.board-admin-label{
+  margin:0;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.board-admin-ta,.board-admin-src{
+  width:100%;box-sizing:border-box;font-family:var(--f-body);font-size:15px;
+  padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);
+}
+.board-admin-ta{resize:vertical;min-height:64px}
+.board-admin-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.board-admin-msg{font-size:13px;color:var(--ink-2)}
+.board-admin-msg.is-good{color:var(--go-d)}
+.board-admin-msg.is-bad{color:#b4342a}
 
 /* ---------- 로그인 ---------- */
 .auth-wrap{position:relative;margin-left:auto;margin-right:4px;display:flex;align-items:center}

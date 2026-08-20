@@ -70,6 +70,10 @@ function makeToken(user) {
     username: user.username,
     // 화면에 보이는 이름. 닉네임을 바꾸면 쿠키를 다시 발급해 여기도 갱신합니다.
     nick: user.nickname || user.username,
+    // 관리자 여부. 게시판에서 답변 칸을 보일지 여기로 정합니다.
+    adm: !!user.is_admin,
+    // 계정에 저장된 언어. 다른 기기로 로그인해도 이 언어로 화면이 맞춰집니다.
+    lng: user.lang || null,
     exp: Math.floor(Date.now() / 1000) + MAX_AGE
   }));
   return payload + '.' + sign(payload);
@@ -87,7 +91,13 @@ function readToken(token) {
     const data = JSON.parse(unb64url(parts[0]).toString('utf8'));
     if (!data || !data.uid || !data.exp) return null;
     if (data.exp < Math.floor(Date.now() / 1000)) return null;
-    return { uid: data.uid, username: data.username, nickname: data.nick || data.username };
+    return {
+      uid: data.uid,
+      username: data.username,
+      nickname: data.nick || data.username,
+      isAdmin: !!data.adm,
+      lang: data.lng || null
+    };
   } catch (e) {
     return null;
   }
@@ -162,6 +172,14 @@ function checkNick(v) {
   return null;
 }
 
+/* ---------- 언어 ---------- */
+
+const LANG_CODES = ['ko', 'en', 'vi', 'th', 'id'];
+
+function normalizeLang(v) {
+  return LANG_CODES.indexOf(v) !== -1 ? v : null;
+}
+
 /* ---------- 소셜 계정용 ---------- */
 
 /* 소셜로 처음 들어온 사람에게 줄 아이디를 무작위로 만듭니다.
@@ -177,5 +195,6 @@ module.exports = {
   setSession, clearSession, currentUser, appendCookie,
   normalizeId, checkId, checkPw,
   randomUsername, normalizeNick, checkNick,
+  LANG_CODES, normalizeLang,
   b64url, unb64url, sign
 };
