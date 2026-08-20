@@ -68,6 +68,8 @@ function makeToken(user) {
   const payload = b64url(JSON.stringify({
     uid: user.id,
     username: user.username,
+    // 화면에 보이는 이름. 닉네임을 바꾸면 쿠키를 다시 발급해 여기도 갱신합니다.
+    nick: user.nickname || user.username,
     exp: Math.floor(Date.now() / 1000) + MAX_AGE
   }));
   return payload + '.' + sign(payload);
@@ -85,7 +87,7 @@ function readToken(token) {
     const data = JSON.parse(unb64url(parts[0]).toString('utf8'));
     if (!data || !data.uid || !data.exp) return null;
     if (data.exp < Math.floor(Date.now() / 1000)) return null;
-    return { uid: data.uid, username: data.username };
+    return { uid: data.uid, username: data.username, nickname: data.nick || data.username };
   } catch (e) {
     return null;
   }
@@ -144,6 +146,22 @@ function checkPw(v) {
   return String(v || '').length >= 8 && String(v).length <= 200 ? null : 'errPwRule';
 }
 
+/* 닉네임 — 아이디와 달리 한글·베트남어·태국어를 그대로 쓸 수 있게 열어 둡니다.
+   대신 화면을 망가뜨리거나 남을 헷갈리게 하는 글자만 막습니다.
+     · 앞뒤 공백, 연속된 공백
+     · 줄바꿈과 눈에 보이지 않는 제어문자
+     · 꺾쇠(< >)와 따옴표 — 화면에 그대로 박히면 읽기 어렵습니다 */
+function normalizeNick(v) {
+  return String(v || '').replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function checkNick(v) {
+  const s = String(v || '');
+  if (s.length < 2 || s.length > 20) return 'errNickRule';
+  if (/[<>"'\\/]/.test(s)) return 'errNickChar';
+  return null;
+}
+
 /* ---------- 소셜 계정용 ---------- */
 
 /* 소셜로 처음 들어온 사람에게 줄 아이디를 무작위로 만듭니다.
@@ -158,6 +176,6 @@ module.exports = {
   hashPassword, verifyPassword,
   setSession, clearSession, currentUser, appendCookie,
   normalizeId, checkId, checkPw,
-  randomUsername,
+  randomUsername, normalizeNick, checkNick,
   b64url, unb64url, sign
 };

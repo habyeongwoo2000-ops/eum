@@ -33,7 +33,14 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
         <em data-i18n="brandSub">사업장 변경 안내</em>
       </span>
     </a>
-    <div class="auth-slot" id="authSlot"></div>
+    <div class="auth-wrap">
+      <div class="auth-slot" id="authSlot"></div>
+      <!-- 로그인했을 때만 열리는 메뉴. 이름 단추 바로 아래에 붙습니다. -->
+      <div class="auth-menu" id="authMenu" hidden>
+        <a href="account.html" data-i18n="navAccount">계정 설정</a>
+        <button type="button" id="menuLogout" data-i18n="navLogout">로그아웃</button>
+      </div>
+    </div>
     <div class="lang">
       <label class="lang-label" for="langSelect" data-i18n="langLabel">언어</label>
       <select id="langSelect" aria-label="Language">

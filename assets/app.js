@@ -492,25 +492,54 @@
 
   function setUser(u) { me = u || null; }
 
+  /* 머리말 메뉴 — 로그인했으면 [이름 ▾] 단추 하나만 두고
+     계정 설정과 로그아웃은 그 안에 넣습니다. 좁은 화면에서 단추 두 개가
+     나란히 서면 브랜드 이름이 밀려 줄바꿈되기 때문입니다. */
+  function closeMenu() {
+    var menu = $('#authMenu'), btn = $('#authToggle');
+    if (menu) menu.hidden = true;
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMenu() {
+    var menu = $('#authMenu'), btn = $('#authToggle');
+    if (!menu || !btn) return;
+    var open = menu.hidden;
+    menu.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
   function paintAuth() {
-    var slot = $('#authSlot');
+    var slot = $('#authSlot'), menu = $('#authMenu');
     if (slot) {
       slot.innerHTML = '';
       if (me) {
-        slot.appendChild(el('span', 'auth-who', me.username + (T.authHello || '')));
-        var out = el('button', 'auth-btn', T.navLogout);
-        out.type = 'button';
-        out.addEventListener('click', logout);
-        slot.appendChild(out);
+        var name = me.nickname || me.username;
+        var btn = el('button', 'auth-btn auth-toggle', name + (T.authHello || ''));
+        btn.type = 'button';
+        btn.id = 'authToggle';
+        btn.setAttribute('aria-haspopup', 'true');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-controls', 'authMenu');
+        btn.addEventListener('click', function (e) { e.stopPropagation(); toggleMenu(); });
+        slot.appendChild(btn);
       } else {
         var a = el('a', 'auth-btn', T.navLogin);
         a.href = 'login.html';
         slot.appendChild(a);
+        if (menu) menu.hidden = true;
       }
     }
+    // 로그아웃하면 메뉴가 열린 채로 남지 않게 합니다.
+    if (!me) closeMenu();
+
     // 게시판: 로그인했으면 글쓰기 상자, 아니면 안내
     var form = $('#boardForm'), gate = $('#boardGate');
     if (form && gate) { form.hidden = !me; gate.hidden = !!me; }
+
+    // 마이페이지: 로그인 안 했으면 안내만 보입니다
+    var acBody = $('#acBody'), acGate = $('#acGate');
+    if (acBody && acGate) { acBody.hidden = !me; acGate.hidden = !!me; }
   }
 
   /* 어떤 로그인 방법이 켜져 있는지는 서버만 압니다(키가 있는지 브라우저는 모릅니다).
@@ -586,6 +615,101 @@
       .catch(function (e) {
         console.warn('auth failed', e);
         authMsg('errNet', 'bad');
+      });
+  }
+
+  /* ---------- 마이페이지 ---------- */
+
+  var acInfo = null;
+
+  function acMsg(box, key, kind) {
+    var n = $(box);
+    if (!n) return;
+    n.textContent = key ? (T[key] || T.errNet) : '';
+    n.className = 'auth-msg' + (kind ? ' is-' + kind : '');
+  }
+
+  /* 로그인 방법을 사람이 읽는 말로 바꿉니다. */
+  function providerName(p) {
+    if (p === 'google') return 'Google';
+    if (p === 'kakao') return T.socialKakao ? '\uce74\uce74\uc624' : 'Kakao';
+    return T.acWayPassword || '\uc544\uc774\ub514 \u00b7 \ube44\ubc00\ubc88\ud638';
+  }
+
+  function paintAccount() {
+    if (!acInfo || !$('#acBody')) return;
+
+    $('#acProvider').textContent = providerName(acInfo.provider);
+    $('#acJoined').textContent = acInfo.joined || '-';
+
+    // 소셜 계정의 아이디는 user_1a2b3c4d 같은 내부용 값이라 보여 줘도 쓸 데가 없습니다.
+    var isPw = acInfo.provider === 'password';
+    $('#acUsername').textContent = isPw ? acInfo.username : (T.acIdHidden || '-');
+
+    var nick = $('#acNick');
+    if (nick && !nick.value) nick.value = acInfo.nickname || '';
+
+    // 비밀번호 칸은 비밀번호로 가입한 사람에게만 보입니다.
+    var pwBlock = $('#pwBlock'), pwNote = $('#pwSocialNote'), idNote = $('#acIdNote');
+    if (pwBlock) pwBlock.hidden = !isPw;
+    if (pwNote) pwNote.hidden = isPw;
+    if (idNote) idNote.hidden = !isPw;
+  }
+
+  function loadAccount() {
+    if (!$('#acBody')) return;
+    return fetch('api/account', { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { acInfo = d; paintAccount(); })
+      .catch(function () { acMsg('#nickMsg', 'errNet', 'bad'); });
+  }
+
+  function saveNick(nickname) {
+    acMsg('#nickMsg', 'authWorking');
+    fetch('api/account', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'nickname', nickname: nickname })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (out) {
+        if (!out.ok || !out.data || !out.data.ok) {
+          acMsg('#nickMsg', (out.data && out.data.error) || 'errNet', 'bad');
+          return;
+        }
+        acMsg('#nickMsg', 'acNickOk', 'good');
+        if (acInfo) acInfo.nickname = out.data.nickname;
+        // 머리말에 걸린 이름도 그 자리에서 바꿉니다.
+        if (me) { me.nickname = out.data.nickname; paintAuth(); }
+      })
+      .catch(function (e) {
+        console.warn('nickname failed', e);
+        acMsg('#nickMsg', 'errNet', 'bad');
+      });
+  }
+
+  function savePw(current, next) {
+    acMsg('#pwMsg', 'authWorking');
+    fetch('api/account', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'password', current: current, next: next })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (out) {
+        if (!out.ok || !out.data || !out.data.ok) {
+          acMsg('#pwMsg', (out.data && out.data.error) || 'errNet', 'bad');
+          return;
+        }
+        acMsg('#pwMsg', 'acPwOk', 'good');
+        // 바꾼 비밀번호가 화면에 남아 있지 않게 지웁니다.
+        $('#acPwNow').value = '';
+        $('#acPwNew').value = '';
+        $('#acPwNew2').value = '';
+      })
+      .catch(function (e) {
+        console.warn('password failed', e);
+        acMsg('#pwMsg', 'errNet', 'bad');
       });
   }
 
@@ -825,7 +949,8 @@
     window.addEventListener('resize', syncStick);
 
     // 로그인 상태는 모든 페이지에서 확인합니다 (헤더 표시용)
-    loadMe();
+    // 마이페이지는 로그인한 것이 확인된 뒤에야 내 정보를 부릅니다.
+    loadMe().then(function () { if (me) loadAccount(); });
 
     // 묻고 답하기
     on('#boardForm', 'submit', function (e) {
@@ -845,6 +970,38 @@
         username: $('#authId').value.trim(),
         password: $('#authPw').value
       }, 'authLoginOk', function () { location.href = 'board.html'; });
+    });
+
+    // 머리말 메뉴 — 바깥을 누르거나 Esc 를 누르면 닫힙니다.
+    on('#menuLogout', 'click', function () { closeMenu(); logout(); });
+    document.addEventListener('click', function (e) {
+      var menu = $('#authMenu');
+      if (!menu || menu.hidden) return;
+      if (menu.contains(e.target)) return;
+      closeMenu();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    // 마이페이지
+    on('#acLogout', 'click', function (e) { e.preventDefault(); logout(); });
+
+    on('#nickForm', 'submit', function (e) {
+      e.preventDefault();
+      var v = $('#acNick').value.trim();
+      if (v.length < 2 || v.length > 20) { acMsg('#nickMsg', 'errNickRule', 'bad'); return; }
+      saveNick(v);
+    });
+
+    on('#pwForm', 'submit', function (e) {
+      e.preventDefault();
+      var now = $('#acPwNow').value;
+      var next = $('#acPwNew').value, next2 = $('#acPwNew2').value;
+      if (next !== next2) { acMsg('#pwMsg', 'errPwMatch', 'bad'); return; }
+      if (next.length < 8) { acMsg('#pwMsg', 'errPwRule', 'bad'); return; }
+      if (now === next) { acMsg('#pwMsg', 'errPwSame', 'bad'); return; }
+      savePw(now, next);
     });
 
     // 소셜 로그인이 실패하면 콜백이 ?err=... 를 달고 이 화면으로 돌려보냅니다.

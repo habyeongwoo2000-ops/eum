@@ -23,7 +23,7 @@ module.exports = async function handler(req, res) {
       // 어떤 소셜 버튼을 보일지는 서버가 정합니다. 키를 안 넣은 제공자의 버튼을
       // 화면에 띄워 두면 눌렀을 때만 실패해서, 사용자가 이유를 알 수 없습니다.
       return res.status(200).json({
-        user: u ? { username: u.username } : null,
+        user: u ? { username: u.username, nickname: u.nickname } : null,
         methods: O.enabledProviders()
       });
     }
@@ -55,6 +55,7 @@ module.exports = async function handler(req, res) {
         headers: { prefer: 'return=representation' },
         body: JSON.stringify({
           username: username,
+          nickname: username,        // 가입 직후에는 아이디를 그대로 이름으로 씁니다
           password_hash: hash,
           provider: 'password'
         })
@@ -65,7 +66,9 @@ module.exports = async function handler(req, res) {
 
       // 가입하면 바로 쓸 수 있게 그 자리에서 로그인시킵니다.
       A.setSession(res, user);
-      return res.status(200).json({ ok: true, user: { username: user.username } });
+      return res.status(200).json({
+        ok: true, user: { username: user.username, nickname: user.nickname || user.username }
+      });
     }
 
     if (action === 'login') {
@@ -74,7 +77,7 @@ module.exports = async function handler(req, res) {
       if (!username || !password) return fail(res, 400, 'errLoginFail');
 
       // 소셜로 만든 계정에는 비밀번호가 없습니다. 그런 행은 아예 찾지 않습니다.
-      const rows = await sb('eum_users?select=id,username,password_hash' +
+      const rows = await sb('eum_users?select=id,username,nickname,password_hash' +
         '&provider=eq.password&username=eq.' +
         encodeURIComponent(username) + '&limit=1');
       const user = rows && rows[0];
@@ -83,7 +86,9 @@ module.exports = async function handler(req, res) {
       if (!ok) return fail(res, 401, 'errLoginFail');
 
       A.setSession(res, user);
-      return res.status(200).json({ ok: true, user: { username: user.username } });
+      return res.status(200).json({
+        ok: true, user: { username: user.username, nickname: user.nickname || user.username }
+      });
     }
 
     return fail(res, 400, 'errNet');
