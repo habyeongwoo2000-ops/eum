@@ -1,4 +1,4 @@
-# 이음 (E-um) — EPS 외국인근로자 사업장 변경 안내
+# E9-Bridge — EPS 외국인근로자 사업장 변경 안내
 
 고용허가제(E-9)로 일하는 외국인근로자가 **사업장 변경 기한과 사유를 자기 언어로** 확인할 수 있게 돕는 웹사이트입니다.
 빌드 도구 없이 HTML/CSS/JS 파일만으로 동작하므로 GitHub Pages에 그대로 올릴 수 있습니다.
@@ -38,7 +38,7 @@
 cd eum
 git init
 git add .
-git commit -m "이음 첫 배포"
+git commit -m "E9-Bridge 첫 배포"
 git branch -M main
 git remote add origin https://github.com/<아이디>/eum.git
 git push -u origin main

@@ -1,4 +1,4 @@
-/* 이음 — UI 문자열
+/* E9-Bridge — UI 문자열
    언어를 추가하려면 아래 객체에 같은 키를 가진 항목을 하나 더 넣고,
    index.html 의 <select id="langSelect"> 에 <option> 을 추가하면 됩니다. */
 
@@ -16,7 +16,7 @@ ko: {
   _name: '한국어',
   skip: '본문으로 건너뛰기',
   brandSub: '사업장 변경 안내',
-  docTitle: '이음 — 사업장 변경 안내',
+  docTitle: 'E9-Bridge — 사업장 변경 안내',
   noticeTags: { eps: 'EPS', wage: '체불' },
   navLabel: '기능 바로가기',
   homePick: '무엇이 더 궁금하세요?',
@@ -223,7 +223,8 @@ ko: {
   nd2: '회원가입과 로그인을 요구하지 않습니다.',
   nd3: '여권번호, 계좌번호 같은 개인정보를 요구하지 않습니다. 묻고 답하기에 직접 적은 글만 답변을 위해 보관합니다.',
   ftTeam: '팀 안녕하세요 병우입니다',
-  ftChecked: '지식 최종 확인일: ' + CHECKED_ON
+  ftChecked: '지식 최종 확인일: ' + CHECKED_ON,
+  ftContact: '문의'
 },
 
 /* ================= English ================= */
@@ -231,7 +232,7 @@ en: {
   _name: 'English',
   skip: 'Skip to content',
   brandSub: 'Changing workplaces',
-  docTitle: '이음 (E-um) — Changing workplaces',
+  docTitle: 'E9-Bridge — Changing workplaces',
   noticeTags: { eps: 'EPS', wage: 'Wages' },
   navLabel: 'Jump to a section',
   homePick: 'What else can we help with?',
@@ -438,7 +439,8 @@ en: {
   nd2: 'It never asks you to sign up or log in.',
   nd3: 'It never asks for personal data such as passport or bank numbers. Only what you type into the board is kept, so we can answer it.',
   ftTeam: 'Team Annyeonghaseyo Byungwoo',
-  ftChecked: 'Knowledge last checked: ' + CHECKED_ON
+  ftChecked: 'Knowledge last checked: ' + CHECKED_ON,
+  ftContact: 'Contact'
 },
 
 /* ================= Tiếng Việt ================= */
@@ -446,7 +448,7 @@ vi: {
   _name: 'Tiếng Việt',
   skip: 'Bỏ qua đến nội dung',
   brandSub: 'Hướng dẫn chuyển nơi làm việc',
-  docTitle: '이음 (E-um) — Chuyển nơi làm việc',
+  docTitle: 'E9-Bridge — Chuyển nơi làm việc',
   noticeTags: { eps: 'EPS', wage: 'Nợ lương' },
   navLabel: 'Chuyển nhanh đến mục',
   homePick: 'Bạn cần giúp gì nữa?',
@@ -653,7 +655,8 @@ vi: {
   nd2: 'Không bắt đăng ký hay đăng nhập.',
   nd3: 'Không yêu cầu thông tin cá nhân như số hộ chiếu hay số tài khoản. Chỉ nội dung bạn tự viết ở diễn đàn được lưu để chúng tôi trả lời.',
   ftTeam: 'Nhóm Annyeonghaseyo Byungwoo',
-  ftChecked: 'Ngày kiểm tra thông tin: ' + CHECKED_ON
+  ftChecked: 'Ngày kiểm tra thông tin: ' + CHECKED_ON,
+  ftContact: 'Liên hệ'
 },
 
 /* ================= ไทย ================= */
@@ -661,7 +664,7 @@ th: {
   _name: 'ไทย',
   skip: 'ข้ามไปยังเนื้อหา',
   brandSub: 'คู่มือการเปลี่ยนสถานประกอบการ',
-  docTitle: '이음 (E-um) — การเปลี่ยนสถานประกอบการ',
+  docTitle: 'E9-Bridge — การเปลี่ยนสถานประกอบการ',
   noticeTags: { eps: 'EPS', wage: 'ค่าจ้าง' },
   navLabel: 'ข้ามไปยังส่วนที่ต้องการ',
   homePick: 'ต้องการความช่วยเหลือเรื่องใดอีก',
@@ -868,7 +871,8 @@ th: {
   nd2: 'ไม่บังคับให้สมัครสมาชิกหรือเข้าสู่ระบบ',
   nd3: 'ไม่ขอข้อมูลส่วนบุคคล เช่น เลขหนังสือเดินทางหรือเลขบัญชี เก็บเฉพาะข้อความที่คุณเขียนในกระดานถาม-ตอบเพื่อใช้ตอบคำถาม',
   ftTeam: 'ทีม Annyeonghaseyo Byungwoo',
-  ftChecked: 'ตรวจสอบข้อมูลล่าสุด: ' + CHECKED_ON
+  ftChecked: 'ตรวจสอบข้อมูลล่าสุด: ' + CHECKED_ON,
+  ftContact: 'ติดต่อ'
 },
 
 /* ================= Bahasa Indonesia ================= */
@@ -876,7 +880,7 @@ id: {
   _name: 'Bahasa Indonesia',
   skip: 'Lompat ke konten',
   brandSub: 'Panduan pindah tempat kerja',
-  docTitle: '이음 (E-um) — Pindah tempat kerja',
+  docTitle: 'E9-Bridge — Pindah tempat kerja',
   noticeTags: { eps: 'EPS', wage: 'Upah' },
   navLabel: 'Lompat ke bagian',
   homePick: 'Ada lagi yang bisa kami bantu?',
@@ -1083,7 +1087,8 @@ id: {
   nd2: 'Tidak meminta pendaftaran atau login.',
   nd3: 'Tidak meminta data pribadi seperti nomor paspor atau rekening. Hanya tulisan yang Anda kirim di papan tanya yang kami simpan untuk dijawab.',
   ftTeam: 'Tim Annyeonghaseyo Byungwoo',
-  ftChecked: 'Informasi terakhir diperiksa: ' + CHECKED_ON
+  ftChecked: 'Informasi terakhir diperiksa: ' + CHECKED_ON,
+  ftContact: 'Kontak'
 }
 
 };

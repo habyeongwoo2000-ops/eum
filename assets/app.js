@@ -1,4 +1,4 @@
-/* 이음 — 화면 동작
+/* E9-Bridge — 화면 동작
    서버 없이 브라우저에서만 돕니다. 입력한 값은 이 기기의 localStorage 에만 남습니다. */
 
 (function () {
@@ -74,7 +74,7 @@
     lang = isLang(code) ? code : 'en';
     T = I18N[lang];
     document.documentElement.lang = lang;
-    /* 탭 제목: "사유 자가진단 · 이음 — 사업장 변경 안내" 처럼 페이지 이름을 앞에 붙입니다.
+    /* 탭 제목: "사유 자가진단 · E9-Bridge — 사업장 변경 안내" 처럼 페이지 이름을 앞에 붙입니다.
        페이지 이름 키는 <body data-page-title="ckTitle"> 로 지정합니다 (홈은 없음). */
     if (T.docTitle) {
       var pk = document.body.getAttribute('data-page-title');
