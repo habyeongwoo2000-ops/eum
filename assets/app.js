@@ -1040,11 +1040,72 @@
     }
 
     var here = fileOf(location.pathname);
+    var topChip = null; // 공지/질문처럼 드롭다운 안에 있으면, 화면에 보이는 트리거(게시판)를 대신 강조합니다.
     Array.prototype.forEach.call(nav.querySelectorAll('a[href]'), function (a) {
       var on = fileOf(a.getAttribute('href')) === here;
       a.classList.toggle('is-on', on);
-      if (on) { a.setAttribute('aria-current', 'page'); keepInView(a); }
-      else { a.removeAttribute('aria-current'); }
+      if (on) {
+        a.setAttribute('aria-current', 'page');
+        var item = a.closest('.secnav-item');
+        topChip = item ? item.querySelector(':scope > a') : a;
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    });
+    if (topChip) { topChip.classList.add('is-on'); keepInView(topChip); }
+  }
+
+  /* 게시판 옆에 접힌 공지·질문 드롭다운을 마우스를 올리거나 초점을 두면 보여 줍니다.
+     화면 밖으로 잘리지 않도록 position:fixed 로 트리거 바로 아래에 직접 좌표를 맞춥니다. */
+  function initSecDrop() {
+    $$('.secnav-item').forEach(function (item) {
+      var trigger = item.querySelector(':scope > a');
+      var drop = item.querySelector('.secnav-drop');
+      if (!trigger || !drop) return;
+      var hideTimer;
+      function show() {
+        clearTimeout(hideTimer);
+        var r = trigger.getBoundingClientRect();
+        drop.style.top = (r.bottom + 6) + 'px';
+        drop.style.left = r.left + 'px';
+        drop.classList.add('is-open');
+      }
+      function hide() {
+        hideTimer = setTimeout(function () { drop.classList.remove('is-open'); }, 150);
+      }
+      item.addEventListener('mouseenter', show);
+      item.addEventListener('mouseleave', hide);
+      item.addEventListener('focusin', show);
+      item.addEventListener('focusout', hide);
+    });
+  }
+
+  /* car-track 은 잘리는 창(overflow:hidden), car-list 가 그 안에서 실제로
+     밀려나는 줄입니다. 이 둘을 하나로 합쳐 두면 transform 을 줄 때 잘리는
+     창 자체가 같이 밀려나서 옆 화살표 버튼을 덮어버립니다. */
+  function initCarousels() {
+    $$('.carousel').forEach(function (car) {
+      var track = car.querySelector('.car-track');
+      var list = car.querySelector('.car-list');
+      var prev = car.querySelector('.car-prev');
+      var next = car.querySelector('.car-next');
+      if (!track || !list || !prev || !next) return;
+      var pos = 0;
+
+      function cardStep() {
+        var card = list.querySelector('.hcard');
+        if (!card) return track.clientWidth;
+        var gap = parseFloat(getComputedStyle(list).columnGap) || 14;
+        return card.getBoundingClientRect().width + gap;
+      }
+      function maxPos() { return Math.max(0, list.scrollWidth - track.clientWidth); }
+      function apply() {
+        pos = Math.max(0, Math.min(pos, maxPos()));
+        list.style.transform = 'translateX(-' + pos + 'px)';
+      }
+      prev.addEventListener('click', function () { pos -= cardStep(); apply(); });
+      next.addEventListener('click', function () { pos += cardStep(); apply(); });
+      window.addEventListener('resize', apply);
     });
   }
 
@@ -1084,6 +1145,8 @@
     // 섹션 바로가기 (모든 페이지 공통)
     syncStick();
     initSecNav();
+    initSecDrop();
+    initCarousels();
     window.addEventListener('resize', syncStick);
 
     // 로그인 상태는 모든 페이지에서 확인합니다 (헤더 표시용)

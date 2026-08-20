@@ -17,7 +17,7 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230E7A57'/><path d='M28 34h44M28 50h30M28 66h44' stroke='white' stroke-width='9' stroke-linecap='round'/></svg>">
+<link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body data-page-title="askTitle">
 
@@ -27,7 +27,7 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 <header class="topbar">
   <div class="wrap topbar-in">
     <a class="brand" href="index.html">
-      <span class="brand-mark" aria-hidden="true"></span>
+      <img class="brand-mark" src="assets/logo-mark.png" alt="E9-Bridge">
       <span class="brand-text">
         <strong>E9-Bridge</strong>
         <em data-i18n="brandSub">사업장 변경 안내</em>
@@ -58,9 +58,14 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
       <a href="index.html" data-i18n="secNo1">기한</a>
       <a href="reason.html" data-i18n="secNo2">사유</a>
       <a href="payout.html" data-i18n="secNoPay">출국 정산</a>
-      <a href="notices.html" data-i18n="secNo3">공지</a>
-      <a href="ask.html" data-i18n="secNo4">질문</a>
-      <a href="board.html" data-i18n="secNo5">게시판</a>
+      <div class="secnav-item">
+        <a href="board.html" data-i18n="secNo5">게시판</a>
+        <div class="secnav-drop">
+          <a href="notices.html" data-i18n="secNo3">공지</a>
+          <a href="ask.html" data-i18n="secNo4">질문</a>
+          <a href="board.html" data-i18n="secNo5">게시판</a>
+        </div>
+      </div>
       <a href="legal.html" data-i18n="secNoLegal">법률 자문</a>
     </div>
   </nav>
@@ -78,7 +83,6 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
     <div class="wrap">
       <p class="sec-no" data-i18n="secNo4">질문</p>
       <h2 data-i18n="askTitle">질문하기</h2>
-      <p class="sec-lead" data-i18n="askLead">궁금한 점을 적어 주세요. 확인된 법령과 공지 안에서만 답하고, 답할 수 없으면 공식 창구를 알려 줍니다.</p>
 
       <div class="chips" id="askChips"></div>
 
@@ -103,20 +107,15 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
         <li><b><a href="https://www.eps.go.kr" target="_blank" rel="noopener">eps.go.kr</a></b><span data-i18n="ofEps">고용허가제 공식 누리집</span></li>
         <li><b><a href="https://www.hikorea.go.kr" target="_blank" rel="noopener">hikorea.go.kr</a></b><span data-i18n="ofHi">체류·비자 민원</span></li>
       </ul>
+
+      <div class="official-foot">
+        <p data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+        <p>E9-Bridge · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
+        <p data-i18n="ftChecked">지식 최종 확인일: 2026-08-10</p>
+      </div>
     </div>
   </section>
 </main>
-
-<!-- ▼ 공통 꼬리말 — 모든 페이지에 같은 내용 -->
-<footer class="foot">
-  <div class="wrap">
-    <p class="foot-dis" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
-    <p class="foot-meta">E9-Bridge · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
-    <p class="foot-meta"><span data-i18n="ftContact">문의</span> <a class="foot-mail" href="mailto:habyeongwoo2000@gmail.com">habyeongwoo2000@gmail.com</a></p>
-    <p class="foot-meta" data-i18n="ftChecked">지식 최종 확인일: 2026-08-10</p>
-  </div>
-</footer>
-
 <script src="assets/i18n.js"></script>
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>

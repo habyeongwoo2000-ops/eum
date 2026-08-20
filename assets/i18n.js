@@ -13,6 +13,12 @@ const I18N = {
 
 /* ================= 한국어 ================= */
 ko: {
+  carPrev: '이전',
+  carNext: '다음',
+  askCardTitle: '궁금한 점',
+  askCardLead: '궁금한 점을 적어 주세요. 확인된 법령과 공지 안에서만 답합니다.',
+  askGoNotices: '공지 이동하기',
+  askGoBoard: '게시판 이동하기',
   _name: '한국어',
   skip: '본문으로 건너뛰기',
   brandSub: '사업장 변경 안내',
@@ -289,6 +295,12 @@ ko: {
 
 /* ================= English ================= */
 en: {
+  carPrev: 'Previous',
+  carNext: 'Next',
+  askCardTitle: 'Got a question?',
+  askCardLead: 'Ask us anything. We answer only from confirmed laws and notices.',
+  askGoNotices: 'Go to notices',
+  askGoBoard: 'Go to board',
   _name: 'English',
   skip: 'Skip to content',
   brandSub: 'Changing workplaces',
@@ -565,6 +577,12 @@ en: {
 
 /* ================= Tiếng Việt ================= */
 vi: {
+  carPrev: 'Trước',
+  carNext: 'Tiếp',
+  askCardTitle: 'Có thắc mắc?',
+  askCardLead: 'Hãy đặt câu hỏi. Chúng tôi chỉ trả lời dựa trên luật và thông báo đã xác nhận.',
+  askGoNotices: 'Đến trang thông báo',
+  askGoBoard: 'Đến diễn đàn',
   _name: 'Tiếng Việt',
   skip: 'Bỏ qua đến nội dung',
   brandSub: 'Hướng dẫn chuyển nơi làm việc',
@@ -841,6 +859,12 @@ vi: {
 
 /* ================= ไทย ================= */
 th: {
+  carPrev: 'ก่อนหน้า',
+  carNext: 'ถัดไป',
+  askCardTitle: 'มีคำถามไหม',
+  askCardLead: 'ถามได้เลย เราตอบจากกฎหมายและประกาศที่ยืนยันแล้วเท่านั้น',
+  askGoNotices: 'ไปที่ประกาศ',
+  askGoBoard: 'ไปที่กระดานถาม-ตอบ',
   _name: 'ไทย',
   skip: 'ข้ามไปยังเนื้อหา',
   brandSub: 'คู่มือการเปลี่ยนสถานประกอบการ',
@@ -1117,6 +1141,12 @@ th: {
 
 /* ================= Bahasa Indonesia ================= */
 id: {
+  carPrev: 'Sebelumnya',
+  carNext: 'Berikutnya',
+  askCardTitle: 'Ada pertanyaan?',
+  askCardLead: 'Silakan bertanya. Kami hanya menjawab berdasarkan hukum dan pengumuman yang telah dikonfirmasi.',
+  askGoNotices: 'Ke halaman pengumuman',
+  askGoBoard: 'Ke papan tanya jawab',
   _name: 'Bahasa Indonesia',
   skip: 'Lompat ke konten',
   brandSub: 'Panduan pindah tempat kerja',
