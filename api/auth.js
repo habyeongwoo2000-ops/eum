@@ -10,6 +10,7 @@
 
 const { sb, readBody } = require('./_db');
 const A = require('./_auth');
+const O = require('./_oauth');
 
 function fail(res, code, key) {
   return res.status(code).json({ ok: false, error: key });
@@ -19,7 +20,12 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const u = A.currentUser(req);
-      return res.status(200).json({ user: u ? { username: u.username } : null });
+      // 어떤 소셜 버튼을 보일지는 서버가 정합니다. 키를 안 넣은 제공자의 버튼을
+      // 화면에 띄워 두면 눌렀을 때만 실패해서, 사용자가 이유를 알 수 없습니다.
+      return res.status(200).json({
+        user: u ? { username: u.username } : null,
+        methods: O.enabledProviders()
+      });
     }
 
     if (req.method !== 'POST') return fail(res, 405, 'errNet');
@@ -47,7 +53,11 @@ module.exports = async function handler(req, res) {
       const rows = await sb('eum_users', {
         method: 'POST',
         headers: { prefer: 'return=representation' },
-        body: JSON.stringify({ username: username, password_hash: hash })
+        body: JSON.stringify({
+          username: username,
+          password_hash: hash,
+          provider: 'password'
+        })
       });
 
       const user = rows && rows[0];
@@ -63,7 +73,9 @@ module.exports = async function handler(req, res) {
       // 구분해 주면 어떤 아이디가 있는지 캐낼 수 있습니다.
       if (!username || !password) return fail(res, 400, 'errLoginFail');
 
-      const rows = await sb('eum_users?select=id,username,password_hash&username=eq.' +
+      // 소셜로 만든 계정에는 비밀번호가 없습니다. 그런 행은 아예 찾지 않습니다.
+      const rows = await sb('eum_users?select=id,username,password_hash' +
+        '&provider=eq.password&username=eq.' +
         encodeURIComponent(username) + '&limit=1');
       const user = rows && rows[0];
 

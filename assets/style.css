@@ -189,12 +189,14 @@ section[id]{scroll-margin-top:var(--stick,104px)}
 .form{display:grid;gap:20px;max-width:520px}
 .field label{display:block;font-weight:700;font-size:15px;margin-bottom:8px}
 .field .opt{font-weight:400;color:var(--ink-3)}
-input[type=date],input[type=text]{
+/* type 을 하나씩 적어 둡니다. 새 입력칸을 넣을 때 여기에 추가하지 않으면
+   그 칸만 테두리도 높이도 없이 브라우저 기본 모양으로 나옵니다. */
+input[type=date],input[type=text],input[type=password],input[type=tel],input[type=email],input[type=number]{
   width:100%;min-height:54px;padding:0 14px;
   font-family:var(--f-body);font-size:17px;color:var(--ink);
   background:#fff;border:1.5px solid var(--line);border-radius:12px;
 }
-input[type=date]:focus,input[type=text]:focus{border-color:var(--go)}
+input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[type=tel]:focus,input[type=email]:focus,input[type=number]:focus{border-color:var(--go)}
 .hint{font-size:14px;color:var(--ink-3);margin:8px 0 0}
 .form-actions{display:flex;gap:10px;flex-wrap:wrap}
 
@@ -415,6 +417,48 @@ input[type=date]:focus,input[type=text]:focus{border-color:var(--go)}
 .auth-msg.is-bad{color:var(--stop)}
 .auth-swap{margin:22px 0 0;font-size:15px;text-align:center}
 .auth-swap a{color:var(--go-d);font-weight:700}
+
+/* ---------- 소셜 로그인 ---------- */
+.social{margin-top:28px}
+
+/* "또는" 양옆으로 선을 긋습니다. 선 자체를 그리지 않고 배경으로 처리해
+   글자 뒤만 비우면 언어가 바뀌어 글자 폭이 달라져도 어긋나지 않습니다. */
+.social-or{
+  margin:0 0 22px;text-align:center;position:relative;
+  font-size:13px;color:var(--ink-3);
+}
+.social-or::before{
+  content:"";position:absolute;left:0;right:0;top:50%;
+  height:1px;background:var(--line);
+}
+.social-or span{position:relative;background:var(--paper);padding:0 12px}
+.band-card .social-or span,
+.band-alt .social-or span{background:var(--card)}
+
+.social-title{margin:0 0 6px;font-family:var(--f-disp);font-size:19px;font-weight:800;color:var(--ink)}
+.social-lead{margin:0 0 16px;font-size:14px;color:var(--ink-2);line-height:1.6}
+
+.social-btns{display:grid;gap:10px}
+
+.sbtn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;min-height:50px;padding:0 16px;
+  border:1.5px solid var(--line);border-radius:12px;background:#fff;
+  font-family:var(--f-body);font-size:15px;font-weight:700;color:var(--ink);
+  text-decoration:none;cursor:pointer;text-align:center;
+}
+.sbtn:hover{border-color:var(--ink-3)}
+.sbtn:focus-visible{outline:3px solid var(--go);outline-offset:2px}
+.sbtn-ico{display:inline-flex;flex:0 0 auto;width:18px;height:18px}
+
+/* 각 서비스의 안내에 맞춘 색입니다. 로고 자체는 바꾸지 않습니다. */
+.sbtn-kakao{background:#FEE500;border-color:#F2D500;color:#191600}
+.sbtn-kakao:hover{border-color:#D9BF00}
+
+.social-privacy{
+  margin:20px 0 0;font-size:13px;line-height:1.65;color:var(--ink-2);
+  background:var(--go-l);border-radius:12px;padding:12px 14px;
+}
 
 /* ---------- 게시판 (공개) ---------- */
 .board-gate{

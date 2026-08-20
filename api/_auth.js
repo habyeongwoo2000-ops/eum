@@ -102,14 +102,24 @@ function parseCookies(req) {
   return out;
 }
 
+/* 쿠키를 덮어쓰지 않고 덧붙입니다.
+   소셜 로그인 콜백에서는 세션 쿠키를 심는 동시에 임시 쿠키를 지워야 해서,
+   set-cookie 를 한 번만 쓰면 둘 중 하나가 사라집니다. */
+function appendCookie(res, value) {
+  const prev = res.getHeader('set-cookie');
+  const list = prev ? (Array.isArray(prev) ? prev.slice() : [prev]) : [];
+  list.push(value);
+  res.setHeader('set-cookie', list);
+}
+
 function setSession(res, user) {
-  res.setHeader('set-cookie',
+  appendCookie(res,
     COOKIE + '=' + makeToken(user) +
     '; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=' + MAX_AGE);
 }
 
 function clearSession(res) {
-  res.setHeader('set-cookie',
+  appendCookie(res,
     COOKIE + '=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
 }
 
@@ -134,8 +144,20 @@ function checkPw(v) {
   return String(v || '').length >= 8 && String(v).length <= 200 ? null : 'errPwRule';
 }
 
+/* ---------- 소셜 계정용 ---------- */
+
+/* 소셜로 처음 들어온 사람에게 줄 아이디를 무작위로 만듭니다.
+   구글 이름이나 카카오 닉네임을 쓰지 않는 이유는, 게시판에 실명이 그대로
+   드러나면 사업주가 글쓴이를 특정할 수 있기 때문입니다.
+   'user_' + 8자리 = 13자 → 기존 규칙(4~20자) 안에 들어옵니다. */
+function randomUsername() {
+  return 'user_' + crypto.randomBytes(4).toString('hex');
+}
+
 module.exports = {
   hashPassword, verifyPassword,
-  setSession, clearSession, currentUser,
-  normalizeId, checkId, checkPw
+  setSession, clearSession, currentUser, appendCookie,
+  normalizeId, checkId, checkPw,
+  randomUsername,
+  b64url, unb64url, sign
 };

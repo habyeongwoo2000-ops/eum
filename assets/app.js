@@ -513,12 +513,33 @@
     if (form && gate) { form.hidden = !me; gate.hidden = !!me; }
   }
 
+  /* 어떤 로그인 방법이 켜져 있는지는 서버만 압니다(키가 있는지 브라우저는 모릅니다).
+     그래서 목록을 받아 와서 켜진 버튼만 보여 줍니다. 키를 안 넣은 버튼을
+     띄워 두면 눌렀을 때만 실패해서, 사용자는 왜 안 되는지 알 수 없습니다. */
+  var methods = [];
+
+  function paintSocial() {
+    var box = $('#socialBox');
+    if (!box) return;
+    if (!methods.length) { box.hidden = true; return; }
+    box.hidden = false;
+
+    var map = { google: '#btnGoogle', kakao: '#btnKakao' };
+    Object.keys(map).forEach(function (name) {
+      var b = $(map[name]);
+      if (b) b.hidden = methods.indexOf(name) < 0;
+    });
+  }
+
   function loadMe() {
     return fetch('api/auth', { headers: { accept: 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : { user: null }; })
-      .then(function (d) { setUser(d && d.user); })
-      .catch(function () { setUser(null); })
-      .then(function () { paintAuth(); });
+      .then(function (d) {
+        setUser(d && d.user);
+        methods = (d && d.methods) || [];
+      })
+      .catch(function () { setUser(null); methods = []; })
+      .then(function () { paintAuth(); paintSocial(); });
   }
 
   function logout() {
@@ -825,6 +846,17 @@
         password: $('#authPw').value
       }, 'authLoginOk', function () { location.href = 'board.html'; });
     });
+
+    // 소셜 로그인이 실패하면 콜백이 ?err=... 를 달고 이 화면으로 돌려보냅니다.
+    // 주소창은 바로 정리해서, 새로고침해도 오류가 다시 뜨지 않게 합니다.
+    if ($('#loginForm')) {
+      var err = null;
+      try { err = new URLSearchParams(location.search).get('err'); } catch (e2) {}
+      if (err === 'oauth' || err === 'oauthOff') {
+        authMsg(err === 'oauthOff' ? 'errOauthOff' : 'errOauth', 'bad');
+        try { history.replaceState(null, '', location.pathname); } catch (e3) {}
+      }
+    }
 
     // 회원가입 — 비밀번호 확인은 보내기 전에 브라우저에서 먼저 거릅니다
     on('#signupForm', 'submit', function (e) {

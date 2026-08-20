@@ -75,6 +75,11 @@ assets/app.js       언어 감지, 날짜 계산, 규칙 엔진, API 호출
 api/_kb.js          서버가 들고 있는 지식베이스 (답변의 근거)
 api/ask.js          자유 질문 답변 함수
 api/read-doc.js     서류 사진 판독 함수 (추출만)
+api/_oauth.js       소셜 로그인 공용 (제공자 설정, CSRF·PKCE, 계정 찾기)
+api/oauth/start.js  소셜 로그인 시작 — 제공자 화면으로 보냅니다
+api/oauth/google.js 구글 콜백
+api/oauth/kakao.js  카카오 콜백
+docs/social_login.sql  소셜 로그인용 표 변경 (board_schema.sql 다음에 실행)
 api/_qna.js         게시판 공용 유틸 (Supabase 호출 + 번역)
 api/qna.js          게시판 조회(GET) / 질문 접수(POST)
 api/qna-publish.js  관리자 전용 — 답변 번역 후 공개
@@ -332,6 +337,65 @@ curl -X POST https://<도메인>/api/qna-publish -H "x-admin-token: <ADMIN_TOKEN
 
 로그인 상태는 서명된 쿠키(HttpOnly · Secure · SameSite=Lax, 14일)로 유지합니다.
 쿠키를 손으로 고치면 서명이 깨져 로그인으로 인정되지 않습니다.
+
+### 소셜 로그인 (구글 · 카카오)
+
+아이디를 새로 만들기 부담스러운 사람을 위해 두 가지 경로를 더 열었습니다.
+**환경변수를 넣은 제공자의 버튼만 화면에 나타납니다.** 아무것도 안 넣으면 기존 아이디·비밀번호만 보입니다.
+
+#### 먼저 데이터베이스부터
+
+Supabase **SQL Editor** 에 `docs/social_login.sql` 을 붙여 실행하세요. 여러 번 실행해도 안전합니다.
+비밀번호 없는 계정을 허용하고, `provider` / `provider_uid` 열을 추가합니다.
+
+#### 구글
+
+1. `console.cloud.google.com` → **API 및 서비스 → 사용자 인증 정보** → OAuth 클라이언트 ID → **웹 애플리케이션**.
+2. **승인된 리디렉션 URI** 에 `https://<도메인>/api/oauth/google` 을 넣습니다. 끝에 슬래시를 붙이지 마세요.
+3. 발급된 값을 Vercel 에 `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` 로 넣고 **Redeploy**.
+
+#### 카카오
+
+1. `developers.kakao.com` → 내 애플리케이션 → **앱 키의 REST API 키** 를 복사합니다. (JavaScript 키가 아닙니다)
+2. **카카오 로그인** 을 켜고 **Redirect URI** 에 `https://<도메인>/api/oauth/kakao` 를 넣습니다.
+3. `KAKAO_CLIENT_ID` 에 REST API 키를 넣습니다. **보안 → Client Secret** 을 "사용함" 으로 켠 경우에만 `KAKAO_CLIENT_SECRET` 도 넣습니다.
+4. 동의항목은 하나도 켤 필요가 없습니다. 이 서비스는 카카오에서 회원번호 말고는 아무것도 받지 않습니다.
+
+#### 무엇을 저장하지 않는가 (발표에서 쓸 만한 부분)
+
+받을 수 있는데도 **일부러 받지 않았습니다.**
+
+| 받을 수 있는 것 | 저장 여부 |
+|---|---|
+| 이름 · 닉네임 | ✗ |
+| 이메일 | ✗ |
+| 프로필 사진 | ✗ |
+| 제공자 고유 번호 | ✓ — 같은 사람인지 알아보는 데만 씁니다 |
+
+게시판에 보이는 이름은 `user_1a2b3c4d` 처럼 **무작위로 만든 아이디**입니다.
+구글 이름이나 카카오 닉네임을 그대로 쓰면 사업주가 글쓴이를 특정할 수 있어서입니다.
+근로자가 "우리 회사 임금 안 줌" 같은 글을 남기는 게시판이라 이 부분은 양보하면 안 됩니다.
+
+바꿔 주고 싶으면 Supabase 에서 직접 고치면 됩니다.
+
+```sql
+update eum_users set username = 'newname' where username = 'user_1a2b3c4d';
+```
+
+#### 안전장치
+
+- **CSRF** — 로그인을 시작할 때 무작위 값을 쿠키와 주소 양쪽에 심고, 돌아올 때 둘이 같은지 봅니다. 남이 만든 콜백 주소를 눌러도 쿠키가 없어서 통과하지 못합니다.
+- **PKCE** — 주소가 가로채여도 코드만으로는 토큰을 못 바꿉니다.
+- **되돌아갈 주소 제한** — 콜백은 이 사이트 안의 `.html` 로만 보냅니다. 외부 주소를 넣어도 게시판으로 갑니다.
+- **실패 이유를 안 알려 줌** — 어디서 막혔는지 화면에 쓰지 않습니다. 개발 중에는 Vercel 로그를 보세요.
+- **비밀번호 계정과 분리** — 아이디·비밀번호 로그인은 `provider = 'password'` 인 행만 찾습니다. 소셜 계정에는 비밀번호가 없어서 그 경로로는 뚫리지 않습니다.
+
+#### 확인
+
+1. 로그인 화면에 켜 둔 제공자의 버튼이 보이는지.
+2. 눌러서 로그인하면 게시판으로 돌아오고 오른쪽 위에 `user_...님` 이 뜨는지.
+3. Supabase `eum_users` 에 `provider` 가 채워진 행이 생겼는지. **이메일이나 이름 열은 없어야 정상입니다.**
+4. 로그아웃 후 같은 계정으로 다시 들어갔을 때 **새 행이 생기지 않고** 원래 아이디로 붙는지.
 
 ### 답변 달기
 
