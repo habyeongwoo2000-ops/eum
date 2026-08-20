@@ -654,6 +654,13 @@
     if (pwBlock) pwBlock.hidden = !isPw;
     if (pwNote) pwNote.hidden = isPw;
     if (idNote) idNote.hidden = !isPw;
+
+    var birth = $('#acBirth');
+    if (birth) birth.value = acInfo.birthdate || '';
+    var nation = $('#acNation');
+    if (nation) nation.value = acInfo.nationality || '';
+    var gender = $('#acGender');
+    if (gender) gender.value = acInfo.gender || '';
   }
 
   function loadAccount() {
@@ -710,6 +717,32 @@
       .catch(function (e) {
         console.warn('password failed', e);
         acMsg('#pwMsg', 'errNet', 'bad');
+      });
+  }
+
+  function saveProfile(birthdate, nationality, gender) {
+    acMsg('#profileMsg', 'authWorking');
+    fetch('api/account', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'profile', birthdate: birthdate, nationality: nationality, gender: gender })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (out) {
+        if (!out.ok || !out.data || !out.data.ok) {
+          acMsg('#profileMsg', (out.data && out.data.error) || 'errNet', 'bad');
+          return;
+        }
+        acMsg('#profileMsg', 'acProfileOk', 'good');
+        if (acInfo) {
+          acInfo.birthdate = out.data.birthdate;
+          acInfo.nationality = out.data.nationality;
+          acInfo.gender = out.data.gender;
+        }
+      })
+      .catch(function (e) {
+        console.warn('profile failed', e);
+        acMsg('#profileMsg', 'errNet', 'bad');
       });
   }
 
@@ -1002,6 +1035,18 @@
       if (next.length < 8) { acMsg('#pwMsg', 'errPwRule', 'bad'); return; }
       if (now === next) { acMsg('#pwMsg', 'errPwSame', 'bad'); return; }
       savePw(now, next);
+    });
+
+    // 오늘 이후 날짜는 생년월일로 고를 수 없게 막습니다.
+    var acBirth = $('#acBirth');
+    if (acBirth) acBirth.max = new Date().toISOString().slice(0, 10);
+
+    on('#profileForm', 'submit', function (e) {
+      e.preventDefault();
+      var birth = $('#acBirth').value;
+      var today = new Date().toISOString().slice(0, 10);
+      if (birth && birth > today) { acMsg('#profileMsg', 'errBirthFuture', 'bad'); return; }
+      saveProfile(birth, $('#acNation').value, $('#acGender').value);
     });
 
     // 소셜 로그인이 실패하면 콜백이 ?err=... 를 달고 이 화면으로 돌려보냅니다.

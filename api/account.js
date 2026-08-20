@@ -24,6 +24,10 @@ function fail(res, code, key) {
   return res.status(code).json({ ok: false, error: key });
 }
 
+// 고용허가제(E-9) 송출 16개국 + 기타. docs/profile.sql 의 체크 제약과 맞춰 둡니다.
+const NAT_CODES = ['PH', 'MN', 'LK', 'VN', 'TH', 'ID', 'UZ', 'PK', 'KH', 'CN', 'BD', 'NP', 'MM', 'KG', 'TL', 'LA', 'other'];
+const GENDER_CODES = ['M', 'F'];
+
 module.exports = async function handler(req, res) {
   try {
     const me = A.currentUser(req);
@@ -31,7 +35,7 @@ module.exports = async function handler(req, res) {
 
     /* ---------- 내 정보 ---------- */
     if (req.method === 'GET') {
-      const rows = await sb('eum_users?select=username,nickname,provider,created_at&id=eq.' +
+      const rows = await sb('eum_users?select=username,nickname,provider,created_at,birthdate,nationality,gender&id=eq.' +
         encodeURIComponent(me.uid) + '&limit=1');
       const u = rows && rows[0];
       if (!u) return fail(res, 404, 'errNet');
@@ -40,7 +44,10 @@ module.exports = async function handler(req, res) {
         username: u.username,
         nickname: u.nickname || u.username,
         provider: u.provider || 'password',
-        joined: (u.created_at || '').slice(0, 10)
+        joined: (u.created_at || '').slice(0, 10),
+        birthdate: u.birthdate || '',
+        nationality: u.nationality || '',
+        gender: u.gender || ''
       });
     }
 
@@ -119,6 +126,45 @@ module.exports = async function handler(req, res) {
       // 쿠키를 새로 발급해 유효기간을 다시 채웁니다.
       A.setSession(res, u);
       return res.status(200).json({ ok: true });
+    }
+
+    /* ---------- 프로필(생년월일 · 국적 · 성별) 바꾸기 ---------- */
+    if (action === 'profile') {
+      const birthdateRaw = String(body.birthdate || '').trim();
+      const nationality = String(body.nationality || '').trim();
+      const gender = String(body.gender || '').trim();
+
+      let birthdate = null;
+      if (birthdateRaw) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdateRaw)) return fail(res, 400, 'errBirthRule');
+        const d = new Date(birthdateRaw + 'T00:00:00Z');
+        if (Number.isNaN(d.getTime())) return fail(res, 400, 'errBirthRule');
+        if (d.getTime() > Date.now()) return fail(res, 400, 'errBirthFuture');
+        if (d.getUTCFullYear() < 1930) return fail(res, 400, 'errBirthRule');
+        birthdate = birthdateRaw;
+      }
+
+      if (nationality && NAT_CODES.indexOf(nationality) < 0) return fail(res, 400, 'errNationRule');
+      if (gender && GENDER_CODES.indexOf(gender) < 0) return fail(res, 400, 'errGenderRule');
+
+      const rows = await sb('eum_users?id=eq.' + encodeURIComponent(me.uid), {
+        method: 'PATCH',
+        headers: { prefer: 'return=representation' },
+        body: JSON.stringify({
+          birthdate: birthdate,
+          nationality: nationality || null,
+          gender: gender || null
+        })
+      });
+      const u = rows && rows[0];
+      if (!u) return fail(res, 500, 'errNet');
+
+      return res.status(200).json({
+        ok: true,
+        birthdate: u.birthdate || '',
+        nationality: u.nationality || '',
+        gender: u.gender || ''
+      });
     }
 
     return fail(res, 400, 'errNet');

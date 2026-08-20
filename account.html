@@ -140,6 +140,50 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 
         <p class="social-privacy" id="pwSocialNote" hidden data-i18n="acPwSocial">이 계정은 구글 또는 카카오로 들어오기 때문에 이 사이트에 비밀번호가 없습니다. 비밀번호는 해당 서비스에서 바꾸세요.</p>
 
+        <h3 class="ac-head" data-i18n="acSecProfile">프로필</h3>
+        <p class="sec-lead" data-i18n="acProfileLead">사업장 변경 신청 서류를 준비할 때 도움이 됩니다. 입력하지 않아도 다른 기능을 쓰는 데 지장은 없습니다.</p>
+        <form class="auth-form" id="profileForm" autocomplete="off">
+          <div class="field">
+            <label for="acBirth" data-i18n="acBirthLabel">생년월일</label>
+            <input type="date" id="acBirth" name="birthdate">
+          </div>
+          <div class="field">
+            <label for="acNation" data-i18n="acNationLabel">국적</label>
+            <select id="acNation" name="nationality">
+              <option value="" data-i18n="acNationUnset">선택 안 함</option>
+              <option value="PH" data-i18n="ctyPH">필리핀</option>
+              <option value="VN" data-i18n="ctyVN">베트남</option>
+              <option value="TH" data-i18n="ctyTH">태국</option>
+              <option value="ID" data-i18n="ctyID">인도네시아</option>
+              <option value="MN" data-i18n="ctyMN">몽골</option>
+              <option value="LK" data-i18n="ctyLK">스리랑카</option>
+              <option value="UZ" data-i18n="ctyUZ">우즈베키스탄</option>
+              <option value="PK" data-i18n="ctyPK">파키스탄</option>
+              <option value="KH" data-i18n="ctyKH">캄보디아</option>
+              <option value="CN" data-i18n="ctyCN">중국</option>
+              <option value="BD" data-i18n="ctyBD">방글라데시</option>
+              <option value="NP" data-i18n="ctyNP">네팔</option>
+              <option value="MM" data-i18n="ctyMM">미얀마</option>
+              <option value="KG" data-i18n="ctyKG">키르기스스탄</option>
+              <option value="TL" data-i18n="ctyTL">동티모르</option>
+              <option value="LA" data-i18n="ctyLA">라오스</option>
+              <option value="other" data-i18n="ctyOther">기타</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="acGender" data-i18n="acGenderLabel">성별</label>
+            <select id="acGender" name="gender">
+              <option value="" data-i18n="acGenderUnset">선택 안 함</option>
+              <option value="M" data-i18n="acGenderM">남성</option>
+              <option value="F" data-i18n="acGenderF">여성</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-go" data-i18n="acProfileBtn">프로필 저장</button>
+          </div>
+          <p class="auth-msg" id="profileMsg" role="status" aria-live="polite"></p>
+        </form>
+
         <p class="auth-swap"><a href="#" id="acLogout" data-i18n="navLogout">로그아웃</a></p>
       </div>
     </div>

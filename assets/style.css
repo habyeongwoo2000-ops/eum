@@ -197,6 +197,12 @@ input[type=date],input[type=text],input[type=password],input[type=tel],input[typ
   background:#fff;border:1.5px solid var(--line);border-radius:12px;
 }
 input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[type=tel]:focus,input[type=email]:focus,input[type=number]:focus{border-color:var(--go)}
+.field select{
+  width:100%;min-height:54px;padding:0 14px;
+  font-family:var(--f-body);font-size:17px;color:var(--ink);
+  background:#fff;border:1.5px solid var(--line);border-radius:12px;
+}
+.field select:focus{border-color:var(--go)}
 .hint{font-size:14px;color:var(--ink-3);margin:8px 0 0}
 .form-actions{display:flex;gap:10px;flex-wrap:wrap}
 
