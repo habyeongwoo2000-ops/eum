@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>저해상도 와이어프레임 — EPS 사업장 변경 도우미</title>
+<style>
+  :root{
+    --ink:#2b2b2b;
+    --line:#9a9a9a;
+    --line-light:#c9c9c9;
+    --panel:#f4f4f2;
+    --accent:#8a8a8a;
+    --warn-bg:#fbe9e7;
+    --warn-line:#c99a94;
+    --ok-bg:#eef1f0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:32px 24px 80px;
+    background:#e7e5e1;
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    color:var(--ink);
+  }
+  h1{
+    font-size:20px;
+    margin:0 0 4px;
+  }
+  p.sub{
+    margin:0 0 32px;
+    color:#666;
+    font-size:13px;
+  }
+  .grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+  }
+  .frame-wrap{
+    width:300px;
+  }
+  .frame-title{
+    font-size:13px;
+    font-weight:700;
+    margin:0 0 8px;
+    color:#444;
+  }
+  .frame{
+    width:300px;
+    height:600px;
+    border:3px solid var(--ink);
+    border-radius:22px;
+    background:#fff;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    position:relative;
+  }
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border:1.5px dashed var(--line);
+    border-radius:8px;
+    padding:8px 10px;
+    font-size:11px;
+    color:var(--accent);
+  }
+  .lang-pill{
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:2px 8px;
+    font-size:10px;
+  }
+  .box{
+    border:1.5px dashed var(--line);
+    border-radius:8px;
+    padding:8px;
+    font-size:11px;
+    color:#555;
+  }
+  .box strong{
+    display:block;
+    font-size:12px;
+    color:var(--ink);
+    margin-bottom:4px;
+  }
+  .card-skel{
+    height:10px;
+    background:var(--line-light);
+    border-radius:3px;
+    margin:4px 0;
+  }
+  .card-skel.w60{width:60%;}
+  .card-skel.w80{width:80%;}
+  .card-skel.w40{width:40%;}
+  .tag{
+    display:inline-block;
+    border:1px solid var(--accent);
+    border-radius:10px;
+    padding:1px 6px;
+    font-size:9px;
+    color:var(--accent);
+    margin-top:4px;
+  }
+  .btn{
+    border:1.5px solid var(--ink);
+    border-radius:8px;
+    text-align:center;
+    padding:8px;
+    font-size:11px;
+    font-weight:700;
+  }
+  .qa-item{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:6px 8px;
+    font-size:10px;
+    color:#555;
+    margin-top:6px;
+  }
+  .qa-item .q{font-weight:700;color:var(--ink);}
+  .disclaimer{
+    border:1px dashed var(--warn-line);
+    background:var(--warn-bg);
+    border-radius:6px;
+    padding:5px 7px;
+    font-size:9px;
+    color:#7a4d47;
+  }
+  .dday-row{
+    display:flex;
+    gap:8px;
+  }
+  .dday-card{
+    flex:1;
+    border:1.5px solid var(--ink);
+    border-radius:10px;
+    padding:10px 6px;
+    text-align:center;
+  }
+  .dday-card.warn{
+    background:var(--warn-bg);
+    border-color:var(--warn-line);
+  }
+  .dday-card .num{
+    font-size:20px;
+    font-weight:800;
+  }
+  .dday-card .label{
+    font-size:10px;
+    color:#666;
+  }
+  .tabbar{
+    margin-top:auto;
+    display:flex;
+    border-top:1.5px solid var(--ink);
+    padding-top:6px;
+  }
+  .tabbar div{
+    flex:1;
+    text-align:center;
+    font-size:10px;
+    padding:4px 0;
+    color:#888;
+  }
+  .tabbar div.active{
+    color:var(--ink);
+    font-weight:800;
+    border-top:2px solid var(--ink);
+    margin-top:-8px;
+    padding-top:10px;
+  }
+  .upload-box{
+    border:2px dashed var(--line);
+    border-radius:10px;
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    color:var(--accent);
+  }
+  .note{
+    font-size:11px;
+    color:#777;
+    margin-top:6px;
+  }
+  .footer-note{
+    max-width:960px;
+    margin:40px auto 0;
+    font-size:12px;
+    color:#666;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1>저해상도 와이어프레임 — EPS 외국인근로자 사업장 변경 도우미</h1>
+<p class="sub">screen_design.md 기반 · 회색 점선 = 배치 영역 표시(디자인 아님) · 실제 색상/폰트는 추후 확정</p>
+
+<div class="grid">
+
+  <!-- SC-01 홈/게시판 -->
+  <div class="frame-wrap">
+    <p class="frame-title">SC-01. 홈 / 게시판 목록</p>
+    <div class="frame">
+      <div class="header">로고 <span class="lang-pill">🌐 EN ▾</span></div>
+      <div class="box">
+        <strong>공지 카드</strong>
+        <div class="card-skel w80"></div>
+        <div class="card-skel w60"></div>
+        <span class="tag">출처: 고용노동부 공지 · 2026.08.10</span>
+      </div>
+      <div class="box">
+        <strong>공지 카드</strong>
+        <div class="card-skel w80"></div>
+        <div class="card-skel w40"></div>
+        <span class="tag">출처: 하이코리아 · 2026.08.05</span>
+      </div>
+      <div class="box">
+        <strong>공지 카드</strong>
+        <div class="card-skel w60"></div>
+        <div class="card-skel w80"></div>
+        <span class="tag">출처: EPS · 2026.07.28</span>
+      </div>
+      <div class="tabbar">
+        <div class="active">홈</div><div>D-day</div><div>서류확인</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC-02 게시글 상세 -->
+  <div class="frame-wrap">
+    <p class="frame-title">SC-02. 게시글 상세 + 댓글 Q&amp;A</p>
+    <div class="frame">
+      <div class="header">← 뒤로 <span class="lang-pill">🌐 EN ▾</span></div>
+      <div class="box">
+        <strong>사업장 변경 신청 기한 안내</strong>
+        <div class="card-skel w80"></div>
+        <div class="card-skel w80"></div>
+        <div class="card-skel w40"></div>
+        <span class="tag">출처: 법 제25조 · 최종확인 2026.08.10</span>
+      </div>
+      <div class="box">💬 질문하기 [입력창.........][전송]</div>
+      <div class="qa-item">
+        <div class="q">Q. 저도 이 경우에 해당하나요?</div>
+        <div>A. AI 답변 요약 텍스트가 이 영역에 표시됩니다.</div>
+        <span class="tag">출처 표시</span>
+      </div>
+      <div class="disclaimer">참고용 정보이며 최종 확인은 고용센터/1345에서 확인하세요.</div>
+      <div class="tabbar">
+        <div>홈</div><div>D-day</div><div>서류확인</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC-03 D-day -->
+  <div class="frame-wrap">
+    <p class="frame-title">SC-03. D-day 대시보드</p>
+    <div class="frame">
+      <div class="header">로고 <span class="lang-pill">🌐 EN ▾</span></div>
+      <div class="box">
+        <strong>퇴사일을 입력하세요</strong>
+        <div class="card-skel w60"></div>
+        <div class="btn" style="margin-top:6px;">계산하기</div>
+      </div>
+      <div class="dday-row">
+        <div class="dday-card warn">
+          <div class="label">신청 마감</div>
+          <div class="num">D-3</div>
+          <div class="label">2026.08.16</div>
+        </div>
+        <div class="dday-card">
+          <div class="label">구직 마감</div>
+          <div class="num">D-83</div>
+          <div class="label">2026.11.14</div>
+        </div>
+      </div>
+      <div class="box">(선택) 알림 받을 연락처 입력</div>
+      <div class="tabbar">
+        <div>홈</div><div class="active">D-day</div><div>서류확인</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC-04 서류 자가진단 -->
+  <div class="frame-wrap">
+    <p class="frame-title">SC-04. 서류 자가진단</p>
+    <div class="frame">
+      <div class="header">로고 <span class="lang-pill">🌐 EN ▾</span></div>
+      <div class="box"><strong>계약서·통지서 사진을 올려주세요</strong></div>
+      <div class="upload-box">📷 카메라 / 갤러리에서 선택</div>
+      <div class="btn">분석하기</div>
+      <div class="box">
+        <strong>분석 결과</strong>
+        <div class="card-skel w80"></div>
+        <div class="card-skel w60"></div>
+        <div class="btn" style="margin-top:6px;">지원센터 상담 연결</div>
+      </div>
+      <div class="disclaimer">확정적 법률 판단이 아닌 참고용 안내입니다.</div>
+      <div class="tabbar">
+        <div>홈</div><div>D-day</div><div class="active">서류확인</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC-05 관리자 -->
+  <div class="frame-wrap">
+    <p class="frame-title">SC-05. (Should) 관리자 검수 대기함</p>
+    <div class="frame">
+      <div class="header">관리자 페이지</div>
+      <div class="box">
+        <strong>검수 대기 (3건)</strong>
+        <div class="card-skel w80"></div>
+      </div>
+      <div class="qa-item">
+        <div class="q">Q. 질문 내용 미리보기</div>
+        <div>AI 초안 답변 미리보기 텍스트</div>
+      </div>
+      <div style="display:flex; gap:6px;">
+        <div class="btn" style="flex:1;">승인</div>
+        <div class="btn" style="flex:1;">반려</div>
+      </div>
+      <div class="note">※ 신뢰도 낮은 답변만 이 목록에 노출됩니다.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  이 페이지는 개발 착수 전 구조 확인용 저해상도 와이어프레임입니다. 실제 비주얼 디자인(색상, 폰트, 아이콘)은
+  포함하지 않았으며, 각 화면의 요소 배치와 정보 우선순위를 팀이 빠르게 합의하기 위한 용도입니다.
+  상세 스펙은 screen_design.md를 함께 참고하세요.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>법률 자문 · E9-Bridge</title>
+<meta name="description" content="임금체불·인권침해 등으로 법적 도움이 필요할 때 상담받을 수 있는 무료·유료 창구 안내.">
+<meta name="color-scheme" content="light">
+<!-- ▼ 공통 부트 코드 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
+<script>
+(function(){var l=null;try{l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('eum.lang');}catch(e){}
+if(!l){l=(navigator.languages&&navigator.languages[0])||navigator.language||'';}
+if(String(l||'').toLowerCase().indexOf('ko')!==0){var h=document.documentElement;
+h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute('data-lang-pending');},1500);}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+</head>
+<body data-page-title="lgTitle">
+
+<a class="skip" href="#top" data-i18n="skip">본문으로 건너뛰기</a>
+
+<!-- ▼ 공통 머리말 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="index.html">
+      <img class="brand-mark" src="assets/logo-mark.png" alt="E9-Bridge">
+      <span class="brand-text">
+        <strong>E9-Bridge</strong>
+        <em data-i18n="brandSub">사업장 변경 안내</em>
+      </span>
+    </a>
+    <div class="auth-wrap">
+      <div class="auth-slot" id="authSlot"></div>
+      <!-- 로그인했을 때만 열리는 메뉴. 이름 단추 바로 아래에 붙습니다. -->
+      <div class="auth-menu" id="authMenu" hidden>
+        <a href="account.html" data-i18n="navAccount">계정 설정</a>
+        <button type="button" id="menuLogout" data-i18n="navLogout">로그아웃</button>
+      </div>
+    </div>
+    <div class="lang">
+      <label class="lang-label" for="langSelect" data-i18n="langLabel">언어</label>
+      <select id="langSelect" aria-label="Language">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="th">ไทย</option>
+        <option value="id">Bahasa Indonesia</option>
+      </select>
+    </div>
+  </div>
+
+  <nav class="secnav" data-i18n-aria="navLabel" aria-label="기능 바로가기">
+    <div class="wrap secnav-in" id="secnav">
+      <a href="index.html" data-i18n="secNo1">기한</a>
+      <a href="reason.html" data-i18n="secNo2">사유</a>
+      <a href="payout.html" data-i18n="secNoPay">출국 정산</a>
+      <div class="secnav-item">
+        <a href="board.html" data-i18n="secNo5">게시판</a>
+        <div class="secnav-drop">
+          <a href="notices.html" data-i18n="secNo3">공지</a>
+          <a href="ask.html" data-i18n="secNo4">질문</a>
+          <a href="board.html" data-i18n="secNo5">게시판</a>
+        </div>
+      </div>
+      <a href="legal.html" data-i18n="secNoLegal">법률 자문</a>
+    </div>
+  </nav>
+</header>
+
+<div id="langToast" class="toast" hidden>
+  <span id="langToastText" data-i18n="langAuto">기기 설정에 맞춰 언어를 골랐습니다.</span>
+  <button type="button" id="toastClose" data-i18n="ok">확인</button>
+</div>
+<!-- ▲ 공통 머리말 끝 -->
+
+<main id="top">
+
+  <section id="legal" class="band band-legal">
+    <div class="wrap">
+      <div class="pay-hero">
+        <p class="sec-no" data-i18n="secNoLegal">법률 자문</p>
+        <h2 data-i18n="lgTitle">법률 자문 받기</h2>
+
+        <h3 class="sub-h" data-i18n="lgFreeHeading">무료로 받을 수 있는 도움</h3>
+        <div class="pay-list">
+          <article class="pay-item">
+            <h4><span class="pay-check" aria-hidden="true">✓</span><span>대한법률구조공단 (Korea Legal Aid Corporation)</span></h4>
+            <p data-i18n="lgKlacBody">임금체불, 계약 위반 등으로 법적 도움이 필요하면 무료로 법률상담과 소송대리까지 받을 수 있습니다. 외국인근로자도 이용할 수 있습니다.</p>
+            <p class="pay-where"><span data-i18n="lgKlacRule">전화·방문·화상 상담 132(국번없이) · 최근 3개월 평균임금이 400만원 미만이면 소송대리도 무료</span> · 132 · <a href="https://www.klac.or.kr" target="_blank" rel="noopener">klac.or.kr</a></p>
+          </article>
+          <article class="pay-item">
+            <h4><span class="pay-check" aria-hidden="true">✓</span><span>국가인권위원회 (National Human Rights Commission of Korea)</span></h4>
+            <p data-i18n="lgNhrckBody">폭행, 폭언, 성희롱, 차별 등 인권침해를 당했다면 상담하고 진정을 낼 수 있습니다. 외국인과 이주노동자도 보호 대상입니다.</p>
+            <p class="pay-where"><span data-i18n="lgNhrckRule">상담 1331(국번없이) · 평일 9:30~17:00(12:00~13:00 제외) · 진정 접수는 인권위 홈페이지에서도 가능</span> · 1331 · <a href="https://www.humanrights.go.kr" target="_blank" rel="noopener">humanrights.go.kr</a></p>
+          </article>
+        </div>
+
+        <h3 class="sub-h" data-i18n="lgPaidHeading">변호사를 선임하고 싶다면 (유료)</h3>
+        <div class="pay-list">
+          <article class="pay-item pay-c3">
+            <h4><span class="pay-check" aria-hidden="true">✓</span><span>법률사무소 K (Law Office K)</span></h4>
+            <p data-i18n="lgKvisaBody">고용허가제(E-9) 비자·체류자격, 사업장 변경, 출입국 관리와 관련된 외국인 근로자 사건을 다루는 법률사무소입니다. 대표변호사가 직접 상담합니다.</p>
+            <p class="pay-where"><span data-i18n="lgKvisaRule">전화 031-217-8579 · 경기 수원시 영통구 광교중앙로248번길 40(하동) 4층 412호</span> · <a href="https://www.kvisa.co.kr" target="_blank" rel="noopener">kvisa.co.kr</a></p>
+          </article>
+          <article class="pay-item pay-c4">
+            <h4><span class="pay-check" aria-hidden="true">✓</span><span>법무법인 마중 (Law Firm MAJUNG)</span></h4>
+            <p data-i18n="lgMajungBody">산업재해·임금체불·이민(비자)·외국인 형사사건을 다루는 법무법인으로, 영어·중국어 등 다국어 상담을 제공합니다. 이 서비스가 추천하는 특정 사건 수임을 보장하지 않으며, 수임 여부와 비용은 상담 후 결정됩니다.</p>
+            <p class="pay-where"><span data-i18n="lgMajungRule">전화 02-3143-1158 · 서울 종로구 새문안로 92 광화문오피시아 4층</span> · <a href="https://majungforeign.kr" target="_blank" rel="noopener">majungforeign.kr</a></p>
+          </article>
+        </div>
+      </div>
+      <p class="disclaim" data-i18n="lgPaidNote">이 목록은 광고가 아니며, 특정 변호사·법무법인이 사건을 맡아 준다고 보장하지 않습니다. 선임 여부와 비용은 본인이 직접 상담한 뒤 결정하세요.</p>
+
+      <p class="src" data-i18n="lgChecked">확인일: 2026-08-13 · 대한법률구조공단·국가인권위원회 공식 안내 기준</p>
+      <p class="disclaim" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+    </div>
+  </section>
+
+<section class="band band-ink">
+    <div class="wrap">
+      <h2 data-i18n="ofTitle">공식 창구</h2>
+      <p class="sec-lead" data-i18n="ofLead">확정된 답은 아래에서 받으세요. 이 서비스는 그 앞 단계를 돕습니다.</p>
+      <ul class="official">
+        <li><b>1345</b><span data-i18n="of1345">외국인종합안내센터 · 여러 언어 상담</span></li>
+        <li><b>1350</b><span data-i18n="of1350">고용노동부 상담센터 · 임금체불 신고</span></li>
+        <li><b><a href="https://www.eps.go.kr" target="_blank" rel="noopener">eps.go.kr</a></b><span data-i18n="ofEps">고용허가제 공식 누리집</span></li>
+        <li><b><a href="https://www.hikorea.go.kr" target="_blank" rel="noopener">hikorea.go.kr</a></b><span data-i18n="ofHi">체류·비자 민원</span></li>
+      </ul>
+
+      <div class="official-foot">
+        <p data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+        <p>E9-Bridge · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
+        <p data-i18n="ftChecked">지식 최종 확인일: 2026-08-10</p>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/i18n.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

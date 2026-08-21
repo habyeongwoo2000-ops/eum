@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>묻고 답하기 · E9-Bridge</title>
+<meta name="description" content="AI가 답하지 못한 것을 남기면 확인해서 근거와 함께 답변을 올립니다.">
+<meta name="color-scheme" content="light">
+<!-- ▼ 공통 부트 코드 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
+<script>
+(function(){var l=null;try{l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('eum.lang');}catch(e){}
+if(!l){l=(navigator.languages&&navigator.languages[0])||navigator.language||'';}
+if(String(l||'').toLowerCase().indexOf('ko')!==0){var h=document.documentElement;
+h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute('data-lang-pending');},1500);}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+</head>
+<body data-page-title="boardTitle">
+
+<a class="skip" href="#top" data-i18n="skip">본문으로 건너뛰기</a>
+
+<!-- ▼ 공통 머리말 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="index.html">
+      <img class="brand-mark" src="assets/logo-mark.png" alt="E9-Bridge">
+      <span class="brand-text">
+        <strong>E9-Bridge</strong>
+        <em data-i18n="brandSub">사업장 변경 안내</em>
+      </span>
+    </a>
+    <div class="auth-wrap">
+      <div class="auth-slot" id="authSlot"></div>
+      <!-- 로그인했을 때만 열리는 메뉴. 이름 단추 바로 아래에 붙습니다. -->
+      <div class="auth-menu" id="authMenu" hidden>
+        <a href="account.html" data-i18n="navAccount">계정 설정</a>
+        <button type="button" id="menuLogout" data-i18n="navLogout">로그아웃</button>
+      </div>
+    </div>
+    <div class="lang">
+      <label class="lang-label" for="langSelect" data-i18n="langLabel">언어</label>
+      <select id="langSelect" aria-label="Language">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="th">ไทย</option>
+        <option value="id">Bahasa Indonesia</option>
+      </select>
+    </div>
+  </div>
+
+  <nav class="secnav" data-i18n-aria="navLabel" aria-label="기능 바로가기">
+    <div class="wrap secnav-in" id="secnav">
+      <a href="index.html" data-i18n="secNo1">기한</a>
+      <a href="reason.html" data-i18n="secNo2">사유</a>
+      <a href="payout.html" data-i18n="secNoPay">출국 정산</a>
+      <div class="secnav-item">
+        <a href="board.html" data-i18n="secNo5">게시판</a>
+        <div class="secnav-drop">
+          <a href="notices.html" data-i18n="secNo3">공지</a>
+          <a href="ask.html" data-i18n="secNo4">질문</a>
+          <a href="board.html" data-i18n="secNo5">게시판</a>
+        </div>
+      </div>
+      <a href="legal.html" data-i18n="secNoLegal">법률 자문</a>
+    </div>
+  </nav>
+</header>
+
+<div id="langToast" class="toast" hidden>
+  <span id="langToastText" data-i18n="langAuto">기기 설정에 맞춰 언어를 골랐습니다.</span>
+  <button type="button" id="toastClose" data-i18n="ok">확인</button>
+</div>
+<!-- ▲ 공통 머리말 끝 -->
+
+<main id="top">
+
+  <section id="board" class="band">
+    <div class="wrap">
+      <p class="sec-no" data-i18n="secNo5">게시판</p>
+      <h2 data-i18n="boardTitle">묻고 답하기</h2>
+
+      <!-- 로그인한 사람에게만 보이는 글쓰기 상자 -->
+      <form class="board-form" id="boardForm" hidden>
+        <label class="sr" for="boardInput" data-i18n="boardTitle">묻고 답하기</label>
+        <textarea id="boardInput" rows="4" maxlength="1000"
+                  placeholder="예: 회사가 사업장 변경 신청서에 도장을 안 찍어 주면 어떻게 하나요?"
+                  data-i18n-ph="boardPlaceholder"></textarea>
+        <p class="board-warn" data-i18n="boardPublicWarn">남긴 글은 모든 사람이 볼 수 있습니다. 회사 이름, 정확한 날짜, 사는 곳, 여권번호, 외국인등록번호, 계좌번호는 적지 마세요.</p>
+        <label class="board-private">
+          <input type="checkbox" id="boardPrivate">
+          <span data-i18n="boardPrivateLabel">비공개로 남기기</span>
+        </label>
+        <p class="hint" data-i18n="boardPrivateHint">체크하면 나와 관리자만 이 글을 볼 수 있습니다.</p>
+        <div class="board-actions">
+          <button type="submit" class="btn btn-go" id="boardSend" data-i18n="boardSend">질문 남기기</button>
+          <span class="board-msg" id="boardMsg" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+
+      <!-- 로그인하지 않았을 때 대신 보이는 안내 -->
+      <div class="board-gate" id="boardGate" hidden>
+        <p data-i18n="boardLoginNeeded">글을 남기려면 로그인해 주세요. 읽는 것은 로그인 없이도 됩니다.</p>
+        <a class="btn btn-go" href="login.html" data-i18n="boardLoginBtn">로그인하고 글쓰기</a>
+      </div>
+
+      <!-- 목록 머리 — 좁은 화면에서는 숨깁니다 -->
+      <div class="board-thead" aria-hidden="true">
+        <span class="bt-no" data-i18n="boardColNo">번호</span>
+        <span class="bt-q" data-i18n="boardColTitle">제목</span>
+        <span class="bt-user" data-i18n="boardColUser">글쓴이</span>
+        <span class="bt-at" data-i18n="boardColAt">작성일</span>
+      </div>
+
+      <div class="board-list" id="boardList"></div>
+
+      <nav class="pager" id="boardPager" hidden aria-label="page">
+        <button type="button" class="pg-arrow" id="pagePrev" data-i18n-aria="boardPrev" aria-label="이전">‹</button>
+        <span class="pg-nums" id="pageNums"></span>
+        <button type="button" class="pg-arrow" id="pageNext" data-i18n-aria="boardNext" aria-label="다음">›</button>
+      </nav>
+
+      <!-- 검색 — 원문 기준으로 찾습니다 -->
+      <form class="board-search" id="boardSearch" role="search">
+        <label class="sr" for="boardQ" data-i18n="boardSearchLabel">게시판 검색</label>
+        <input type="search" id="boardQ" maxlength="60" placeholder="검색어를 넣으세요"
+               data-i18n-ph="boardSearchPh" autocapitalize="off" autocorrect="off">
+        <button type="submit" class="btn btn-go btn-sm" data-i18n="boardSearchBtn">찾기</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="boardQClear" hidden data-i18n="boardSearchClear">전체 보기</button>
+      </form>
+      <p class="board-found" id="boardFound" hidden></p>
+    </div>
+  </section>
+
+  <!-- ▼ 공통 공식 창구 — 모든 페이지에 같은 내용 -->
+  <section class="band band-ink">
+    <div class="wrap">
+      <h2 data-i18n="ofTitle">공식 창구</h2>
+      <p class="sec-lead" data-i18n="ofLead">확정된 답은 아래에서 받으세요. 이 서비스는 그 앞 단계를 돕습니다.</p>
+      <ul class="official">
+        <li><b>1345</b><span data-i18n="of1345">외국인종합안내센터 · 여러 언어 상담</span></li>
+        <li><b>1350</b><span data-i18n="of1350">고용노동부 상담센터 · 임금체불 신고</span></li>
+        <li><b><a href="https://www.eps.go.kr" target="_blank" rel="noopener">eps.go.kr</a></b><span data-i18n="ofEps">고용허가제 공식 누리집</span></li>
+        <li><b><a href="https://www.hikorea.go.kr" target="_blank" rel="noopener">hikorea.go.kr</a></b><span data-i18n="ofHi">체류·비자 민원</span></li>
+      </ul>
+
+      <div class="official-foot">
+        <p data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+        <p>E9-Bridge · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
+        <p data-i18n="ftChecked">지식 최종 확인일: 2026-08-10</p>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/i18n.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

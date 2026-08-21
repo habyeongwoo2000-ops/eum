@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>관리자 계정 설정 · E9-Bridge</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/png" href="assets/favicon.png"><rect width='100' height='100' rx='22' fill='%230E7A57'/><path d='M28 34h44M28 50h30M28 66h44' stroke='white' stroke-width='9' stroke-linecap='round'/></svg>">
+</head>
+<body>
+<main id="top">
+  <section class="band">
+    <div class="wrap wrap-narrow">
+      <p class="sec-no">ADMIN SETUP</p>
+      <h2>관리자 계정 설정</h2>
+      <p class="sec-lead">
+        이미 아이디로 가입되어 있는 계정을 관리자로 바꾸거나 되돌립니다.
+        아래 키는 Vercel 환경변수 <code>ADMIN_SETUP_KEY</code> 에 넣어 둔 값과
+        똑같아야 합니다. 이 페이지 주소와 키는 아무에게도 알려주지 마세요.
+        이 페이지는 검색이나 메뉴 어디에도 연결되어 있지 않습니다.
+      </p>
+
+      <form class="auth-form" id="adminForm" autocomplete="off">
+        <div class="field">
+          <label for="adUser">대상 계정 아이디 (로그인 아이디)</label>
+          <input type="text" id="adUser" name="username" autocapitalize="off" autocorrect="off" spellcheck="false" required>
+          <p class="hint">소셜 로그인 계정은 user_xxxxxxxx 형태의 내부 아이디입니다. 마이페이지에서 본인이 확인해야 합니다.</p>
+        </div>
+        <div class="field">
+          <label for="adKey">설정 키 (ADMIN_SETUP_KEY)</label>
+          <input type="password" id="adKey" name="key" autocomplete="off" required>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-go" data-act="promote">관리자로 만들기</button>
+          <button type="submit" class="btn btn-ghost" data-act="demote">관리자 해제</button>
+        </div>
+        <p class="auth-msg" id="adMsg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var form = document.getElementById('adminForm');
+  var msg = document.getElementById('adMsg');
+  var lastAction = 'promote';
+
+  Array.prototype.forEach.call(form.querySelectorAll('button[data-act]'), function (btn) {
+    btn.addEventListener('click', function () { lastAction = btn.getAttribute('data-act'); });
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var username = document.getElementById('adUser').value.trim();
+    var key = document.getElementById('adKey').value;
+    msg.textContent = '처리 중...';
+    msg.className = 'auth-msg';
+
+    fetch('api/admin', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: lastAction, username: username, key: key })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+      .then(function (out) {
+        if (!out.ok || !out.data || !out.data.ok) {
+          var err = (out.data && out.data.error) || 'errNet';
+          var map = {
+            errAdminOff: '서버에 ADMIN_SETUP_KEY 가 설정되어 있지 않습니다.',
+            errAdminKey: '키가 맞지 않습니다.',
+            errAdminUser: '그 아이디를 가진 계정을 찾을 수 없습니다.'
+          };
+          msg.textContent = map[err] || '문제가 생겼습니다. 다시 시도해 주세요.';
+          msg.className = 'auth-msg is-bad';
+          return;
+        }
+        msg.textContent = out.data.username + ' 계정을 ' +
+          (out.data.isAdmin ? '관리자로 바꿨습니다.' : '관리자에서 해제했습니다.');
+        msg.className = 'auth-msg is-good';
+      })
+      .catch(function () {
+        msg.textContent = '네트워크 오류. 다시 시도해 주세요.';
+        msg.className = 'auth-msg is-bad';
+      });
+  });
+})();
+</script>
+</body>
+</html>

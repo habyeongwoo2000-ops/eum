@@ -1,0 +1,5 @@
+{
+  "name": "eum",
+  "private": true,
+  "engines": { "node": ">=20" }
+}
