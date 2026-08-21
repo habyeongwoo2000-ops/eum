@@ -107,6 +107,7 @@
     paintPager();
     syncStick();                         // 라벨 길이가 바뀌면 헤더 높이도 바뀝니다
     if (shown('#payResult')) calcPay();
+    if (shown('#insResult')) calcIns();
     if (shown('#ddayResult')) calcDday();
     if (shown('#quizResult')) showQuizResult();
     clearThread();
@@ -315,6 +316,104 @@
     else { msg.className = 'callout'; msg.textContent = T.pyMsgOk; }
   }
 
+  /* ---------- 출국만기보험 어림 계산 ----------
+     회사는 근로계약 효력 발생일부터 15일 안에 출국만기보험에 들어야 하고,
+     매달 통상임금의 8.3%(1/12)를 냅니다. 한 사업장에서 1년 이상 일한 뒤
+     출국하거나 체류자격이 바뀌면 본인이 청구할 수 있습니다.
+
+     법정 퇴직금(계속근로 1년에 30일분 평균임금)보다 보험금이 적으면
+     그 차액은 회사가 따로 줘야 합니다. 그래서 두 값을 나란히 보여 줍니다.
+
+     여기서 나오는 값은 어디까지나 어림값입니다. 실제로는 회사가 실제 낸
+     보험료와 이자로 정해지고, 통상임금과 평균임금도 서로 다릅니다.
+     화면에도 그 점을 크게 적어 둡니다. */
+  var INS_RATE = 1 / 12;          // 통상임금의 8.3%
+  var INS_MIN_DAYS = 365;         // 1년 이상
+
+  function wonFmt(n) {
+    var v = Math.round(n);
+    try { return v.toLocaleString('ko-KR') + (T.wonUnit || '원'); }
+    catch (e) { return String(v) + (T.wonUnit || '원'); }
+  }
+
+  function calcIns() {
+    var wageIn = $('#insWage'), startIn = $('#insStart'), endIn = $('#insEnd');
+    if (!wageIn || !startIn) return;
+
+    var wage = parseFloat(wageIn.value);
+    if (!isFinite(wage) || wage <= 0) return;
+    if (!startIn.value) return;
+
+    var start = midnight(new Date(startIn.value + 'T00:00:00'));
+    var end = endIn && endIn.value
+      ? midnight(new Date(endIn.value + 'T00:00:00'))
+      : today();
+
+    var msg = $('#insMsg');
+    $('#insResult').hidden = false;
+
+    // 들어온 날이 그만두는 날보다 뒤면 계산이 성립하지 않습니다.
+    if (end <= start) {
+      $('#insWorkedOut').textContent = '–';
+      $('#insFromOut').textContent = '–';
+      $('#insEligOut').textContent = '–';
+      $('#insSavedOut').textContent = '–';
+      $('#insLegalOut').textContent = '–';
+      $('#insGapRow').hidden = true;
+      msg.className = 'callout is-stop';
+      msg.textContent = T.insErrOrder;
+      return;
+    }
+
+    var days = diffDays(end, start);            // start → end 사이의 날 수
+    var years = Math.floor(days / 365);
+    var restDays = days - years * 365;
+    var months = Math.floor(restDays / 30);
+
+    var joinDue = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 15);
+    var eligible = new Date(start.getFullYear() + 1, start.getMonth(), start.getDate());
+
+    // 쌓인 보험료 ≈ 월 통상임금 × 8.3% × 일한 달 수
+    var monthsTotal = days / 30.4375;
+    var saved = wage * INS_RATE * monthsTotal;
+    // 법정 퇴직금 ≈ 30일분 임금 × (재직일수 / 365)
+    var legal = wage * (days / 365);
+    var gap = legal - saved;
+
+    $('#insWorkedOut').textContent =
+      (years > 0 ? years + (T.yearUnit || '년') + ' ' : '') +
+      months + (T.monthUnit || '개월') +
+      ' (' + days + (T.dayUnitPlain || '일') + ')';
+    $('#insFromOut').textContent = fmtDay(joinDue) + ' ' + (T.insFromTail || '까지');
+    $('#insEligOut').textContent = fmtDay(eligible);
+
+    $('#insSavedOut').textContent = wonFmt(saved);
+    $('#insLegalOut').textContent = wonFmt(legal);
+
+    // 차액은 회사가 채워 줘야 하는 몫입니다. 1만원 넘게 벌어질 때만 보여
+    // 반올림 때문에 생기는 잔돈으로 놀라지 않게 합니다.
+    var gapRow = $('#insGapRow');
+    if (gap > 10000) {
+      gapRow.hidden = false;
+      $('#insGapOut').textContent = wonFmt(gap);
+    } else {
+      gapRow.hidden = true;
+    }
+
+    var eligBox = $('#insEligBox');
+    if (days < INS_MIN_DAYS) {
+      // 1년을 못 채우면 근로자가 못 받고 회사로 돌아갑니다. 가장 중요한 안내입니다.
+      var left = INS_MIN_DAYS - days;
+      eligBox.className = 'ins-box is-warn';
+      msg.className = 'callout is-warn';
+      msg.textContent = T.insMsgShort.replace('{d}', String(left)) ;
+    } else {
+      eligBox.className = 'ins-box is-go';
+      msg.className = 'callout';
+      msg.textContent = T.insMsgOk;
+    }
+  }
+
   /* ---------- 공지 ---------- */
   function renderNotices() {
     var list = $('#noticeList');
@@ -382,38 +481,91 @@
     box.className = 'board-msg' + (boardMsgKind ? ' is-' + boardMsgKind : '');
   }
 
-  /* 글 한 장. 답변이 아직 없을 수도 있습니다. */
-  function boardCard(it) {
-    var art = el('article', 'board-item');
+  /* 목록에 보일 한 줄짜리 제목. 본문 첫 줄을 잘라 씁니다.
+     따로 제목 칸을 두지 않은 이유는, 급한 사람에게 칸을 하나라도 덜 채우게
+     하려는 것입니다. */
+  function boardSubject(text) {
+    var one = String(text || '').split(/\r?\n/)[0].trim();
+    if (one.length > 60) one = one.slice(0, 60) + '…';
+    return one || '—';
+  }
 
-    var head = el('div', 'board-head');
-    head.appendChild(el('span', 'board-user', it.username || '—'));
-    if (it.at) head.appendChild(el('span', 'board-at', String(it.at).slice(0, 10)));
-    if (it.isPrivate) head.appendChild(el('span', 'board-badge is-private', T.boardPrivateBadge));
-    art.appendChild(head);
+  /* 날짜. 오늘 쓴 글은 시:분으로, 그 전은 날짜로 보여 줍니다. */
+  function boardWhen(at) {
+    if (!at) return '—';
+    var d = new Date(at);
+    if (isNaN(d.getTime())) return String(at).slice(0, 10);
+    var now = new Date();
+    var sameDay = d.getFullYear() === now.getFullYear() &&
+                  d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    if (sameDay) return p(d.getHours()) + ':' + p(d.getMinutes());
+    return String(d.getFullYear()).slice(2) + '.' + p(d.getMonth() + 1) + '.' + p(d.getDate());
+  }
 
-    art.appendChild(el('p', 'board-body', it.body || ''));
+  /* 글 한 줄. 누르면 아래로 펼쳐집니다.
+     잠긴 글(남의 비공개 글)은 서버가 본문을 아예 보내지 않으므로 펼치지 않습니다. */
+  function boardRow(it, no) {
+    var wrap = el('article', 'board-item' + (it.locked ? ' is-locked' : ''));
+
+    var row = document.createElement(it.locked ? 'div' : 'button');
+    row.className = 'board-row';
+    if (!it.locked) { row.type = 'button'; row.setAttribute('aria-expanded', 'false'); }
+
+    row.appendChild(el('span', 'bt-no', no != null ? String(no) : '—'));
+
+    var qcell = el('span', 'bt-q');
+    if (it.isPrivate) {
+      var lock = el('span', 'board-lock');
+      lock.textContent = '🔒';
+      lock.setAttribute('aria-hidden', 'true');
+      qcell.appendChild(lock);
+    }
+    qcell.appendChild(el('span', 'bt-subject',
+      it.locked ? T.boardLockedSubject : boardSubject(it.body)));
+    if (it.answered) qcell.appendChild(el('span', 'board-badge is-answered', T.boardAnsweredBadge));
+    if (it.mine && it.isPrivate) qcell.appendChild(el('span', 'board-badge is-private', T.boardPrivateBadge));
+    row.appendChild(qcell);
+
+    row.appendChild(el('span', 'bt-user', it.username || '—'));
+    row.appendChild(el('span', 'bt-at', boardWhen(it.at)));
+    wrap.appendChild(row);
+
+    if (it.locked) return wrap;
+
+    var panel = el('div', 'board-panel');
+    panel.hidden = true;
+    panel.appendChild(el('p', 'board-body', it.body || ''));
 
     if (it.answer) {
       var a = el('div', 'board-a');
       a.appendChild(el('span', 'board-a-label', T.boardAnswer));
       a.appendChild(el('span', null, it.answer));
-      art.appendChild(a);
+      panel.appendChild(a);
       if (it.src || it.checked) {
         var meta = el('div', 'board-meta');
         if (it.src) meta.appendChild(el('span', null, T.ntSourceLabel + ': ' + it.src));
         if (it.checked) meta.appendChild(el('span', null, T.ntCheckedLabel + ': ' + it.checked));
-        art.appendChild(meta);
+        panel.appendChild(meta);
       }
     } else {
-      art.appendChild(el('p', 'board-pending', T.boardNoAnswerYet));
+      panel.appendChild(el('p', 'board-pending', T.boardNoAnswerYet));
     }
 
     // 관리자에게만 보이는 답변 작성/수정 칸. 비공개 글도 관리자는 볼 수 있으므로
     // 여기서 바로 답할 수 있습니다.
-    if (me && me.isAdmin) art.appendChild(boardAdminBox(it));
+    if (me && me.isAdmin) panel.appendChild(boardAdminBox(it));
 
-    return art;
+    wrap.appendChild(panel);
+
+    row.addEventListener('click', function () {
+      var open = panel.hidden;
+      panel.hidden = !open;
+      row.setAttribute('aria-expanded', open ? 'true' : 'false');
+      wrap.classList.toggle('is-open', open);
+    });
+
+    return wrap;
   }
 
   function boardAdminBox(it) {
@@ -477,15 +629,45 @@
   }
 
   /* 쪽 넘김. 한 쪽에 10개씩 서버가 잘라 보냅니다. */
-  var boardPage = 1, boardPages = 1;
+  var boardPage = 1, boardPages = 1, boardTotal = 0, boardPer = 10, boardQ = '';
 
+  /* 1 2 3 … 처럼 번호를 직접 찍습니다. 쪽이 아무리 많아도 한 번에 10개까지만
+     보여, 좁은 화면에서 줄이 넘치지 않게 합니다. */
   function paintPager() {
     var nav = $('#boardPager');
     if (!nav) return;
     nav.hidden = boardPages <= 1;
-    $('#pageNow').textContent = boardPage + ' ' + (T.boardPageOf || '/') + ' ' + boardPages;
+
+    var box = $('#pageNums');
+    if (box) {
+      box.innerHTML = '';
+      var block = 10;
+      var start = Math.floor((boardPage - 1) / block) * block + 1;
+      var end = Math.min(boardPages, start + block - 1);
+      for (var n = start; n <= end; n++) {
+        (function (num) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pg-num' + (num === boardPage ? ' is-on' : '');
+          b.textContent = String(num);
+          if (num === boardPage) b.setAttribute('aria-current', 'page');
+          b.addEventListener('click', function () { renderBoard(num); });
+          box.appendChild(b);
+        })(n);
+      }
+    }
     $('#pagePrev').disabled = boardPage <= 1;
     $('#pageNext').disabled = boardPage >= boardPages;
+  }
+
+  function paintFound() {
+    var p = $('#boardFound');
+    var clear = $('#boardQClear');
+    if (clear) clear.hidden = !boardQ;
+    if (!p) return;
+    if (!boardQ) { p.hidden = true; p.textContent = ''; return; }
+    p.hidden = false;
+    p.textContent = '"' + boardQ + '" · ' + boardTotal + (T.boardFoundUnit || '건');
   }
 
   function renderBoard(page) {
@@ -494,18 +676,29 @@
     if (page) boardPage = page;
     var seq = ++boardSeq;
 
-    fetch('api/posts?page=' + boardPage + '&lang=' + encodeURIComponent(lang),
-      { headers: { accept: 'application/json' } })
+    var url = 'api/posts?page=' + boardPage + '&lang=' + encodeURIComponent(lang);
+    if (boardQ) url += '&q=' + encodeURIComponent(boardQ);
+
+    fetch(url, { headers: { accept: 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
       .then(function (data) {
         if (seq !== boardSeq) return;
         var items = (data && data.items) || [];
         boardPage = (data && data.page) || 1;
         boardPages = (data && data.pages) || 1;
+        boardTotal = (data && data.total) || 0;
+        boardPer = (data && data.perPage) || 10;
+
         list.innerHTML = '';
-        if (!items.length) list.appendChild(el('p', 'board-empty', T.boardEmpty));
-        else items.forEach(function (it) { list.appendChild(boardCard(it)); });
+        if (!items.length) {
+          list.appendChild(el('p', 'board-empty', boardQ ? T.boardNoResult : T.boardEmpty));
+        } else {
+          // 최신 글이 맨 위이므로, 번호는 전체 개수에서 거꾸로 셉니다.
+          var first = boardTotal - (boardPage - 1) * boardPer;
+          items.forEach(function (it, i) { list.appendChild(boardRow(it, first - i)); });
+        }
         paintPager();
+        paintFound();
         if (page) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
       })
       .catch(function (e) {
@@ -1165,6 +1358,17 @@
     on('#pagePrev', 'click', function () { if (boardPage > 1) renderBoard(boardPage - 1); });
     on('#pageNext', 'click', function () { if (boardPage < boardPages) renderBoard(boardPage + 1); });
 
+    on('#boardSearch', 'submit', function (e) {
+      e.preventDefault();
+      boardQ = $('#boardQ').value.trim().slice(0, 60);
+      renderBoard(1);
+    });
+    on('#boardQClear', 'click', function () {
+      boardQ = '';
+      if ($('#boardQ')) $('#boardQ').value = '';
+      renderBoard(1);
+    });
+
     // 로그인
     on('#loginForm', 'submit', function (e) {
       e.preventDefault();
@@ -1269,6 +1473,28 @@
         $('#payForm').reset();
         $('#payResult').hidden = true;
         drop('exit');
+      });
+    }
+
+    // 출국만기보험 어림 계산 — 넣은 값은 이 기기에만 남깁니다(서버로 보내지 않습니다).
+    if ($('#insForm')) {
+      var sw = load('insWage'), ss = load('insStart'), se = load('insEnd');
+      if (sw) $('#insWage').value = sw;
+      if (ss) $('#insStart').value = ss;
+      if (se) $('#insEnd').value = se;
+      if (sw && ss) calcIns();
+
+      on('#insForm', 'submit', function (e) {
+        e.preventDefault();
+        save('insWage', $('#insWage').value);
+        save('insStart', $('#insStart').value);
+        save('insEnd', $('#insEnd').value);
+        calcIns();
+      });
+      on('#insReset', 'click', function () {
+        $('#insForm').reset();
+        $('#insResult').hidden = true;
+        drop('insWage'); drop('insStart'); drop('insEnd');
       });
     }
 

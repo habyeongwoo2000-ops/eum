@@ -114,8 +114,74 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 
         <p class="callout is-warn" data-i18n="pyLimit">보험금은 받을 사유가 생긴 날부터 3년 안에 청구해야 합니다.</p>
         <p class="src" id="paySrc"></p>
-        <p class="disclaim" data-i18n="pyNoCalc">이 서비스는 금액을 계산해 주지 않습니다.</p>
       </div>
+
+      <!-- ▼ 출국만기보험 추정 계산기 -->
+      <div class="calc-card pay-form-card" id="insCard">
+        <h3 data-i18n="insTitle">출국만기보험 얼마나 쌓였을까</h3>
+        <p class="sec-lead" data-i18n="insLead">회사는 매달 통상임금의 8.3%를 넣어 둡니다. 아래에 넣으면 지금까지 쌓인 돈을 어림해 봅니다.</p>
+
+        <form class="form" id="insForm" autocomplete="off">
+          <div class="field">
+            <label for="insWage" data-i18n="insWageLabel">월 통상임금 (원)</label>
+            <input type="number" id="insWage" min="0" step="10000" inputmode="numeric"
+                   placeholder="2096270" required>
+            <p class="hint" data-i18n="insWageHint">기본급에 매달 고정으로 받는 수당을 더한 금액입니다. 잔업·특근처럼 달마다 달라지는 돈은 뺍니다.</p>
+          </div>
+          <div class="field">
+            <label for="insStart" data-i18n="insStartLabel">이 회사에 들어온 날</label>
+            <input type="date" id="insStart" required>
+          </div>
+          <div class="field">
+            <label for="insEnd" data-i18n="insEndLabel">그만두는 날 (또는 출국 예정일)</label>
+            <input type="date" id="insEnd">
+            <p class="hint" data-i18n="insEndHint">비워 두면 오늘까지로 계산합니다.</p>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-go" data-i18n="insCalc">얼마인지 보기</button>
+            <button type="button" class="btn btn-ghost" id="insReset" data-i18n="reset">지우기</button>
+          </div>
+        </form>
+
+        <div id="insResult" hidden>
+          <div class="ins-grid">
+            <article class="ins-box">
+              <p class="ins-k" data-i18n="insWorked">일한 기간</p>
+              <p class="ins-v" id="insWorkedOut">–</p>
+            </article>
+            <article class="ins-box">
+              <p class="ins-k" data-i18n="insFrom">보험 적용 시작</p>
+              <p class="ins-v" id="insFromOut">–</p>
+              <p class="ins-r" data-i18n="insFromRule">근로계약 효력 발생일부터 15일 이내 가입</p>
+            </article>
+            <article class="ins-box" id="insEligBox">
+              <p class="ins-k" data-i18n="insElig">받을 수 있는 날</p>
+              <p class="ins-v" id="insEligOut">–</p>
+              <p class="ins-r" data-i18n="insEligRule">한 사업장에서 1년 이상 일해야 합니다</p>
+            </article>
+          </div>
+
+          <div class="ins-money">
+            <div class="ins-money-row">
+              <span data-i18n="insSaved">쌓인 보험료 (통상임금 8.3%)</span>
+              <b id="insSavedOut">–</b>
+            </div>
+            <div class="ins-money-row">
+              <span data-i18n="insLegal">법정 퇴직금 기준</span>
+              <b id="insLegalOut">–</b>
+            </div>
+            <div class="ins-money-row is-gap" id="insGapRow" hidden>
+              <span data-i18n="insGap">회사가 더 줘야 하는 차액</span>
+              <b id="insGapOut">–</b>
+            </div>
+          </div>
+
+          <p class="callout" id="insMsg"></p>
+        </div>
+
+        <p class="callout is-warn" data-i18n="insWarn">여기 숫자는 어림값입니다. 실제 금액은 회사가 실제로 낸 보험료와 이자에 따라 달라집니다. 확정 금액은 삼성화재 전용 콜센터(1600-0266)에서 본인 계약으로 확인하세요.</p>
+      </div>
+      <!-- ▲ 출국만기보험 추정 계산기 끝 -->
 
       <div class="pay-hero">
         <p class="sec-no" data-i18n="secNoPay">출국 정산</p>

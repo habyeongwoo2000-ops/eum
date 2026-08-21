@@ -671,3 +671,114 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
   #langSelect{max-width:30vw;font-size:13px;padding:8px 2px}
   .topbar-in{gap:6px}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   게시판 목록형 화면 · 검색 · 쪽 번호
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 네 칸의 폭을 머리글과 각 줄이 똑같이 나눠 씁니다.
+   한 곳만 고치면 어긋나므로 변수로 묶어 둡니다. */
+.board-thead,
+.board-row{
+  display:grid;
+  grid-template-columns:56px 1fr 120px 76px;
+  gap:12px;align-items:center;
+}
+.board-thead{
+  padding:10px 14px;margin-top:24px;
+  border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line);
+  font-size:13px;font-weight:700;color:var(--ink-2);
+}
+.board-thead .bt-no,.board-thead .bt-at{text-align:center}
+.board-thead .bt-user{text-align:center}
+
+.board-list{display:block;max-width:none;margin:0}
+.board-item{
+  background:transparent;border:0;border-bottom:1px solid var(--line-2);
+  border-radius:0;padding:0;
+}
+.board-item.is-open{background:var(--go-l)}
+
+.board-row{
+  width:100%;box-sizing:border-box;
+  padding:13px 14px;margin:0;border:0;background:none;
+  font-family:var(--f-body);font-size:15px;color:var(--ink);
+  text-align:left;cursor:pointer;
+}
+button.board-row:hover{background:rgba(46,32,19,.05)}
+button.board-row:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
+.board-item.is-locked .board-row{cursor:default;color:var(--ink-3)}
+
+.bt-no{font-family:var(--f-mono);font-size:13px;color:var(--ink-3);text-align:center}
+.bt-q{display:flex;align-items:center;gap:8px;min-width:0}
+.bt-subject{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bt-user{font-size:13px;color:var(--ink-2);text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bt-at{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);text-align:center}
+
+.board-lock{flex:none;font-size:13px;line-height:1}
+.board-badge.is-answered{background:var(--go-l);color:var(--go-d)}
+
+/* 펼친 내용 */
+.board-panel{padding:4px 14px 20px;display:grid;gap:14px}
+.board-panel .board-body{margin:0}
+
+/* 쪽 번호 */
+.pager{display:flex;justify-content:center;align-items:center;gap:4px;margin:22px 0 0;flex-wrap:wrap}
+.pg-nums{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}
+.pg-num,.pg-arrow{
+  min-width:34px;height:34px;padding:0 8px;
+  border:0;background:none;border-radius:8px;cursor:pointer;
+  font-family:var(--f-body);font-size:15px;font-weight:600;color:var(--ink-2);
+}
+.pg-num:hover,.pg-arrow:hover:not(:disabled){background:rgba(46,32,19,.07);color:var(--ink)}
+.pg-num.is-on{color:var(--go-d);font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.pg-arrow:disabled{color:var(--line);cursor:default}
+
+/* 검색 */
+.board-search{display:flex;gap:8px;justify-content:center;margin:20px 0 0;flex-wrap:wrap}
+.board-search input[type=search]{
+  flex:1 1 260px;max-width:360px;min-height:44px;padding:0 14px;box-sizing:border-box;
+  font-family:var(--f-body);font-size:16px;color:var(--ink);
+  background:#fff;border:1.5px solid var(--line);border-radius:12px;
+}
+.board-search input[type=search]:focus{border-color:var(--go)}
+.board-found{margin:12px 0 0;text-align:center;font-size:14px;color:var(--ink-2)}
+
+@media (max-width:640px){
+  /* 좁은 화면에서는 글쓴이 칸을 접습니다. 제목과 날짜가 먼저입니다. */
+  .board-thead{display:none}
+  .board-row{grid-template-columns:1fr auto;gap:4px 10px;padding:14px}
+  .bt-no{display:none}
+  .bt-q{grid-column:1;grid-row:1}
+  .bt-user{grid-column:1;grid-row:2;text-align:left;font-size:12px}
+  .bt-at{grid-column:2;grid-row:2;text-align:right}
+  .bt-subject{white-space:normal}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   출국만기보험 어림 계산
+   ═══════════════════════════════════════════════════════════════ */
+#insCard{margin-top:20px}
+.ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 0}
+.ins-box{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px}
+.ins-box.is-go{border-color:var(--go);background:var(--go-l)}
+.ins-box.is-warn{border-color:var(--warn);background:var(--warn-l)}
+.ins-k{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--ink-2)}
+.ins-v{margin:0;font-family:var(--f-disp);font-size:19px;font-weight:800;color:var(--ink);line-height:1.25}
+.ins-r{margin:8px 0 0;font-size:12px;color:var(--ink-3);line-height:1.5}
+
+.ins-money{margin:16px 0 0;background:#fff;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.ins-money-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  padding:14px 16px;border-bottom:1px solid var(--line-2);font-size:15px;color:var(--ink-2);
+}
+.ins-money-row:last-child{border-bottom:0}
+.ins-money-row b{font-family:var(--f-disp);font-size:20px;font-weight:800;color:var(--ink);white-space:nowrap}
+.ins-money-row.is-gap{background:var(--warn-l)}
+.ins-money-row.is-gap b{color:#8a5a00}
+
+@media (max-width:700px){
+  .ins-grid{grid-template-columns:1fr}
+  .ins-money-row{flex-direction:column;gap:4px}
+}

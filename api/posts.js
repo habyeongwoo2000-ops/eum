@@ -36,20 +36,46 @@ module.exports = async function handler(req, res) {
 
       const from = (page - 1) * PER_PAGE;
       const me = A.currentUser(req);
+      const canSeeAll = !!(me && me.isAdmin);
 
-      // 비공개 글은 글쓴이 본인과 관리자에게만 보입니다. 목록을 만드는
-      // 이 시점에 걸러내므로, 다른 사람 화면에는 아예 나타나지 않습니다.
-      let filter = '&is_private=eq.false';
-      if (me && me.isAdmin) {
-        filter = '';                                            // 관리자는 전부 봅니다
-      } else if (me) {
-        filter = '&or=(is_private.eq.false,user_id.eq.' + encodeURIComponent(me.uid) + ')';
+      // 검색어. PostgREST 의 ilike 패턴에서 뜻을 갖는 글자를 막아 둡니다.
+      const term = String(q.q || '').trim().slice(0, 60).replace(/[%_*,()]/g, ' ').trim();
+
+      /* 비공개 글도 목록에는 남깁니다. 자물쇠만 보이고 내용은 내려보내지 않으므로
+         "언제 누가 비공개로 물었다"는 사실만 보이고 글 내용은 새지 않습니다.
+         다만 검색할 때는 남의 비공개 글을 아예 빼 둡니다. 검색어가 걸리는지
+         아닌지로 내용을 한 글자씩 알아낼 수 있기 때문입니다. */
+      let filter = '';
+      if (term) {
+        if (canSeeAll) filter = '';
+        else if (me) filter = '&or=(is_private.eq.false,user_id.eq.' + encodeURIComponent(me.uid) + ')';
+        else filter = '&is_private=eq.false';
+        // 원문에서 찾습니다. 번역본은 사람마다 보는 언어가 달라 기준이 흔들립니다.
+        filter += '&orig_body=ilike.*' + encodeURIComponent(term) + '*';
       }
 
       const got = await sbRange(
         'eum_posts?select=' + COLS + filter + '&order=created_at.desc', from, from + PER_PAGE - 1);
 
       const items = (got.rows || []).map(function (r) {
+        const mine = !!(me && me.uid === r.user_id);
+        const priv = !!r.is_private;
+        // 잠긴 글은 본문·답변을 아예 실어 보내지 않습니다. 화면에서 가리는 것만으로는
+        // 개발자도구를 열면 그대로 보입니다.
+        const locked = priv && !mine && !canSeeAll;
+
+        if (locked) {
+          return {
+            id: r.id,
+            at: r.created_at,
+            username: r.username,
+            isPrivate: true,
+            locked: true,
+            mine: false,
+            answered: !!r.answer
+          };
+        }
+
         return {
           id: r.id,
           at: r.created_at,
@@ -59,15 +85,18 @@ module.exports = async function handler(req, res) {
           answer: r.answer ? pickText(r.answer, lang) : '',
           src: r.src || '',
           checked: r.checked || '',
-          isPrivate: !!r.is_private,
-          mine: !!(me && me.uid === r.user_id)
+          isPrivate: priv,
+          locked: false,
+          mine: mine,
+          answered: !!r.answer
         };
       });
 
-      const pages = Math.max(1, Math.ceil((got.total || 0) / PER_PAGE));
+      const total = got.total || 0;
+      const pages = Math.max(1, Math.ceil(total / PER_PAGE));
       return res.status(200).json({
-        items: items, page: page, pages: pages, total: got.total || 0, perPage: PER_PAGE,
-        isAdmin: !!(me && me.isAdmin)
+        items: items, page: page, pages: pages, total: total, perPage: PER_PAGE,
+        q: term, isAdmin: canSeeAll
       });
     }
 

@@ -108,13 +108,31 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
         <a class="btn btn-go" href="login.html" data-i18n="boardLoginBtn">로그인하고 글쓰기</a>
       </div>
 
+      <!-- 목록 머리 — 좁은 화면에서는 숨깁니다 -->
+      <div class="board-thead" aria-hidden="true">
+        <span class="bt-no" data-i18n="boardColNo">번호</span>
+        <span class="bt-q" data-i18n="boardColTitle">제목</span>
+        <span class="bt-user" data-i18n="boardColUser">글쓴이</span>
+        <span class="bt-at" data-i18n="boardColAt">작성일</span>
+      </div>
+
       <div class="board-list" id="boardList"></div>
 
       <nav class="pager" id="boardPager" hidden aria-label="page">
-        <button type="button" class="btn btn-ghost btn-sm" id="pagePrev" data-i18n="boardPrev">이전</button>
-        <span class="pager-now" id="pageNow">1 / 1</span>
-        <button type="button" class="btn btn-ghost btn-sm" id="pageNext" data-i18n="boardNext">다음</button>
+        <button type="button" class="pg-arrow" id="pagePrev" data-i18n-aria="boardPrev" aria-label="이전">‹</button>
+        <span class="pg-nums" id="pageNums"></span>
+        <button type="button" class="pg-arrow" id="pageNext" data-i18n-aria="boardNext" aria-label="다음">›</button>
       </nav>
+
+      <!-- 검색 — 원문 기준으로 찾습니다 -->
+      <form class="board-search" id="boardSearch" role="search">
+        <label class="sr" for="boardQ" data-i18n="boardSearchLabel">게시판 검색</label>
+        <input type="search" id="boardQ" maxlength="60" placeholder="검색어를 넣으세요"
+               data-i18n-ph="boardSearchPh" autocapitalize="off" autocorrect="off">
+        <button type="submit" class="btn btn-go btn-sm" data-i18n="boardSearchBtn">찾기</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="boardQClear" hidden data-i18n="boardSearchClear">전체 보기</button>
+      </form>
+      <p class="board-found" id="boardFound" hidden></p>
     </div>
   </section>
 
