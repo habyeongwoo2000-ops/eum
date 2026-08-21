@@ -108,6 +108,7 @@
     syncStick();                         // 라벨 길이가 바뀌면 헤더 높이도 바뀝니다
     if (shown('#payResult')) calcPay();
     if (shown('#insResult')) calcIns();
+    if (shown('#eligResult')) calcElig();
     if (shown('#ddayResult')) calcDday();
     if (shown('#quizResult')) showQuizResult();
     clearThread();
@@ -334,6 +335,140 @@
     var v = Math.round(n);
     try { return v.toLocaleString('ko-KR') + (T.wonUnit || '원'); }
     catch (e) { return String(v) + (T.wonUnit || '원'); }
+  }
+
+  /* ---------- 출국 정산 적격 판정 ---------- */
+  /* 계속근로기간을 달 수로 셉니다. 「근로자퇴직급여 보장법」의 1년은 달을 기준으로
+     보므로 날 수가 아니라 달 수로 비교합니다. 위 calcIns 는 보험료 어림을 위해
+     날 수(INS_MIN_DAYS)를 쓰지만, 자격 판정은 달 기준이 맞습니다.
+     예) 2025-03-10 입사 → 2026-03-09 는 11개월(1년 미만), 03-10 은 12개월(1년 이상). */
+  function monthsWorked(from, to) {
+    var m = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
+    if (to.getDate() < from.getDate()) m -= 1;
+    return m;
+  }
+
+  function radioVal(name) {
+    var n = document.querySelector('input[name="' + name + '"]:checked');
+    return n ? n.value : '';
+  }
+
+  /* 판정 한 줄을 카드로 그립니다. kind 는 ok / warn / no.
+     상태는 색만으로 말하지 않습니다 — 레일 + 배지 + 글자를 함께 씁니다. */
+  function verdictCard(name, kind, body, where) {
+    var card = el('div', 'pay-item is-' + (kind === 'no' ? 'stop' : kind));
+    var h = el('h4');
+    h.appendChild(el('span', 'pay-check', kind === 'ok' ? '\u2713' : (kind === 'warn' ? '!' : '\u00d7')));
+    h.appendChild(el('span', null, name));
+    card.appendChild(h);
+    var E = T.pyElig;
+    card.appendChild(el('p', 'pay-verdict',
+      kind === 'ok' ? E.vOk : (kind === 'warn' ? E.vWarn : E.vNo)));
+    card.appendChild(el('p', null, body));
+    if (where) card.appendChild(el('p', 'pay-where', where));
+    return card;
+  }
+
+  /* 들어온 날 · 마지막 근무일은 위 보험 계산기와 같은 뜻이라 값을 서로 맞춰 둡니다.
+     사용자가 같은 날짜를 두 번 넣지 않게 하려는 것뿐이고, 저장 키도 하나만 씁니다. */
+  function mirrorDates(fromSel, toSel, key) {
+    var a = $(fromSel), b = $(toSel);
+    if (!a || !b) return;
+    on(fromSel, 'change', function () {
+      b.value = a.value;
+      save(key, a.value);
+    });
+  }
+
+  function calcElig() {
+    var box = $('#eligVerdicts');
+    var E = T.pyElig;
+    if (!box || !E) return;
+
+    var startV = $('#eligStart') ? $('#eligStart').value : '';
+    var endV = $('#eligEnd') ? $('#eligEnd').value : '';
+    var exitV = $('#exitDate') ? $('#exitDate').value : '';
+    var moved = radioVal('pyMoved');
+    var hours = radioVal('pyHours');
+    var nat = radioVal('pyNat');
+    var type = radioVal('pyType');
+
+    save('insStart', startV); save('insEnd', endV);
+    save('payMoved', moved); save('payHours', hours);
+    save('payNat', nat); save('payType', type);
+
+    $('#eligResult').hidden = false;
+    var tenureEl = $('#eligTenure');
+    var months = null;
+
+    if (startV) {
+      var start = midnight(new Date(startV + 'T00:00:00'));
+      /* 마지막 근무일이 비어 있으면 출국 예정일까지, 그것도 없으면 오늘까지 셉니다. */
+      var end = endV ? midnight(new Date(endV + 'T00:00:00'))
+                     : (exitV ? midnight(new Date(exitV + 'T00:00:00')) : today());
+      if (end < start) {
+        tenureEl.className = 'callout is-stop';
+        tenureEl.textContent = E.badDates;
+        box.innerHTML = '';
+        return;
+      }
+      months = monthsWorked(start, end);
+    }
+
+    var over1y = months !== null && months >= 12;
+    var nearly = months !== null && months >= 10 && months < 12;
+
+    if (months === null) {
+      tenureEl.className = 'callout is-warn';
+      tenureEl.textContent = E.needHire;
+    } else {
+      var y = Math.floor(months / 12), mm = months % 12;
+      var line = y > 0 ? E.tenureYM.replace('{y}', y).replace('{m}', mm)
+                       : E.tenureM.replace('{m}', months);
+      tenureEl.className = 'callout' + (over1y ? '' : (nearly ? ' is-warn' : ' is-stop'));
+      tenureEl.textContent = line + ' ' +
+        (over1y ? E.tenureOver : (nearly ? E.tenureNear : E.tenureUnder));
+    }
+
+    box.innerHTML = '';
+    var I = E.items;
+
+    /* 1) 출국만기보험금 — 한 사업장에서 계속 1년 이상이어야 근로자에게 갑니다.
+          1년 미만이면 그 사업장 몫은 사업주에게 귀속됩니다
+          (외국인고용법 시행령 제21조 제2항 제2호 단서). */
+    var matKind, matBody;
+    if (over1y) { matKind = 'ok'; matBody = I.mat.ok; }
+    else if (moved === 'prevOver') { matKind = 'warn'; matBody = I.mat.prevOver; }
+    else if (moved === 'unsure' || months === null) { matKind = 'warn'; matBody = I.mat.unsure; }
+    else { matKind = 'no'; matBody = I.mat.no; }
+    if (matKind === 'ok') {
+      matBody += ' ' + (type === 'change' ? I.mat.typeChange
+                     : (type === 'reentry' ? I.mat.typeReentry : I.mat.typeLeave));
+    }
+    box.appendChild(verdictCard(I.mat.n, matKind, matBody, I.mat.w));
+
+    /* 2) 퇴직금 차액 — 계속근로 1년 이상 + 4주 평균 1주 15시간 이상
+          (근로자퇴직급여 보장법 제4조 제1항). 위 계산기의 차액 칸과 짝입니다. */
+    var sevKind, sevBody;
+    if (over1y && hours === 'yes') { sevKind = 'ok'; sevBody = I.sev.ok; }
+    else if (over1y && hours === 'unsure') { sevKind = 'warn'; sevBody = I.sev.hoursUnsure; }
+    else if (over1y && hours === 'no') { sevKind = 'no'; sevBody = I.sev.hoursNo; }
+    else if (moved === 'prevOver' || moved === 'unsure') { sevKind = 'warn'; sevBody = I.sev.prevOver; }
+    /* 입사일을 모르면 판정할 수 없습니다. '대상 아님'으로 단정하지 않습니다. */
+    else if (months === null) { sevKind = 'warn'; sevBody = I.sev.noDate; }
+    else { sevKind = 'no'; sevBody = I.sev.no; }
+    box.appendChild(verdictCard(I.sev.n, sevKind, sevBody, I.sev.w));
+
+    /* 3) 귀국비용보험 — 근로자가 낸 돈이라 근속기간과 무관하게 돌려받습니다
+          (시행령 제22조). 국가군에 따라 납부액이 다릅니다. */
+    var amt = nat === 'g3' ? E.amt3 : (nat === 'g2' ? E.amt2 : E.amt1);
+    box.appendChild(verdictCard(I.ret.n, 'ok', I.ret.ok.replace('{amt}', amt), I.ret.w));
+
+    /* 4) 국민연금 반환일시금 — E-9 체류자격은 상호주의와 무관하게 대상입니다. */
+    box.appendChild(verdictCard(I.pen.n, 'ok', I.pen.ok, I.pen.w));
+
+    /* 5) 못 받은 임금·수당 — 출국 뒤에도 3년 안에 청구할 수 있습니다 (근로기준법 제49조). */
+    box.appendChild(verdictCard(I.wage.n, 'warn', I.wage.ok, I.wage.w));
   }
 
   function calcIns() {
@@ -1495,6 +1630,36 @@
         $('#insForm').reset();
         $('#insResult').hidden = true;
         drop('insWage'); drop('insStart'); drop('insEnd');
+      });
+    }
+
+    // 출국 정산 적격 판정
+    if ($('#eligForm')) {
+      var es = load('insStart'), ee = load('insEnd');
+      if (es) $('#eligStart').value = es;
+      if (ee) $('#eligEnd').value = ee;
+      [['pyMoved', 'payMoved'], ['pyHours', 'payHours'],
+       ['pyNat', 'payNat'], ['pyType', 'payType']].forEach(function (pair) {
+        var v = load(pair[1]);
+        if (!v) return;
+        var n = document.querySelector('input[name="' + pair[0] + '"][value="' + v + '"]');
+        if (n) n.checked = true;
+      });
+
+      // 두 카드의 날짜 칸을 서로 맞춰 둡니다 (같은 뜻이라 두 번 넣을 필요가 없습니다)
+      mirrorDates('#eligStart', '#insStart', 'insStart');
+      mirrorDates('#eligEnd', '#insEnd', 'insEnd');
+      mirrorDates('#insStart', '#eligStart', 'insStart');
+      mirrorDates('#insEnd', '#eligEnd', 'insEnd');
+
+      // 입사일과 답이 모두 남아 있을 때만 지난 결과를 되살립니다
+      if (es && load('payMoved')) calcElig();
+
+      on('#eligForm', 'submit', function (e) { e.preventDefault(); calcElig(); });
+      on('#eligReset', 'click', function () {
+        $('#eligForm').reset();
+        $('#eligResult').hidden = true;
+        ['payMoved', 'payHours', 'payNat', 'payType'].forEach(function (k) { drop(k); });
       });
     }
 

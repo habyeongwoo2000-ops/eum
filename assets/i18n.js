@@ -4,10 +4,10 @@
 
 const CHECKED_ON = '2026-08-10';
 /* 출국 정산 항목은 공식 자료로 따로 확인한 날짜입니다. */
-const PAY_CHECKED = '2026-08-13';
+const PAY_CHECKED = '2026-08-21';
 /* 법률 자문 안내 항목을 공식 자료로 확인한 날짜입니다. */
 const LEGAL_CHECKED = '2026-08-13';
-const PAY_SRC = '외국인근로자의 고용 등에 관한 법률 제13조·제15조, 같은 법 시행령 제21조·제22조 · 근로기준법 제49조';
+const PAY_SRC = '외국인근로자의 고용 등에 관한 법률 제13조·제15조, 같은 법 시행령 제21조·제22조 · 근로자퇴직급여 보장법 제4조 · 근로기준법 제49조 · 국민연금법 제77조·제126조';
 
 const I18N = {
 
@@ -146,15 +146,91 @@ ko: {
   pyMsgOk: '아직 여유가 있습니다. 여권, 외국인등록증, 본인 명의 통장 사본을 미리 챙겨 두세요.',
   pyMsgWarn: '신청 기한이 곧입니다. 삼성화재 외국인근로자보험 전용 콜센터 1600-0266으로 오늘 전화하세요.',
   pyMsgOver: '권장 기한이 지났습니다. 출국한 뒤에도 신청할 수 있지만 지급이 늦어집니다. 1600-0266이나 고용센터에 바로 연락하세요.',
-  pyListTitle: '떠나기 전에 확인할 네 가지',
+  pyListTitle: '떠나기 전에 확인할 다섯 가지',
   pyItems: [
     { t: '출국만기보험 (퇴직금)', w: '회사가 매달 넣어 둔 돈입니다. 한 사업장에서 1년 이상 일했다면 본인이 청구합니다.', r: '삼성화재 전용 콜센터 1600-0266 · 출국한 때부터 14일 이내 지급' },
     { t: '퇴직금과의 차액', w: '출국만기보험금이 법에서 정한 퇴직금보다 적으면, 그 차액은 회사가 따로 줘야 합니다.', r: '회사에 먼저 요청 · 주지 않으면 1350 상담' },
     { t: '못 받은 임금과 수당', w: '밀린 임금, 연장·야간·휴일수당, 쓰지 못한 연차수당은 출국한 뒤에도 청구할 수 있습니다.', r: '지방고용노동관서 진정 · 1350 · 3년 안에' },
-    { t: '귀국비용보험', w: '입국한 뒤에 본인이 낸 돈입니다. 출국할 때 돌려받습니다.', r: '삼성화재 전용 콜센터 1600-0266' }
+    { t: '귀국비용보험', w: '입국한 뒤에 본인이 낸 돈입니다. 출국할 때 돌려받습니다.', r: '삼성화재 전용 콜센터 1600-0266' },
+    { t: '국민연금 반환일시금', w: 'E-9 체류자격이면 국적과 관계없이 받을 수 있습니다. 회사와 본인이 각각 4.5%씩 낸 돈입니다.', r: '국민연금공단 1355 · 출국할 때 청구' }
   ],
   pyLimit: '보험금은 받을 사유가 생긴 날부터 3년 안에 청구해야 합니다. 3년이 지나면 청구권이 사라지고 한국산업인력공단으로 넘어갑니다.',
   pyNoCalc: '이 서비스는 금액을 계산해 주지 않습니다. 정확한 금액은 전용 콜센터 1600-0266이나 관할 고용센터에서 확인하세요.',
+  pyEligBtn: '받을 수 있는지 보기',
+  pyEligTitle: '내가 받을 수 있는지 확인하기',
+  pyEligLead: '근속 기간, 사업장 변경, 주 근로시간, 국적으로 항목별 적격 여부를 봅니다. 판정이 아니라 안내입니다.',
+  pyHireLabel: '지금(마지막) 회사에 들어간 날',
+  pyHireHint: '근로계약서에 적힌 근로 시작일입니다. 이 날짜로 근속 1년을 넘었는지 봅니다.',
+  pyLastLabel: '그 회사에서 마지막으로 일한 날',
+  pyLastHint: '아직 일하고 있으면 비워 두세요. 출국 예정일까지 일하는 것으로 계산합니다.',
+  pyQmoved: '한국에서 회사를 옮긴 적이 있나요?',
+  pyQmovedA: '옮긴 적 없다. 첫 회사에서 계속 일했다',
+  pyQmovedB: '옮긴 적 있고, 이전 회사 중에 1년 넘게 다닌 곳이 있다',
+  pyQmovedC: '옮긴 적 있지만, 이전 회사는 모두 1년이 안 됐다',
+  pyQmovedD: '옮긴 적 있는데 기간이 정확히 기억나지 않는다',
+  pyQhours: '한 주에 보통 15시간 이상 일했나요?',
+  pyQhoursA: '그렇다. 그보다 훨씬 많이 일했다',
+  pyQhoursB: '아니다. 그보다 적게 일했다',
+  pyQhoursC: '잘 모르겠다',
+  pyQnat: '국적',
+  pyQnatA: '중국 · 필리핀 · 인도네시아 · 태국 · 베트남',
+  pyQnatB: '스리랑카',
+  pyQnatC: '그 밖의 나라',
+  pyQtype: '이번 출국은 어떤 경우인가요?',
+  pyQtypeA: '한국을 떠나 본국으로 돌아간다',
+  pyQtypeB: '체류자격을 바꿔 한국에 계속 있는다',
+  pyQtypeC: '성실근로자로 다시 들어올 예정이다',
+  pyVerdictTitle: '항목별 결과',
+  pyDeadlineTitle: '남은 기한',
+  pyElig: {
+    vOk: '받을 수 있습니다', vWarn: '확인이 필요합니다', vNo: '대상이 아닙니다',
+    tenureYM: '지금 회사에서 {y}년 {m}개월 일했습니다.',
+    tenureM: '지금 회사에서 {m}개월 일했습니다.',
+    tenureOver: '한 사업장에서 1년을 넘겼습니다.',
+    tenureNear: '1년이 얼마 남지 않았습니다. 하루라도 모자라면 출국만기보험금은 회사 몫이 됩니다. 출국 날짜를 미룰 수 있는지 꼭 확인하세요.',
+    tenureUnder: '1년이 안 됩니다.',
+    needHire: '입사한 날을 넣으면 항목별로 받을 수 있는지 알려 드립니다.',
+    badDates: '마지막 근무일이 입사일보다 앞설 수 없습니다. 날짜를 다시 확인해 주세요.',
+    amt1: '40만 원', amt2: '50만 원', amt3: '60만 원',
+    items: {
+      mat: {
+        n: '출국만기보험금 (퇴직금)',
+        w: '삼성화재 전용 콜센터 1600-0266 · 근거: 외국인고용법 제13조, 시행령 제21조',
+        ok: '한 사업장에서 1년 이상 일했으므로 본인이 청구합니다. 회사가 매달 임금의 8.3%를 넣어 둔 돈입니다.',
+        prevOver: '지금 회사는 1년이 안 되지만, 1년 넘게 다닌 이전 회사가 있습니다. 그 회사 몫은 따로 남아 있습니다. 1600-0266에 다녔던 사업장을 하나씩 확인하세요.',
+        unsure: '사업장별로 1년을 채웠는지에 따라 갈립니다. 1600-0266에 전화해 다녔던 회사 전부를 확인하세요.',
+        no: '한 사업장에서 1년을 채우지 못하면 그 돈은 회사에 돌아갑니다. 출국 전에 1년을 채울 수 있는지 회사와 고용센터에 확인해 보세요.',
+        typeLeave: '출국이 확인된 뒤 14일 안에 본국 계좌나 공항 환전소로 받습니다.',
+        typeChange: '체류자격을 바꾸는 경우는 출국하지 않아도 국내에서 받을 수 있습니다.',
+        typeReentry: '성실근로자 재입국도 일단 출국해야 지급됩니다. 나가기 전에 신청을 마쳐 두세요.'
+      },
+      sev: {
+        n: '퇴직금 차액',
+        w: '회사에 먼저 요청 · 주지 않으면 1350 · 근거: 근로자퇴직급여 보장법 제4조',
+        ok: '출국만기보험금이 법에서 정한 퇴직금보다 적으면 그 차액은 회사가 따로 줘야 합니다. 두 금액을 비교해 보세요.',
+        hoursUnsure: '근속은 1년을 넘겼습니다. 4주 평균으로 한 주 15시간 이상 일했다면 차액을 받을 수 있습니다. 근로계약서의 근로시간을 확인하세요.',
+        hoursNo: '4주 평균 한 주 15시간에 못 미치면 법정 퇴직금 대상이 아닙니다. 실제로는 더 많이 일했다면 1350에 확인하세요.',
+        prevOver: '지금 회사는 1년이 안 됩니다. 1년 넘게 다닌 이전 회사가 있다면 그 회사에 차액을 요청할 수 있습니다.',
+        noDate: '입사한 날을 넣으면 퇴직금 대상인지 알려 드립니다. 근로계약서나 고용센터에서 근로 시작일을 확인하세요.',
+        no: '계속근로가 1년이 안 되면 법정 퇴직금 대상이 아닙니다.'
+      },
+      ret: {
+        n: '귀국비용보험',
+        w: '삼성화재 전용 콜센터 1600-0266 · 근거: 외국인고용법 제15조, 시행령 제22조',
+        ok: '입국한 뒤 본인이 낸 돈이라 근속 기간과 관계없이 돌려받습니다. 국적 기준 납부액은 {amt}입니다. 1년이 안 됐어도 낸 돈은 전액 나옵니다.'
+      },
+      pen: {
+        n: '국민연금 반환일시금',
+        w: '국민연금공단 1355 · 근거: 국민연금법 제77조·제126조',
+        ok: 'E-9 체류자격은 국적과 관계없이 반환일시금을 받을 수 있습니다. 회사와 본인이 각각 4.5%씩 낸 돈이 쌓여 있습니다. 국민연금에 가입된 사업장이었는지 1355에 확인하세요.'
+      },
+      wage: {
+        n: '못 받은 임금·수당',
+        w: '지방고용노동관서 진정 · 1350 · 근거: 근로기준법 제49조 (3년)',
+        ok: '밀린 임금, 연장·야간·휴일수당, 쓰지 못한 연차수당이 있는지 확인하세요. 출국한 뒤에도 청구할 수 있지만 3년이 지나면 권리가 사라집니다.'
+      }
+    }
+  },
   ckRead: '사진에서 읽기',
   ckReading: '사진을 읽고 있습니다...',
   ckReadOk: '사진에서 읽은 내용',
@@ -465,15 +541,91 @@ en: {
   pyMsgOk: 'You still have room. Get your passport, alien registration card and a copy of your own bankbook ready.',
   pyMsgWarn: 'The claim deadline is very close. Call the Samsung Fire foreign worker insurance line at 1600-0266 today.',
   pyMsgOver: 'The recommended deadline has passed. You can still claim after leaving, but payment will be slower. Contact 1600-0266 or your Employment Center now.',
-  pyListTitle: 'Four things to check before you leave',
+  pyListTitle: 'Five things to check before you leave',
   pyItems: [
     { t: 'Departure guarantee insurance (severance)', w: 'Money your employer paid in every month. If you worked at one workplace for a year or more, you claim it yourself.', r: 'Samsung Fire line 1600-0266 · paid within 14 days of your departure' },
     { t: 'The gap against legal severance', w: 'If the insurance payout is smaller than the severance pay set by law, your employer must pay you the difference.', r: 'Ask the employer first · if refused, call 1350' },
     { t: 'Unpaid wages and allowances', w: 'Unpaid wages, overtime, night and holiday pay, and unused annual leave pay can still be claimed after you leave.', r: 'File at the local labor office · 1350 · within 3 years' },
-    { t: 'Return cost insurance', w: 'Money you paid yourself after arriving. You get it back when you leave.', r: 'Samsung Fire line 1600-0266' }
+    { t: 'Return cost insurance', w: 'Money you paid yourself after arriving. You get it back when you leave.', r: 'Samsung Fire line 1600-0266' },
+    { t: 'National Pension lump-sum refund', w: 'With an E-9 status you can claim this whatever your nationality. Your employer and you each paid in 4.5%.', r: 'National Pension Service 1355 · claim on departure' }
   ],
   pyLimit: 'Insurance must be claimed within 3 years of the day the entitlement arises. After 3 years the right is lost and the money passes to HRD Korea.',
   pyNoCalc: 'This service does not calculate amounts. Confirm the exact figure with the insurance line 1600-0266 or your Employment Center.',
+  pyEligBtn: 'Show what I can claim',
+  pyEligTitle: 'Check what you can claim',
+  pyEligLead: 'Five answers show, item by item, whether you qualify and what to prepare. This is guidance, not a decision.',
+  pyHireLabel: 'Day you started at your current (or last) workplace',
+  pyHireHint: 'The start date written on your labour contract. We use it to see whether you pass one year at that workplace.',
+  pyLastLabel: 'Last day you worked there',
+  pyLastHint: 'Leave this empty if you are still working. We will count up to your departure date.',
+  pyQmoved: 'Have you changed workplaces in Korea?',
+  pyQmovedA: 'No. I stayed at my first workplace',
+  pyQmovedB: 'Yes, and I worked more than a year at one of the earlier ones',
+  pyQmovedC: 'Yes, but every earlier workplace was under a year',
+  pyQmovedD: 'Yes, but I do not remember the exact periods',
+  pyQhours: 'Did you usually work 15 hours or more a week?',
+  pyQhoursA: 'Yes, much more than that',
+  pyQhoursB: 'No, less than that',
+  pyQhoursC: 'I am not sure',
+  pyQnat: 'Nationality',
+  pyQnatA: 'China · Philippines · Indonesia · Thailand · Vietnam',
+  pyQnatB: 'Sri Lanka',
+  pyQnatC: 'Any other country',
+  pyQtype: 'Which describes this departure?',
+  pyQtypeA: 'I am leaving Korea and going home',
+  pyQtypeB: 'I am changing visa status and staying in Korea',
+  pyQtypeC: 'I plan to re-enter as a returning committed worker',
+  pyVerdictTitle: 'Result for each item',
+  pyDeadlineTitle: 'Time left',
+  pyElig: {
+    vOk: 'You can claim this', vWarn: 'Needs checking', vNo: 'Not eligible',
+    tenureYM: 'You worked {y} year(s) and {m} month(s) at this workplace.',
+    tenureM: 'You worked {m} month(s) at this workplace.',
+    tenureOver: 'That passes one year at a single workplace.',
+    tenureNear: 'One year is close. If you fall short by even a day, the departure guarantee money goes to your employer instead. Check whether your departure date can be moved.',
+    tenureUnder: 'That is under one year.',
+    needHire: 'Add the day you started and we will show what you can claim.',
+    badDates: 'Your last working day cannot come before your start date. Please check the dates.',
+    amt1: '400,000 KRW', amt2: '500,000 KRW', amt3: '600,000 KRW',
+    items: {
+      mat: {
+        n: 'Departure guarantee insurance (severance)',
+        w: 'Samsung Fire line 1600-0266 · Basis: Foreign Workers Employment Act art.13, Decree art.21',
+        ok: 'You worked a year or more at one workplace, so you claim this yourself. It is 8.3% of your monthly wage that your employer paid in each month.',
+        prevOver: 'Your current workplace is under a year, but an earlier one lasted more than a year. That earlier payout is still held separately. Call 1600-0266 and check each workplace you worked at.',
+        unsure: 'It depends on whether you completed a year at each separate workplace. Call 1600-0266 and check every workplace you worked at.',
+        no: 'If you do not complete one year at a workplace, that money returns to the employer. Ask your employer and Employment Center whether you can reach one year before you leave.',
+        typeLeave: 'It is paid within 14 days after your departure is confirmed, to your home-country account or an airport exchange desk.',
+        typeChange: 'If you are changing visa status you can receive it inside Korea without leaving.',
+        typeReentry: 'Returning committed workers must still depart before it is paid. Finish the claim before you go.'
+      },
+      sev: {
+        n: 'Severance top-up',
+        w: 'Ask your employer first · call 1350 if refused · Basis: Employee Retirement Benefit Security Act art.4',
+        ok: 'If the insurance payout is less than statutory severance, your employer owes you the difference. Compare the two figures.',
+        hoursUnsure: 'You passed one year. If your hours averaged 15 or more a week over four weeks, you can claim the difference. Check the hours on your labour contract.',
+        hoursNo: 'Below an average of 15 hours a week over four weeks, statutory severance does not apply. If you actually worked more, check with 1350.',
+        prevOver: 'Your current workplace is under a year. If an earlier workplace lasted more than a year, you can ask that employer for the difference.',
+        noDate: 'Add the day you started and we will tell you whether statutory severance applies. Check the start date on your labour contract or with your Employment Center.',
+        no: 'Statutory severance needs one year of continuous service.'
+      },
+      ret: {
+        n: 'Return cost insurance',
+        w: 'Samsung Fire line 1600-0266 · Basis: Foreign Workers Employment Act art.15, Decree art.22',
+        ok: 'This is money you paid yourself after arriving, so length of service does not matter. For your nationality the contribution is {amt}. Even under a year, you get all of it back.'
+      },
+      pen: {
+        n: 'National Pension lump-sum refund',
+        w: 'National Pension Service 1355 · Basis: National Pension Act art.77 and art.126',
+        ok: 'An E-9 status qualifies for the lump-sum refund whatever your nationality. Your employer and you each paid 4.5%. Ask 1355 whether your workplace was enrolled.'
+      },
+      wage: {
+        n: 'Unpaid wages and allowances',
+        w: 'File with your local labour office · 1350 · Basis: Labour Standards Act art.49 (3 years)',
+        ok: 'Check for unpaid wages, overtime, night and holiday premiums, and unused annual leave pay. You can still claim after leaving, but the right disappears after 3 years.'
+      }
+    }
+  },
   ckRead: 'Read from photo',
   ckReading: 'Reading the photo...',
   ckReadOk: 'Read from your photo',
@@ -784,15 +936,91 @@ vi: {
   pyMsgOk: 'Bạn vẫn còn thời gian. Hãy chuẩn bị hộ chiếu, thẻ đăng ký người nước ngoài và bản sao sổ tài khoản mang tên bạn.',
   pyMsgWarn: 'Sắp hết hạn nộp đơn. Hãy gọi ngay hôm nay tới tổng đài bảo hiểm dành cho lao động nước ngoài của Samsung Fire: 1600-0266.',
   pyMsgOver: 'Đã quá thời hạn khuyến nghị. Bạn vẫn có thể nộp đơn sau khi về nước nhưng tiền sẽ về chậm hơn. Hãy liên hệ ngay 1600-0266 hoặc Trung tâm việc làm.',
-  pyListTitle: 'Bốn điều cần kiểm tra trước khi về',
+  pyListTitle: 'Năm điều cần kiểm tra trước khi về',
   pyItems: [
     { t: 'Bảo hiểm mãn hạn xuất cảnh (trợ cấp thôi việc)', w: 'Là khoản tiền công ty đóng hằng tháng. Nếu bạn làm ở một nơi từ 1 năm trở lên, chính bạn là người nộp đơn nhận.', r: 'Tổng đài Samsung Fire 1600-0266 · chi trả trong 14 ngày kể từ khi xuất cảnh' },
     { t: 'Phần chênh lệch với trợ cấp thôi việc', w: 'Nếu tiền bảo hiểm ít hơn mức trợ cấp thôi việc theo luật, công ty phải trả phần chênh lệch cho bạn.', r: 'Yêu cầu công ty trước · nếu không trả thì gọi 1350' },
     { t: 'Lương và phụ cấp chưa nhận', w: 'Lương còn nợ, tiền làm thêm, làm đêm, làm ngày nghỉ và tiền phép năm chưa dùng vẫn có thể đòi sau khi về nước.', r: 'Khiếu nại tại cơ quan lao động địa phương · 1350 · trong vòng 3 năm' },
-    { t: 'Bảo hiểm chi phí hồi hương', w: 'Là tiền chính bạn đã đóng sau khi nhập cảnh. Bạn nhận lại khi xuất cảnh.', r: 'Tổng đài Samsung Fire 1600-0266' }
+    { t: 'Bảo hiểm chi phí hồi hương', w: 'Là tiền chính bạn đã đóng sau khi nhập cảnh. Bạn nhận lại khi xuất cảnh.', r: 'Tổng đài Samsung Fire 1600-0266' },
+    { t: 'Hoàn trả một lần Bảo hiểm hưu trí quốc gia', w: 'Với tư cách E-9 bạn được nhận bất kể quốc tịch. Công ty và bạn mỗi bên đã đóng 4,5%.', r: 'Cơ quan Hưu trí quốc gia 1355 · yêu cầu khi xuất cảnh' }
   ],
   pyLimit: 'Tiền bảo hiểm phải được yêu cầu trong vòng 3 năm kể từ ngày phát sinh quyền nhận. Quá 3 năm thì mất quyền và tiền chuyển về Cơ quan Phát triển Nhân lực Hàn Quốc.',
   pyNoCalc: 'Dịch vụ này không tính số tiền. Hãy xác nhận con số chính xác qua tổng đài 1600-0266 hoặc Trung tâm việc làm.',
+  pyEligBtn: 'Xem tôi được nhận gì',
+  pyEligTitle: 'Kiểm tra bạn được nhận gì',
+  pyEligLead: 'Năm câu trả lời sẽ cho biết từng khoản bạn có đủ điều kiện hay không và cần chuẩn bị gì. Đây là hướng dẫn, không phải phán quyết.',
+  pyHireLabel: 'Ngày bạn bắt đầu ở công ty hiện tại (hoặc cuối cùng)',
+  pyHireHint: 'Ngày bắt đầu làm việc ghi trong hợp đồng lao động. Chúng tôi dùng ngày này để xem bạn có đủ một năm tại công ty đó.',
+  pyLastLabel: 'Ngày làm việc cuối cùng tại công ty đó',
+  pyLastHint: 'Nếu bạn vẫn đang làm, hãy để trống. Chúng tôi sẽ tính đến ngày xuất cảnh dự kiến.',
+  pyQmoved: 'Bạn đã từng chuyển công ty ở Hàn Quốc chưa?',
+  pyQmovedA: 'Chưa. Tôi làm liên tục ở công ty đầu tiên',
+  pyQmovedB: 'Có, và một trong các công ty trước tôi làm hơn một năm',
+  pyQmovedC: 'Có, nhưng các công ty trước đều dưới một năm',
+  pyQmovedD: 'Có, nhưng tôi không nhớ chính xác thời gian',
+  pyQhours: 'Bạn thường làm 15 giờ trở lên mỗi tuần không?',
+  pyQhoursA: 'Đúng, tôi làm nhiều hơn thế',
+  pyQhoursB: 'Không, tôi làm ít hơn',
+  pyQhoursC: 'Tôi không rõ',
+  pyQnat: 'Quốc tịch',
+  pyQnatA: 'Trung Quốc · Philippines · Indonesia · Thái Lan · Việt Nam',
+  pyQnatB: 'Sri Lanka',
+  pyQnatC: 'Nước khác',
+  pyQtype: 'Lần xuất cảnh này thuộc trường hợp nào?',
+  pyQtypeA: 'Tôi rời Hàn Quốc và về nước',
+  pyQtypeB: 'Tôi đổi tư cách lưu trú và ở lại Hàn Quốc',
+  pyQtypeC: 'Tôi dự định nhập cảnh lại theo diện lao động trung thành',
+  pyVerdictTitle: 'Kết quả từng khoản',
+  pyDeadlineTitle: 'Thời gian còn lại',
+  pyElig: {
+    vOk: 'Bạn được nhận', vWarn: 'Cần kiểm tra thêm', vNo: 'Không thuộc diện',
+    tenureYM: 'Bạn đã làm {y} năm {m} tháng tại công ty này.',
+    tenureM: 'Bạn đã làm {m} tháng tại công ty này.',
+    tenureOver: 'Như vậy là quá một năm tại cùng một công ty.',
+    tenureNear: 'Sắp đủ một năm. Thiếu dù chỉ một ngày thì tiền bảo hiểm mãn hạn sẽ thuộc về công ty. Hãy hỏi xem có thể dời ngày xuất cảnh không.',
+    tenureUnder: 'Như vậy là chưa đủ một năm.',
+    needHire: 'Hãy nhập ngày vào làm để chúng tôi cho biết bạn được nhận những gì.',
+    badDates: 'Ngày làm việc cuối cùng không thể trước ngày vào làm. Xin kiểm tra lại các ngày.',
+    amt1: '400.000 won', amt2: '500.000 won', amt3: '600.000 won',
+    items: {
+      mat: {
+        n: 'Bảo hiểm mãn hạn xuất cảnh (trợ cấp thôi việc)',
+        w: 'Tổng đài Samsung Fire 1600-0266 · Căn cứ: Luật tuyển dụng lao động nước ngoài Đ.13, Nghị định Đ.21',
+        ok: 'Bạn làm từ một năm trở lên tại một công ty, nên chính bạn yêu cầu khoản này. Đó là 8,3% tiền lương mỗi tháng do công ty đóng vào.',
+        prevOver: 'Công ty hiện tại chưa đủ một năm, nhưng có một công ty trước bạn làm hơn một năm. Khoản của công ty đó vẫn được giữ riêng. Hãy gọi 1600-0266 và kiểm tra từng công ty bạn đã làm.',
+        unsure: 'Điều này phụ thuộc vào việc bạn có đủ một năm ở từng công ty riêng biệt. Hãy gọi 1600-0266 và kiểm tra tất cả công ty bạn đã làm.',
+        no: 'Nếu không đủ một năm tại một công ty, khoản tiền đó trở về công ty. Hãy hỏi công ty và Trung tâm việc làm xem bạn có thể đủ một năm trước khi về không.',
+        typeLeave: 'Tiền được trả trong 14 ngày sau khi xác nhận bạn đã xuất cảnh, vào tài khoản ở nước bạn hoặc quầy đổi tiền tại sân bay.',
+        typeChange: 'Nếu bạn đổi tư cách lưu trú thì có thể nhận trong nước mà không cần xuất cảnh.',
+        typeReentry: 'Lao động trung thành nhập cảnh lại vẫn phải xuất cảnh trước khi được trả. Hãy hoàn tất thủ tục trước khi đi.'
+      },
+      sev: {
+        n: 'Phần chênh lệch trợ cấp thôi việc',
+        w: 'Yêu cầu công ty trước · gọi 1350 nếu bị từ chối · Căn cứ: Luật bảo đảm trợ cấp hưu trí Đ.4',
+        ok: 'Nếu tiền bảo hiểm ít hơn trợ cấp thôi việc theo luật, công ty phải trả phần chênh lệch. Hãy so sánh hai số tiền.',
+        hoursUnsure: 'Bạn đã quá một năm. Nếu bình quân bốn tuần bạn làm từ 15 giờ mỗi tuần trở lên thì được nhận phần chênh lệch. Hãy kiểm tra giờ làm trong hợp đồng.',
+        hoursNo: 'Dưới mức bình quân 15 giờ một tuần trong bốn tuần thì không thuộc diện trợ cấp thôi việc theo luật. Nếu thực tế bạn làm nhiều hơn, hãy hỏi 1350.',
+        prevOver: 'Công ty hiện tại chưa đủ một năm. Nếu có công ty trước làm hơn một năm, bạn có thể yêu cầu công ty đó trả phần chênh lệch.',
+        noDate: 'Hãy nhập ngày vào làm để chúng tôi cho biết bạn có thuộc diện trợ cấp thôi việc. Kiểm tra ngày bắt đầu trên hợp đồng lao động hoặc tại Trung tâm việc làm.',
+        no: 'Trợ cấp thôi việc theo luật cần một năm làm việc liên tục.'
+      },
+      ret: {
+        n: 'Bảo hiểm chi phí hồi hương',
+        w: 'Tổng đài Samsung Fire 1600-0266 · Căn cứ: Luật tuyển dụng lao động nước ngoài Đ.15, Nghị định Đ.22',
+        ok: 'Đây là tiền chính bạn đã đóng sau khi nhập cảnh, nên thời gian làm việc không ảnh hưởng. Theo quốc tịch của bạn, mức đóng là {amt}. Dù chưa đủ một năm, bạn vẫn nhận lại toàn bộ.'
+      },
+      pen: {
+        n: 'Hoàn trả một lần Bảo hiểm hưu trí quốc gia',
+        w: 'Cơ quan Hưu trí quốc gia 1355 · Căn cứ: Luật Hưu trí quốc gia Đ.77, Đ.126',
+        ok: 'Tư cách E-9 được hoàn trả một lần bất kể quốc tịch. Công ty và bạn mỗi bên đã đóng 4,5%. Hãy hỏi 1355 xem công ty của bạn có tham gia hay không.'
+      },
+      wage: {
+        n: 'Tiền lương và phụ cấp chưa nhận',
+        w: 'Nộp đơn tại cơ quan lao động địa phương · 1350 · Căn cứ: Luật tiêu chuẩn lao động Đ.49 (3 năm)',
+        ok: 'Hãy kiểm tra tiền lương còn nợ, tiền làm thêm giờ, làm đêm, ngày lễ và tiền phép năm chưa dùng. Bạn vẫn có thể yêu cầu sau khi về nước, nhưng sau 3 năm thì mất quyền.'
+      }
+    }
+  },
   ckRead: 'Đọc từ ảnh',
   ckReading: 'Đang đọc ảnh...',
   ckReadOk: 'Nội dung đọc được từ ảnh',
@@ -1103,15 +1331,91 @@ th: {
   pyMsgOk: 'ยังพอมีเวลา เตรียมหนังสือเดินทาง บัตรประจำตัวคนต่างด้าว และสำเนาสมุดบัญชีในชื่อของคุณไว้ล่วงหน้า',
   pyMsgWarn: 'ใกล้ครบกำหนดยื่นคำขอแล้ว โทรหาสายด่วนประกันแรงงานต่างชาติของซัมซุงไฟร์ 1600-0266 วันนี้',
   pyMsgOver: 'เลยกำหนดที่แนะนำแล้ว ยังยื่นได้หลังเดินทางออก แต่เงินจะออกช้าลง ติดต่อ 1600-0266 หรือศูนย์จัดหางานทันที',
-  pyListTitle: 'สี่เรื่องที่ต้องตรวจก่อนกลับ',
+  pyListTitle: 'ห้าเรื่องที่ต้องตรวจก่อนกลับ',
   pyItems: [
     { t: 'ประกันครบกำหนดเดินทางออก (เงินชดเชย)', w: 'เป็นเงินที่บริษัทจ่ายสมทบทุกเดือน หากทำงานที่เดียวครบ 1 ปีขึ้นไป คุณเป็นผู้ยื่นขอรับเอง', r: 'สายด่วนซัมซุงไฟร์ 1600-0266 · จ่ายภายใน 14 วันนับจากเดินทางออก' },
     { t: 'ส่วนต่างจากเงินชดเชยตามกฎหมาย', w: 'หากเงินประกันน้อยกว่าเงินชดเชยที่กฎหมายกำหนด บริษัทต้องจ่ายส่วนต่างให้คุณ', r: 'ขอจากบริษัทก่อน · หากไม่จ่ายให้โทร 1350' },
     { t: 'ค่าจ้างและเบี้ยเลี้ยงที่ยังไม่ได้รับ', w: 'ค่าจ้างค้างจ่าย ค่าล่วงเวลา ค่าทำงานกลางคืนและวันหยุด รวมถึงค่าวันลาพักร้อนที่ไม่ได้ใช้ ยังเรียกร้องได้หลังเดินทางกลับ', r: 'ยื่นเรื่องที่สำนักงานแรงงานท้องถิ่น · 1350 · ภายใน 3 ปี' },
-    { t: 'ประกันค่าเดินทางกลับประเทศ', w: 'เป็นเงินที่คุณจ่ายเองหลังเข้าประเทศ และจะได้คืนเมื่อเดินทางออก', r: 'สายด่วนซัมซุงไฟร์ 1600-0266' }
+    { t: 'ประกันค่าเดินทางกลับประเทศ', w: 'เป็นเงินที่คุณจ่ายเองหลังเข้าประเทศ และจะได้คืนเมื่อเดินทางออก', r: 'สายด่วนซัมซุงไฟร์ 1600-0266' },
+    { t: 'เงินคืนก้อนเดียวจากกองทุนบำนาญแห่งชาติ', w: 'ผู้ถือวีซ่า E-9 ขอรับได้ไม่ว่าสัญชาติใด บริษัทและคุณจ่ายฝ่ายละ 4.5%', r: 'กองทุนบำนาญแห่งชาติ 1355 · ยื่นขอเมื่อเดินทางออก' }
   ],
   pyLimit: 'ต้องยื่นขอรับเงินประกันภายใน 3 ปีนับจากวันที่เกิดสิทธิ หากเกิน 3 ปี สิทธิจะหมดไปและเงินจะโอนไปยังสถาบันพัฒนาทรัพยากรมนุษย์เกาหลี',
   pyNoCalc: 'บริการนี้ไม่คำนวณจำนวนเงิน โปรดตรวจสอบยอดที่แน่นอนกับสายด่วน 1600-0266 หรือศูนย์จัดหางาน',
+  pyEligBtn: 'ดูสิ่งที่ฉันขอรับได้',
+  pyEligTitle: 'ตรวจว่าคุณขอรับอะไรได้',
+  pyEligLead: 'ตอบห้าข้อ ระบบจะบอกทีละรายการว่าคุณมีสิทธิหรือไม่ และต้องเตรียมอะไร นี่เป็นคำแนะนำ ไม่ใช่คำวินิจฉัย',
+  pyHireLabel: 'วันที่เริ่มงานที่บริษัทปัจจุบัน (หรือบริษัทสุดท้าย)',
+  pyHireHint: 'วันเริ่มทำงานตามที่ระบุในสัญญาจ้าง เราใช้วันนี้ดูว่าคุณทำงานครบหนึ่งปีที่บริษัทนั้นหรือไม่',
+  pyLastLabel: 'วันทำงานวันสุดท้ายที่บริษัทนั้น',
+  pyLastHint: 'หากยังทำงานอยู่ ให้เว้นว่างไว้ ระบบจะนับถึงวันเดินทางออกที่กำหนด',
+  pyQmoved: 'คุณเคยย้ายบริษัทในเกาหลีหรือไม่',
+  pyQmovedA: 'ไม่เคย ทำงานที่บริษัทแรกมาตลอด',
+  pyQmovedB: 'เคย และมีบริษัทก่อนหน้าที่ทำงานเกินหนึ่งปี',
+  pyQmovedC: 'เคย แต่บริษัทก่อนหน้าทั้งหมดไม่ถึงหนึ่งปี',
+  pyQmovedD: 'เคย แต่จำระยะเวลาไม่แน่ชัด',
+  pyQhours: 'ปกติคุณทำงานสัปดาห์ละ 15 ชั่วโมงขึ้นไปหรือไม่',
+  pyQhoursA: 'ใช่ ทำมากกว่านั้นมาก',
+  pyQhoursB: 'ไม่ใช่ ทำน้อยกว่านั้น',
+  pyQhoursC: 'ไม่แน่ใจ',
+  pyQnat: 'สัญชาติ',
+  pyQnatA: 'จีน · ฟิลิปปินส์ · อินโดนีเซีย · ไทย · เวียดนาม',
+  pyQnatB: 'ศรีลังกา',
+  pyQnatC: 'ประเทศอื่น',
+  pyQtype: 'การเดินทางออกครั้งนี้เป็นกรณีใด',
+  pyQtypeA: 'ออกจากเกาหลีและกลับประเทศ',
+  pyQtypeB: 'เปลี่ยนสถานะการพำนักและอยู่ในเกาหลีต่อ',
+  pyQtypeC: 'จะกลับเข้ามาอีกในฐานะแรงงานที่ทำงานต่อเนื่อง',
+  pyVerdictTitle: 'ผลของแต่ละรายการ',
+  pyDeadlineTitle: 'เวลาที่เหลือ',
+  pyElig: {
+    vOk: 'คุณขอรับได้', vWarn: 'ต้องตรวจสอบเพิ่ม', vNo: 'ไม่เข้าเกณฑ์',
+    tenureYM: 'คุณทำงานที่บริษัทนี้ {y} ปี {m} เดือน',
+    tenureM: 'คุณทำงานที่บริษัทนี้ {m} เดือน',
+    tenureOver: 'ถือว่าเกินหนึ่งปีที่บริษัทเดียว',
+    tenureNear: 'ใกล้ครบหนึ่งปีแล้ว หากขาดแม้เพียงวันเดียว เงินประกันครบกำหนดจะตกเป็นของบริษัท โปรดตรวจสอบว่าเลื่อนวันเดินทางออกได้หรือไม่',
+    tenureUnder: 'ยังไม่ถึงหนึ่งปี',
+    needHire: 'กรอกวันที่เริ่มงาน แล้วเราจะบอกว่าคุณขอรับอะไรได้',
+    badDates: 'วันทำงานวันสุดท้ายต้องไม่มาก่อนวันเริ่มงาน โปรดตรวจสอบวันที่อีกครั้ง',
+    amt1: '400,000 วอน', amt2: '500,000 วอน', amt3: '600,000 วอน',
+    items: {
+      mat: {
+        n: 'ประกันครบกำหนดเดินทางออก (เงินชดเชย)',
+        w: 'สายด่วนซัมซุงไฟร์ 1600-0266 · อ้างอิง: กฎหมายการจ้างแรงงานต่างชาติ ม.13, กฎกระทรวง ม.21',
+        ok: 'คุณทำงานที่บริษัทเดียวครบหนึ่งปีขึ้นไป จึงยื่นขอรับเอง เป็นเงิน 8.3% ของค่าจ้างที่บริษัทสมทบทุกเดือน',
+        prevOver: 'บริษัทปัจจุบันยังไม่ถึงหนึ่งปี แต่มีบริษัทก่อนหน้าที่ทำงานเกินหนึ่งปี เงินส่วนของบริษัทนั้นยังถูกเก็บไว้แยก โปรดโทร 1600-0266 และตรวจสอบทุกบริษัทที่คุณเคยทำงาน',
+        unsure: 'ขึ้นอยู่กับว่าคุณทำงานครบหนึ่งปีในแต่ละบริษัทหรือไม่ โปรดโทร 1600-0266 และตรวจสอบทุกบริษัทที่คุณเคยทำงาน',
+        no: 'หากทำงานที่บริษัทหนึ่งไม่ครบหนึ่งปี เงินนั้นจะกลับไปเป็นของนายจ้าง โปรดสอบถามบริษัทและศูนย์จัดหางานว่าคุณจะทำงานครบหนึ่งปีก่อนกลับได้หรือไม่',
+        typeLeave: 'จ่ายภายใน 14 วันหลังยืนยันการเดินทางออก เข้าบัญชีในประเทศของคุณหรือรับที่จุดแลกเงินในสนามบิน',
+        typeChange: 'หากเปลี่ยนสถานะการพำนัก คุณรับเงินในเกาหลีได้โดยไม่ต้องเดินทางออก',
+        typeReentry: 'แรงงานที่กลับเข้ามาอีกก็ยังต้องเดินทางออกก่อนจึงได้รับเงิน โปรดยื่นเรื่องให้เสร็จก่อนออกเดินทาง'
+      },
+      sev: {
+        n: 'ส่วนต่างเงินชดเชย',
+        w: 'ขอจากบริษัทก่อน · หากปฏิเสธให้โทร 1350 · อ้างอิง: กฎหมายประกันเงินบำเหน็จ ม.4',
+        ok: 'หากเงินประกันน้อยกว่าเงินชดเชยตามกฎหมาย บริษัทต้องจ่ายส่วนต่างให้คุณ โปรดเปรียบเทียบสองจำนวนนี้',
+        hoursUnsure: 'อายุงานของคุณเกินหนึ่งปีแล้ว หากเฉลี่ยสี่สัปดาห์ทำงานสัปดาห์ละ 15 ชั่วโมงขึ้นไป คุณขอรับส่วนต่างได้ โปรดตรวจชั่วโมงงานในสัญญาจ้าง',
+        hoursNo: 'หากเฉลี่ยไม่ถึงสัปดาห์ละ 15 ชั่วโมงในสี่สัปดาห์ จะไม่เข้าเกณฑ์เงินชดเชยตามกฎหมาย หากจริงแล้วทำงานมากกว่านั้น โปรดสอบถาม 1350',
+        prevOver: 'บริษัทปัจจุบันยังไม่ถึงหนึ่งปี หากมีบริษัทก่อนหน้าที่ทำงานเกินหนึ่งปี คุณขอส่วนต่างจากบริษัทนั้นได้',
+        noDate: 'กรอกวันที่เริ่มงาน แล้วเราจะบอกว่าคุณเข้าเกณฑ์เงินชดเชยหรือไม่ โปรดตรวจวันเริ่มงานในสัญญาจ้างหรือสอบถามศูนย์จัดหางาน',
+        no: 'เงินชดเชยตามกฎหมายต้องมีอายุงานต่อเนื่องหนึ่งปี'
+      },
+      ret: {
+        n: 'ประกันค่าเดินทางกลับประเทศ',
+        w: 'สายด่วนซัมซุงไฟร์ 1600-0266 · อ้างอิง: กฎหมายการจ้างแรงงานต่างชาติ ม.15, กฎกระทรวง ม.22',
+        ok: 'นี่เป็นเงินที่คุณจ่ายเองหลังเข้าประเทศ อายุงานจึงไม่เกี่ยว ตามสัญชาติของคุณ ยอดที่จ่ายคือ {amt} แม้ไม่ถึงหนึ่งปีก็ได้คืนทั้งจำนวน'
+      },
+      pen: {
+        n: 'เงินคืนก้อนเดียวจากกองทุนบำนาญแห่งชาติ',
+        w: 'กองทุนบำนาญแห่งชาติ 1355 · อ้างอิง: กฎหมายบำนาญแห่งชาติ ม.77, ม.126',
+        ok: 'ผู้ถือสถานะ E-9 ขอรับเงินคืนก้อนเดียวได้ไม่ว่าสัญชาติใด บริษัทและคุณจ่ายฝ่ายละ 4.5% โปรดสอบถาม 1355 ว่าที่ทำงานของคุณเข้าระบบหรือไม่'
+      },
+      wage: {
+        n: 'ค่าจ้างและเบี้ยเลี้ยงที่ยังไม่ได้รับ',
+        w: 'ยื่นเรื่องที่สำนักงานแรงงานท้องถิ่น · 1350 · อ้างอิง: กฎหมายมาตรฐานแรงงาน ม.49 (3 ปี)',
+        ok: 'โปรดตรวจค่าจ้างค้างจ่าย ค่าล่วงเวลา ค่าทำงานกลางคืนและวันหยุด รวมถึงค่าวันลาพักร้อนที่ไม่ได้ใช้ ยังเรียกร้องได้หลังกลับประเทศ แต่เกิน 3 ปีสิทธิจะหมดไป'
+      }
+    }
+  },
   ckRead: 'อ่านจากรูป',
   ckReading: 'กำลังอ่านรูป...',
   ckReadOk: 'สิ่งที่อ่านได้จากรูป',
@@ -1422,15 +1726,91 @@ id: {
   pyMsgOk: 'Masih ada waktu. Siapkan paspor, kartu izin tinggal, dan salinan buku rekening atas nama Anda sendiri.',
   pyMsgWarn: 'Batas pengajuan sudah dekat. Telepon layanan asuransi pekerja asing Samsung Fire di 1600-0266 hari ini.',
   pyMsgOver: 'Batas yang dianjurkan sudah lewat. Anda masih bisa mengajukan setelah pulang, tetapi pencairannya lebih lambat. Hubungi 1600-0266 atau Pusat Ketenagakerjaan sekarang.',
-  pyListTitle: 'Empat hal yang harus diperiksa sebelum pulang',
+  pyListTitle: 'Lima hal yang harus diperiksa sebelum pulang',
   pyItems: [
     { t: 'Asuransi jaminan kepulangan (pesangon)', w: 'Uang yang disetor perusahaan setiap bulan. Bila Anda bekerja di satu tempat selama satu tahun atau lebih, Anda sendiri yang mengajukan.', r: 'Layanan Samsung Fire 1600-0266 · dibayar dalam 14 hari sejak keberangkatan' },
     { t: 'Selisih dengan pesangon menurut hukum', w: 'Bila dana asuransi lebih kecil daripada pesangon yang ditetapkan hukum, perusahaan wajib membayar selisihnya.', r: 'Minta ke perusahaan dulu · bila ditolak, telepon 1350' },
     { t: 'Upah dan tunjangan yang belum dibayar', w: 'Upah tertunggak, lembur, kerja malam dan hari libur, serta uang cuti tahunan yang tidak terpakai masih bisa dituntut setelah Anda pulang.', r: 'Laporkan ke kantor ketenagakerjaan daerah · 1350 · dalam 3 tahun' },
-    { t: 'Asuransi biaya kepulangan', w: 'Uang yang Anda bayar sendiri setelah tiba di Korea. Dikembalikan saat Anda pulang.', r: 'Layanan Samsung Fire 1600-0266' }
+    { t: 'Asuransi biaya kepulangan', w: 'Uang yang Anda bayar sendiri setelah tiba di Korea. Dikembalikan saat Anda pulang.', r: 'Layanan Samsung Fire 1600-0266' },
+    { t: 'Pengembalian sekaligus Dana Pensiun Nasional', w: 'Dengan status E-9 Anda bisa mengklaim ini apa pun kewarganegaraan Anda. Perusahaan dan Anda masing-masing menyetor 4,5%.', r: 'Dana Pensiun Nasional 1355 · klaim saat kepulangan' }
   ],
   pyLimit: 'Asuransi harus diklaim dalam 3 tahun sejak hak itu timbul. Setelah 3 tahun hak tersebut hilang dan dananya beralih ke HRD Korea.',
   pyNoCalc: 'Layanan ini tidak menghitung jumlah uang. Pastikan angka tepatnya lewat layanan 1600-0266 atau Pusat Ketenagakerjaan.',
+  pyEligBtn: 'Lihat apa yang bisa saya klaim',
+  pyEligTitle: 'Periksa apa yang bisa Anda klaim',
+  pyEligLead: 'Lima jawaban akan menunjukkan, per item, apakah Anda memenuhi syarat dan apa yang perlu disiapkan. Ini panduan, bukan keputusan.',
+  pyHireLabel: 'Tanggal Anda mulai di perusahaan sekarang (atau terakhir)',
+  pyHireHint: 'Tanggal mulai kerja yang tertulis di kontrak kerja. Kami memakainya untuk melihat apakah Anda melewati satu tahun di perusahaan itu.',
+  pyLastLabel: 'Hari kerja terakhir Anda di perusahaan itu',
+  pyLastHint: 'Kosongkan bila Anda masih bekerja. Kami menghitung sampai tanggal kepulangan Anda.',
+  pyQmoved: 'Apakah Anda pernah pindah tempat kerja di Korea?',
+  pyQmovedA: 'Tidak. Saya tetap di perusahaan pertama',
+  pyQmovedB: 'Ya, dan salah satu perusahaan sebelumnya lebih dari satu tahun',
+  pyQmovedC: 'Ya, tetapi semua perusahaan sebelumnya kurang dari satu tahun',
+  pyQmovedD: 'Ya, tetapi saya tidak ingat pasti lamanya',
+  pyQhours: 'Apakah Anda biasanya bekerja 15 jam atau lebih per minggu?',
+  pyQhoursA: 'Ya, jauh lebih banyak dari itu',
+  pyQhoursB: 'Tidak, kurang dari itu',
+  pyQhoursC: 'Saya tidak yakin',
+  pyQnat: 'Kewarganegaraan',
+  pyQnatA: 'Tiongkok · Filipina · Indonesia · Thailand · Vietnam',
+  pyQnatB: 'Sri Lanka',
+  pyQnatC: 'Negara lain',
+  pyQtype: 'Kepulangan ini termasuk kasus yang mana?',
+  pyQtypeA: 'Saya meninggalkan Korea dan pulang ke negara saya',
+  pyQtypeB: 'Saya mengubah status tinggal dan tetap di Korea',
+  pyQtypeC: 'Saya berencana masuk kembali sebagai pekerja setia',
+  pyVerdictTitle: 'Hasil tiap item',
+  pyDeadlineTitle: 'Sisa waktu',
+  pyElig: {
+    vOk: 'Anda bisa mengklaim', vWarn: 'Perlu diperiksa', vNo: 'Tidak memenuhi syarat',
+    tenureYM: 'Anda bekerja {y} tahun {m} bulan di perusahaan ini.',
+    tenureM: 'Anda bekerja {m} bulan di perusahaan ini.',
+    tenureOver: 'Itu melewati satu tahun di satu perusahaan.',
+    tenureNear: 'Satu tahun sudah dekat. Kurang satu hari saja, uang jaminan kepulangan menjadi milik perusahaan. Pastikan apakah tanggal kepulangan bisa digeser.',
+    tenureUnder: 'Itu kurang dari satu tahun.',
+    needHire: 'Masukkan tanggal Anda mulai bekerja, lalu kami tunjukkan apa yang bisa Anda klaim.',
+    badDates: 'Hari kerja terakhir tidak boleh lebih awal dari tanggal mulai. Mohon periksa kembali tanggalnya.',
+    amt1: '400.000 won', amt2: '500.000 won', amt3: '600.000 won',
+    items: {
+      mat: {
+        n: 'Asuransi jaminan kepulangan (pesangon)',
+        w: 'Layanan Samsung Fire 1600-0266 · Dasar: UU Ketenagakerjaan Asing Pasal 13, Perpres Pasal 21',
+        ok: 'Anda bekerja satu tahun atau lebih di satu perusahaan, jadi Anda sendiri yang mengklaim. Ini 8,3% dari upah bulanan yang disetor perusahaan setiap bulan.',
+        prevOver: 'Perusahaan sekarang kurang dari satu tahun, tetapi ada perusahaan sebelumnya yang lebih dari satu tahun. Bagian itu masih disimpan terpisah. Telepon 1600-0266 dan periksa setiap perusahaan tempat Anda bekerja.',
+        unsure: 'Ini tergantung apakah Anda menyelesaikan satu tahun di masing-masing perusahaan. Telepon 1600-0266 dan periksa semua perusahaan tempat Anda bekerja.',
+        no: 'Bila Anda tidak menyelesaikan satu tahun di sebuah perusahaan, uang itu kembali ke pemberi kerja. Tanyakan ke perusahaan dan Pusat Ketenagakerjaan apakah Anda bisa mencapai satu tahun sebelum pulang.',
+        typeLeave: 'Dibayar dalam 14 hari setelah kepulangan Anda dikonfirmasi, ke rekening di negara Anda atau loket penukaran di bandara.',
+        typeChange: 'Bila Anda mengubah status tinggal, Anda bisa menerimanya di Korea tanpa harus pulang.',
+        typeReentry: 'Pekerja setia yang masuk kembali pun harus keluar dulu sebelum uang dibayarkan. Selesaikan klaimnya sebelum Anda pergi.'
+      },
+      sev: {
+        n: 'Selisih pesangon',
+        w: 'Minta ke perusahaan dulu · telepon 1350 bila ditolak · Dasar: UU Jaminan Pesangon Pasal 4',
+        ok: 'Bila uang asuransi lebih kecil dari pesangon menurut undang-undang, perusahaan wajib membayar selisihnya. Bandingkan kedua angka itu.',
+        hoursUnsure: 'Masa kerja Anda melewati satu tahun. Bila rata-rata empat minggu Anda bekerja 15 jam atau lebih per minggu, Anda bisa mengklaim selisihnya. Periksa jam kerja di kontrak Anda.',
+        hoursNo: 'Bila rata-rata kurang dari 15 jam per minggu dalam empat minggu, pesangon menurut undang-undang tidak berlaku. Bila kenyataannya Anda bekerja lebih banyak, tanyakan ke 1350.',
+        prevOver: 'Perusahaan sekarang kurang dari satu tahun. Bila ada perusahaan sebelumnya yang lebih dari satu tahun, Anda bisa meminta selisihnya ke perusahaan itu.',
+        noDate: 'Masukkan tanggal Anda mulai bekerja, lalu kami beri tahu apakah pesangon menurut undang-undang berlaku. Periksa tanggal mulai di kontrak kerja atau di Pusat Ketenagakerjaan.',
+        no: 'Pesangon menurut undang-undang memerlukan satu tahun masa kerja terus-menerus.'
+      },
+      ret: {
+        n: 'Asuransi biaya kepulangan',
+        w: 'Layanan Samsung Fire 1600-0266 · Dasar: UU Ketenagakerjaan Asing Pasal 15, Perpres Pasal 22',
+        ok: 'Ini uang yang Anda bayar sendiri setelah tiba, jadi lama masa kerja tidak berpengaruh. Untuk kewarganegaraan Anda, setorannya {amt}. Meski kurang dari satu tahun, semuanya dikembalikan.'
+      },
+      pen: {
+        n: 'Pengembalian sekaligus Dana Pensiun Nasional',
+        w: 'Dana Pensiun Nasional 1355 · Dasar: UU Dana Pensiun Nasional Pasal 77 dan 126',
+        ok: 'Status E-9 berhak atas pengembalian sekaligus apa pun kewarganegaraan Anda. Perusahaan dan Anda masing-masing menyetor 4,5%. Tanyakan ke 1355 apakah tempat kerja Anda terdaftar.'
+      },
+      wage: {
+        n: 'Upah dan tunjangan yang belum dibayar',
+        w: 'Ajukan ke kantor tenaga kerja setempat · 1350 · Dasar: UU Standar Ketenagakerjaan Pasal 49 (3 tahun)',
+        ok: 'Periksa upah yang belum dibayar, lembur, kerja malam dan hari libur, serta uang cuti tahunan yang tidak terpakai. Anda masih bisa mengklaim setelah pulang, tetapi setelah 3 tahun haknya hilang.'
+      }
+    }
+  },
   ckRead: 'Baca dari foto',
   ckReading: 'Sedang membaca foto...',
   ckReadOk: 'Hasil pembacaan foto',
