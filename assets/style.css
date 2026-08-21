@@ -818,3 +818,38 @@ button.board-row:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
 #eligResult .sub-h{margin:28px 0 14px}
 #eligCard{margin-top:20px}
 #eligCard .field{max-width:520px}
+
+/* ═══════════════════════════════════════════════════════════════
+   바닥글 문의 · 소셜
+   어두운 띠(.band-ink) 안이라 글자와 아이콘을 밝은 쪽으로 둡니다.
+   ═══════════════════════════════════════════════════════════════ */
+.ft-contact{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);
+}
+.ft-mail{
+  display:flex;flex-direction:column;gap:3px;
+  text-decoration:none;color:#f0e4d3;font-size:15px;font-weight:700;
+}
+.ft-mail:hover{color:#fff}
+.ft-mail-addr{
+  font-family:var(--f-mono);font-size:13px;font-weight:400;color:#a8998a;
+  word-break:break-all;
+}
+.ft-mail:hover .ft-mail-addr{color:#cbbba8}
+
+.ft-social{display:flex;gap:12px;flex:none}
+/* 손가락으로 누르는 표적이 44px 밑으로 내려가지 않게 합니다. */
+.ft-sns{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:12px;
+  color:#d8c9b6;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  transition:color .15s ease,background .15s ease;
+}
+.ft-sns:hover{color:#fff;background:rgba(255,255,255,.14)}
+.ft-sns:focus-visible{outline:3px solid var(--go-l);outline-offset:2px}
+
+@media (max-width:520px){
+  .ft-contact{flex-direction:column;align-items:flex-start;gap:16px}
+}

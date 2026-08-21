@@ -13,6 +13,9 @@ const I18N = {
 
 /* ================= 한국어 ================= */
 ko: {
+  ftMail: '이메일 보내기',
+  ftInstagram: '인스타그램 (새 창)',
+  ftFacebook: '페이스북 (새 창)',
   boardColNo: '번호',
   boardColTitle: '제목',
   boardColUser: '글쓴이',
@@ -408,6 +411,9 @@ ko: {
 
 /* ================= English ================= */
 en: {
+  ftMail: 'Send us an email',
+  ftInstagram: 'Instagram (opens in a new tab)',
+  ftFacebook: 'Facebook (opens in a new tab)',
   boardColNo: 'No.',
   boardColTitle: 'Question',
   boardColUser: 'Author',
@@ -803,6 +809,9 @@ en: {
 
 /* ================= Tiếng Việt ================= */
 vi: {
+  ftMail: 'Gửi email cho chúng tôi',
+  ftInstagram: 'Instagram (mở tab mới)',
+  ftFacebook: 'Facebook (mở tab mới)',
   boardColNo: 'Số',
   boardColTitle: 'Câu hỏi',
   boardColUser: 'Người viết',
@@ -1198,6 +1207,9 @@ vi: {
 
 /* ================= ไทย ================= */
 th: {
+  ftMail: 'ส่งอีเมลถึงเรา',
+  ftInstagram: 'อินสตาแกรม (เปิดแท็บใหม่)',
+  ftFacebook: 'เฟซบุ๊ก (เปิดแท็บใหม่)',
   boardColNo: 'ลำดับ',
   boardColTitle: 'คำถาม',
   boardColUser: 'ผู้เขียน',
@@ -1593,6 +1605,9 @@ th: {
 
 /* ================= Bahasa Indonesia ================= */
 id: {
+  ftMail: 'Kirim email ke kami',
+  ftInstagram: 'Instagram (buka tab baru)',
+  ftFacebook: 'Facebook (buka tab baru)',
   boardColNo: 'No.',
   boardColTitle: 'Pertanyaan',
   boardColUser: 'Penulis',
