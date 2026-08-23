@@ -839,15 +839,15 @@ button.board-row:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
 .ft-mail:hover .ft-mail-addr{color:#cbbba8}
 
 .ft-social{display:flex;gap:12px;flex:none}
-/* 손가락으로 누르는 표적이 44px 밑으로 내려가지 않게 합니다. */
+/* 로고가 제 색을 그대로 쓰므로, 단추는 배경 없이 비워 둡니다.
+   손가락으로 누르는 표적은 44px 밑으로 내려가지 않게 합니다. */
 .ft-sns{
   display:inline-flex;align-items:center;justify-content:center;
   width:44px;height:44px;border-radius:12px;
-  color:#d8c9b6;background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  transition:color .15s ease,background .15s ease;
+  transition:transform .15s ease,background .15s ease;
 }
-.ft-sns:hover{color:#fff;background:rgba(255,255,255,.14)}
+.ft-sns svg{display:block;width:28px;height:28px}
+.ft-sns:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
 .ft-sns:focus-visible{outline:3px solid var(--go-l);outline-offset:2px}
 
 @media (max-width:520px){

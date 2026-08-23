@@ -163,15 +163,26 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
           <a href="https://www.instagram.com/e9_bridge/" target="_blank" rel="noopener noreferrer"
              class="ft-sns" data-i18n-aria="ftInstagram" aria-label="Instagram">
             <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
-              <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.9"/>
-              <circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="1.9"/>
-              <circle cx="17.4" cy="6.6" r="1.35" fill="currentColor"/>
+              <defs>
+                <radialGradient id="igGrad" cx="30%" cy="107%" r="150%">
+                  <stop offset="0" stop-color="#fdf497"/>
+                  <stop offset=".05" stop-color="#fdf497"/>
+                  <stop offset=".45" stop-color="#fd5949"/>
+                  <stop offset=".6" stop-color="#d6249f"/>
+                  <stop offset=".9" stop-color="#285AEB"/>
+                </radialGradient>
+              </defs>
+              <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="url(#igGrad)"/>
+              <rect x="4.6" y="4.6" width="14.8" height="14.8" rx="4.2" fill="none" stroke="#fff" stroke-width="1.7"/>
+              <circle cx="12" cy="12" r="3.7" fill="none" stroke="#fff" stroke-width="1.7"/>
+              <circle cx="17.2" cy="6.9" r="1.15" fill="#fff"/>
             </svg>
           </a>
           <a href="https://www.facebook.com/profile.php?id=61593662128459" target="_blank" rel="noopener noreferrer"
              class="ft-sns" data-i18n-aria="ftFacebook" aria-label="Facebook">
             <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
-              <path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.29-.04-1.27-.12-2.41-.12-2.38 0-4.01 1.45-4.01 4.13V9.9H7.6V13h2.68v8z"/>
+              <circle cx="12" cy="12" r="10.5" fill="#1877F2"/>
+              <path fill="#fff" d="M15.1 12.6l.42-3.03h-2.9V7.6c0-.83.28-1.56 1.5-1.56h1.52V3.32c-.27-.04-.84-.12-1.92-.12-2.26 0-3.82 1.38-3.82 3.9v2.47H7.98v3.03h2.92v7.83c.58.09 1.17.13 1.77.13s1.19-.04 1.77-.13v-7.83z"/>
             </svg>
           </a>
         </div>
