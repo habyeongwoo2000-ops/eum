@@ -44,7 +44,7 @@
   <!-- 공지 쉽게 읽기 -->
   <url>
     <loc>https://eum-six.vercel.app/notices.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -68,7 +68,15 @@
   <!-- 법률 자문 -->
   <url>
     <loc>https://eum-six.vercel.app/legal.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- 인터뷰 — 먼저 겪은 사람들의 이야기 -->
+  <url>
+    <loc>https://eum-six.vercel.app/interviews.html</loc>
+    <lastmod>2026-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

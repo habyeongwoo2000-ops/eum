@@ -517,10 +517,105 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
   .auth-slot{margin-right:0}
 }
 
+/* ---------- 인터뷰 ---------- */
+.itv-empty{
+  background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);
+  padding:28px 24px;text-align:center;
+}
+.itv-empty p{margin:0 0 8px;font-size:16px;line-height:1.7;color:var(--ink-2)}
+.itv-empty-sub{font-size:14px;color:var(--ink-3);line-height:1.65}
+.itv-empty .btn{margin-top:14px}
+
+.itv-list{display:grid;gap:16px}
+.itv-card{
+  background:var(--card);border:1.5px solid var(--line);border-left:5px solid var(--go);
+  border-radius:var(--r);padding:22px 24px;
+}
+.itv-who{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.itv-alias{font-family:var(--f-disp);font-size:19px;font-weight:800;color:var(--ink)}
+.itv-facts{font-size:13px;color:var(--ink-3)}
+.itv-intro{margin:0 0 16px;font-size:15px;line-height:1.7;color:var(--ink-2)}
+.itv-qa{margin:0 0 14px;padding-left:14px;border-left:2px solid var(--line-2)}
+.itv-q{margin:0 0 6px;font-size:14px;font-weight:700;color:var(--go-d)}
+.itv-a{margin:0;font-size:15px;line-height:1.75;color:var(--ink)}
+.itv-date{margin:14px 0 0;font-family:var(--f-mono);font-size:12px;color:var(--ink-3)}
+
+/* 사이트 사용 소감 — 인터뷰 본문과 섞이지 않게 인용 모양으로 뗍니다 */
+.itv-quotes{display:grid;gap:14px}
+@media (min-width:760px){.itv-quotes{grid-template-columns:repeat(2,1fr)}}
+.itv-quote{
+  margin:0;background:var(--card);border:1.5px solid var(--line);
+  border-radius:var(--r);padding:20px 22px;
+}
+.itv-quote p{margin:0 0 10px;font-size:15px;line-height:1.75;color:var(--ink)}
+.itv-quote p::before{content:"\201C"}
+.itv-quote p::after{content:"\201D"}
+.itv-quote cite{font-style:normal;font-size:13px;color:var(--ink-3)}
+
 /* ---------- 법률 자문 ---------- */
-.band-legal .sub-h{margin-top:34px}
+.band-legal .sub-h{margin-top:38px}
 .band-legal .sub-h:first-of-type{margin-top:0}
-.band-legal .pay-where a{color:var(--go-d);word-break:break-all}
+
+/* ---------- 법률 자문 ----------
+   이 쪽은 출국 정산의 pay-* 클래스를 빌려 쓰고 있었습니다. 체크리스트가 아닌데
+   ✓ 가 붙었고, 한쪽 디자인을 고치면 다른 쪽이 같이 깨졌습니다. 전용으로 뗐습니다. */
+
+/* ① 증상 갈림길 — 기관 목록보다 먼저 나옵니다 */
+.legal-pick{display:grid;gap:12px;margin-bottom:8px}
+@media (min-width:760px){.legal-pick{grid-template-columns:repeat(3,1fr)}}
+.legal-pick-item{
+  background:var(--card);border:1.5px solid var(--line);border-left:5px solid var(--go);
+  border-radius:var(--r);padding:18px 20px;
+}
+.legal-pick-q{margin:0 0 8px;font-family:var(--f-disp);font-size:17px;font-weight:800;color:var(--ink)}
+.legal-pick-a{margin:0 0 12px;font-size:14px;line-height:1.65;color:var(--ink-2)}
+.legal-pick-go{margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.legal-pick-go span{font-size:13px;color:var(--ink-3)}
+
+/* ② 전화번호 — 카드의 주인공. 눌러서 바로 걸립니다.
+   손가락으로 누르는 자리라 최소 44px 높이를 지킵니다. */
+.legal-tel{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;padding:0 16px;border-radius:10px;
+  background:var(--go);color:#fff;text-decoration:none;
+  font-family:var(--f-mono);font-size:18px;font-weight:700;letter-spacing:.02em;
+}
+.legal-tel:hover{background:var(--go-d);color:#fff}
+.legal-tel:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.legal-tel.is-big{font-size:26px;min-height:56px;padding:0 22px;margin:4px 0 6px}
+.legal-tel-note{margin:0 0 12px;font-size:13px;color:var(--ink-3)}
+
+/* ③ 무료 · 유료를 배지와 왼쪽 색띠로 갈라 둡니다 */
+.legal-list{display:grid;gap:14px}
+@media (min-width:760px){.legal-list{grid-template-columns:repeat(2,1fr)}}
+.legal-org{
+  position:relative;background:#fff;border:1.5px solid var(--line);
+  border-radius:var(--r);padding:20px 22px;
+}
+.legal-org.is-free{border-left:5px solid var(--go)}
+.legal-org.is-paid{border-left:5px solid var(--ink-3)}
+.legal-org p{font-size:14px;line-height:1.7;color:var(--ink-2)}
+.legal-badge{
+  display:inline-block;margin:0 0 10px;padding:4px 10px;border-radius:999px;
+  font-family:var(--f-body);font-size:12px;font-weight:700;letter-spacing:.02em;
+}
+.is-free .legal-badge{background:var(--go-l);color:var(--go-d)}
+.is-paid .legal-badge{background:var(--line-2);color:var(--ink-2)}
+
+/* ⑤ 기관 이름 — 자기 언어로 크게, 한국어 정식 명칭은 작게 아래에.
+   전화를 걸면 한국어로 응대하므로 원래 이름을 읽을 수 있어야 합니다. */
+.legal-name{margin:0 0 4px;display:flex;flex-direction:column;gap:2px}
+.legal-name-loc{font-family:var(--f-disp);font-size:19px;font-weight:800;color:var(--ink);line-height:1.3}
+.legal-name-ko{font-size:13px;color:var(--ink-3);font-weight:600}
+/* 한국어 화면에서는 같은 말이 두 번 나오므로 아래 줄을 숨깁니다 */
+html[lang="ko"] .legal-name-ko{display:none}
+
+.legal-rule{margin:10px 0 0;font-size:13px;color:var(--ink-3);line-height:1.6}
+.legal-link{margin:12px 0 0}
+.legal-link a{
+  font-family:var(--f-mono);font-size:13px;color:var(--go-d);
+  word-break:break-all;text-decoration:underline;
+}
 
 .band-ink{background:var(--ink);color:#f2e9db;border-bottom:0}
 .band-ink h2{color:#fff}

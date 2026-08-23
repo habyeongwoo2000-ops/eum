@@ -111,6 +111,7 @@
     /* 페이지마다 들어 있는 기능이 다릅니다. 각 함수가 자기 요소가 없으면
        조용히 넘어가므로 여기서는 그냥 다 부릅니다. */
     renderNotices();
+    renderInterviews();
     renderChips();
     renderPayList();
     renderBoard();
@@ -620,6 +621,74 @@
       art.appendChild(wrap);
       list.appendChild(art);
     });
+  }
+
+  /* ---------- 인터뷰 ---------- */
+  /* 데이터가 비어 있으면 목록 대신 "준비 중" 안내만 보입니다.
+     지어낸 인터뷰를 채워 두느니 빈 화면을 보이는 편이 낫습니다 —
+     읽는 사람이 남의 경험을 근거로 자기 일을 결정하기 때문입니다. */
+  function renderInterviews() {
+    var list = $('#itvList');
+    if (!list) return;
+
+    var has = typeof INTERVIEWS !== 'undefined' && INTERVIEWS && INTERVIEWS.length;
+    var empty = $('#itvEmpty');
+    if (empty) empty.hidden = !!has;
+    list.hidden = !has;
+    list.innerHTML = '';
+
+    var quotes = $('#itvQuotes'), qEmpty = $('#itvQuotesEmpty');
+    if (quotes) quotes.innerHTML = '';
+    if (!has) {
+      if (qEmpty) qEmpty.hidden = false;
+      return;
+    }
+    if (qEmpty) qEmpty.hidden = true;
+
+    var sorted = INTERVIEWS.slice().sort(function (a, b) {
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    });
+
+    sorted.forEach(function (it) {
+      var body = it[lang] || it.en || it.ko;
+      if (!body) return;
+
+      var art = el('article', 'itv-card');
+
+      /* 누구인지 — 가명·국적·연차·업종만 씁니다.
+         이름과 회사는 데이터에 아예 넣지 않습니다. */
+      var who = el('div', 'itv-who');
+      var label = (T.itvAlias || '{n}').replace('{n}', it.alias || '?');
+      who.appendChild(el('span', 'itv-alias', label));
+      var facts = [];
+      if (it.country && T.itvCountries) facts.push(T.itvCountries[it.country] || it.country);
+      if (it.years) facts.push((T.itvYears || '{y}').replace('{y}', it.years));
+      if (it.field && T.itvFields) facts.push(T.itvFields[it.field] || it.field);
+      if (facts.length) who.appendChild(el('span', 'itv-facts', facts.join(' · ')));
+      art.appendChild(who);
+
+      if (body.intro) art.appendChild(el('p', 'itv-intro', body.intro));
+
+      (body.qa || []).forEach(function (row) {
+        var qa = el('div', 'itv-qa');
+        qa.appendChild(el('p', 'itv-q', row.q));
+        qa.appendChild(el('p', 'itv-a', row.a));
+        art.appendChild(qa);
+      });
+
+      if (it.date) art.appendChild(el('p', 'itv-date', it.date));
+      list.appendChild(art);
+
+      /* 사이트를 써 본 소감은 아래 칸에 따로 모읍니다. */
+      if (quotes && body.useQuote) {
+        var q = el('blockquote', 'itv-quote');
+        q.appendChild(el('p', null, body.useQuote));
+        q.appendChild(el('cite', null, label));
+        quotes.appendChild(q);
+      }
+    });
+
+    if (quotes && !quotes.children.length && qEmpty) qEmpty.hidden = false;
   }
 
   /* ---------- 묻고 답하기 ---------- */

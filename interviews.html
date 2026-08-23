@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>최신 제도 · E9-Bridge</title>
-<meta name="description" content="E-9 고용허가제에서 최근 바뀐 제도를 날짜순으로 정리했습니다. 최저임금, 쿼터, 송출국, 관리 강화 소식을 5개 언어로 안내합니다.">
+<title>인터뷰 · E9-Bridge</title>
+<meta name="description" content="사업장을 옮겨 본 외국인근로자들의 이야기와, 이 사이트를 써 본 소감을 모았습니다.">
 <meta name="color-scheme" content="light">
-<link rel="canonical" href="https://eum-six.vercel.app/notices.html">
+<link rel="canonical" href="https://eum-six.vercel.app/interviews.html">
 <!-- ▼ 공통 부트 코드 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
 <script>
 (function(){var l=null;try{l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('eum.lang');}catch(e){}
@@ -20,7 +20,7 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
-<body data-page-title="navUpdates">
+<body data-page-title="itvTitle">
 
 <a class="skip" href="#top" data-i18n="skip">본문으로 건너뛰기</a>
 
@@ -82,65 +82,31 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 
 <main id="top">
 
-  <section id="notices" class="band">
+  <section id="interviews" class="band">
     <div class="wrap">
-      <p class="sec-no" data-i18n="navUpdates">최신 제도</p>
-      <h2 data-i18n="ntTitle">최근에 바뀐 제도</h2>
-      <div class="notice-list" id="noticeList"></div>
+      <p class="sec-no" data-i18n="navInterview">인터뷰</p>
+      <h2 data-i18n="itvTitle">먼저 겪은 사람들</h2>
+      <p class="sec-lead" data-i18n="itvLead">사업장을 옮겨 본 사람들의 이야기입니다. 무엇이 힘들었는지, 무엇을 미리 알았으면 좋았을지 물었습니다.</p>
+
+      <!-- 인터뷰가 아직 없으면 이 안내만 보입니다 (app.js 가 판단) -->
+      <div class="itv-empty" id="itvEmpty" hidden>
+        <p data-i18n="itvEmpty">인터뷰를 준비하고 있습니다. 실제로 겪은 분들의 이야기를 모으는 중이라 조금 시간이 걸립니다.</p>
+        <p class="itv-empty-sub" data-i18n="itvEmptySub">이야기를 들려주실 분은 아래 이메일로 연락해 주세요. 이름과 회사는 밝히지 않습니다.</p>
+        <a class="btn btn-go" href="mailto:habyeongwoo2000@gmail.com" data-i18n="itvContact">인터뷰 참여하기</a>
+      </div>
+
+      <div class="itv-list" id="itvList"></div>
+
+      <p class="disclaim" data-i18n="itvPrivacy">모든 인터뷰는 본인 동의를 받아 싣습니다. 이름은 가명이며, 회사명과 정확한 지역은 밝히지 않습니다. 글쓴이가 누구인지 알아볼 수 없게 하기 위해서입니다.</p>
     </div>
   </section>
 
-  <!-- ▼ 공통 공식 창구 — 모든 페이지에 같은 내용 -->
-  <section class="band band-ink">
+  <section class="band band-alt">
     <div class="wrap">
-      <h2 data-i18n="ofTitle">공식 창구</h2>
-      <p class="sec-lead" data-i18n="ofLead">확정된 답은 아래에서 받으세요. 이 서비스는 그 앞 단계를 돕습니다.</p>
-      <ul class="official">
-        <li><b>1345</b><span data-i18n="of1345">외국인종합안내센터 · 여러 언어 상담</span></li>
-        <li><b>1350</b><span data-i18n="of1350">고용노동부 상담센터 · 임금체불 신고</span></li>
-        <li><b><a href="https://www.eps.go.kr" target="_blank" rel="noopener">eps.go.kr</a></b><span data-i18n="ofEps">고용허가제 공식 누리집</span></li>
-        <li><b><a href="https://www.hikorea.go.kr" target="_blank" rel="noopener">hikorea.go.kr</a></b><span data-i18n="ofHi">체류·비자 민원</span></li>
-      </ul>
-
-      <!-- 문의 · 소셜 — 로고를 누르면 새 창으로 열립니다 -->
-      <div class="ft-contact">
-        <a class="ft-mail" href="mailto:habyeongwoo2000@gmail.com">
-          <span data-i18n="ftMail">이메일 보내기</span>
-          <span class="ft-mail-addr">habyeongwoo2000@gmail.com</span>
-        </a>
-        <div class="ft-social">
-          <a href="https://www.instagram.com/e9_bridge/" target="_blank" rel="noopener noreferrer"
-             class="ft-sns" data-i18n-aria="ftInstagram" aria-label="Instagram">
-            <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
-              <defs>
-                <radialGradient id="igGrad" cx="30%" cy="107%" r="150%">
-                  <stop offset="0" stop-color="#fdf497"/>
-                  <stop offset=".05" stop-color="#fdf497"/>
-                  <stop offset=".45" stop-color="#fd5949"/>
-                  <stop offset=".6" stop-color="#d6249f"/>
-                  <stop offset=".9" stop-color="#285AEB"/>
-                </radialGradient>
-              </defs>
-              <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="url(#igGrad)"/>
-              <rect x="4.6" y="4.6" width="14.8" height="14.8" rx="4.2" fill="none" stroke="#fff" stroke-width="1.7"/>
-              <circle cx="12" cy="12" r="3.7" fill="none" stroke="#fff" stroke-width="1.7"/>
-              <circle cx="17.2" cy="6.9" r="1.15" fill="#fff"/>
-            </svg>
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=61591144925891&amp;locale=ko_KR" target="_blank" rel="noopener noreferrer"
-             class="ft-sns" data-i18n-aria="ftFacebook" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
-              <circle cx="12" cy="12" r="10.5" fill="#1877F2"/>
-              <path fill="#fff" d="M15.1 12.6l.42-3.03h-2.9V7.6c0-.83.28-1.56 1.5-1.56h1.52V3.32c-.27-.04-.84-.12-1.92-.12-2.26 0-3.82 1.38-3.82 3.9v2.47H7.98v3.03h2.92v7.83c.58.09 1.17.13 1.77.13s1.19-.04 1.77-.13v-7.83z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <div class="official-foot">
-        <p data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
-        <p>E9-Bridge · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
-      </div>
+      <h2 data-i18n="itvUseTitle">이 사이트를 써 본 사람들</h2>
+      <p class="sec-lead" data-i18n="itvUseLead">인터뷰에서 이 사이트에 대해 들은 이야기입니다.</p>
+      <div class="itv-quotes" id="itvQuotes"></div>
+      <p class="itv-empty-sub" id="itvQuotesEmpty" data-i18n="itvUseEmpty" hidden>아직 모인 후기가 없습니다.</p>
     </div>
   </section>
 </main>
