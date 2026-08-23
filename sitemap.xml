@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  E9-Bridge 사이트맵
+
+  검색엔진에 "이 사이트에 어떤 쪽이 있는지" 한 번에 알려 줍니다.
+  서치 콘솔 → 사이트맵 에 https://eum-six.vercel.app/sitemap.xml 을 넣으면
+  아래 쪽들을 한꺼번에 훑어 갑니다.
+
+  로그인·가입·마이페이지·관리자 쪽은 일부러 넣지 않았습니다.
+  검색으로 들어와도 쓸모가 없고, 관리자 쪽은 남에게 보일 이유가 없습니다.
+
+  주소가 바뀌면(직접 산 도메인을 붙이면) 아래 https://eum-six.vercel.app 부분을
+  전부 새 주소로 바꾸고, robots.txt 의 Sitemap 줄도 함께 고치세요.
+
+  lastmod 는 그 쪽 내용을 마지막으로 손본 날입니다. 내용을 크게 고치면
+  그 줄의 날짜만 오늘로 바꿔 주면 됩니다.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- 첫 화면 — 기한 계산기가 있는 곳이라 가장 중요합니다 -->
+  <url>
+    <loc>https://eum-six.vercel.app/</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- 사유 자가진단 -->
+  <url>
+    <loc>https://eum-six.vercel.app/reason.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 출국 정산 · 출국만기보험 계산 -->
+  <url>
+    <loc>https://eum-six.vercel.app/payout.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 공지 쉽게 읽기 -->
+  <url>
+    <loc>https://eum-six.vercel.app/notices.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 질문하기 -->
+  <url>
+    <loc>https://eum-six.vercel.app/ask.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 묻고 답하기 게시판 — 글이 계속 올라오므로 자주 봐 달라고 표시합니다 -->
+  <url>
+    <loc>https://eum-six.vercel.app/board.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 법률 자문 -->
+  <url>
+    <loc>https://eum-six.vercel.app/legal.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>
