@@ -3,6 +3,10 @@
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
 I18N.en = {
+  navFaq: 'FAQ',
+  navChatbot: 'Ask the chatbot',
+  navBoard: 'Question board',
+  navUpdates: 'What changed',
   faqTitle: 'Frequently asked questions',
   faqLead: 'The questions that come up most often about changing workplace, each with the law it rests on and the date it was checked.',
   faqSrcLabel: 'Basis',
@@ -276,8 +280,8 @@ I18N.en = {
   lgMajungRule: 'Phone 02-3143-1158 · 4F, Gwanghwamun Officia, 92 Saemunan-ro, Jongno-gu, Seoul',
   lgPaidNote: 'This list is not advertising and does not guarantee representation by any specific lawyer or firm. You decide whether to hire them, and at what cost, after your own consultation.',
   lgChecked: 'Checked: ' + LEGAL_CHECKED + ' · Based on official guidance from Korea Legal Aid Corporation and the National Human Rights Commission',
-  ntTitle: 'Notices, made readable',
-  ntLead: 'Long official notices, cut down to what matters. The original link and the date we checked are always shown.',
+  ntTitle: 'Recent changes to the system',
+  ntLead: 'When rules change we post them here with the date. For rules that do not change, see the frequently asked questions.',
   ntSample: 'These posts are demo samples. In the live service, notices come from official channels.',
   ntSourceLabel: 'Source', ntCheckedLabel: 'Checked', ntOriginal: 'Read the original ↗', ntAskBtn: 'Ask about this notice',
 

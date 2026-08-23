@@ -3,6 +3,10 @@
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
 I18N.id = {
+  navFaq: 'FAQ',
+  navChatbot: 'Tanya chatbot',
+  navBoard: 'Papan pertanyaan',
+  navUpdates: 'Perubahan terbaru',
   faqTitle: 'Pertanyaan yang sering diajukan',
   faqLead: 'Pertanyaan yang paling sering muncul soal pindah tempat kerja, lengkap dengan dasar hukum dan tanggal pemeriksaan.',
   faqSrcLabel: 'Dasar',
@@ -276,8 +280,8 @@ I18N.id = {
   lgMajungRule: 'Telepon 02-3143-1158 · Lantai 4, Gwanghwamun Officia, 92 Saemunan-ro, Jongno-gu, Seoul',
   lgPaidNote: 'Daftar ini bukan iklan dan tidak menjamin pengacara atau kantor tertentu akan menangani kasus Anda. Anda sendiri yang memutuskan apakah akan menyewa, dan dengan biaya berapa, setelah konsultasi sendiri.',
   lgChecked: 'Diperiksa: ' + LEGAL_CHECKED + ' · Berdasarkan panduan resmi dari Korea Legal Aid Corporation dan Komisi Hak Asasi Manusia Nasional',
-  ntTitle: 'Pengumuman yang mudah dibaca',
-  ntLead: 'Surat resmi yang panjang diringkas ke bagian pentingnya. Tautan asli dan tanggal pemeriksaan selalu dicantumkan.',
+  ntTitle: 'Perubahan terbaru pada sistem',
+  ntLead: 'Saat aturan berubah, kami memuatnya di sini beserta tanggalnya. Untuk aturan yang tidak berubah, lihat pertanyaan yang sering diajukan.',
   ntSample: 'Tulisan di bawah adalah contoh untuk demo. Pada layanan sebenarnya, pengumuman diambil dari kanal resmi.',
   ntSourceLabel: 'Sumber', ntCheckedLabel: 'Diperiksa', ntOriginal: 'Baca aslinya ↗', ntAskBtn: 'Tanya soal pengumuman ini',
 

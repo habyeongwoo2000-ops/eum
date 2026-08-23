@@ -567,7 +567,14 @@
     var list = $('#noticeList');
     if (!list) return;
     list.innerHTML = '';
-    NOTICES.forEach(function (n) {
+
+    /* 최신 소식이 위로 오게 정렬합니다. 날짜가 없는 옛 항목은 뒤로 보냅니다.
+       원본 배열은 건드리지 않습니다 — 다른 곳에서 순서를 기대할 수 있습니다. */
+    var sorted = NOTICES.slice().sort(function (a, b) {
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    });
+
+    sorted.forEach(function (n) {
       var body = n[lang] || n.en;
       var art = el('article', 'notice');
 
@@ -576,6 +583,8 @@
       head.setAttribute('aria-expanded', 'false');
       var tagLabel = (T.noticeTags && T.noticeTags[n.tagKey]) || n.tagKey;
       head.appendChild(el('span', 'notice-tag', tagLabel));
+      // 날짜를 제목 옆에 크게 둡니다. "언제 바뀐 것인가" 가 이 쪽의 핵심입니다.
+      if (n.date) head.appendChild(el('span', 'notice-date', n.date));
       head.appendChild(el('p', 'notice-t', body.title));
       head.appendChild(el('span', 'notice-arrow', '⌄'));
       head.addEventListener('click', function () {

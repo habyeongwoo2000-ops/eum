@@ -3,6 +3,10 @@
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
 I18N.vi = {
+  navFaq: 'FAQ',
+  navChatbot: 'Hỏi chatbot',
+  navBoard: 'Diễn đàn hỏi đáp',
+  navUpdates: 'Thay đổi mới',
   faqTitle: 'Câu hỏi thường gặp',
   faqLead: 'Những câu hỏi thường gặp nhất về việc đổi nơi làm việc, kèm điều luật căn cứ và ngày kiểm tra.',
   faqSrcLabel: 'Căn cứ',
@@ -276,8 +280,8 @@ I18N.vi = {
   lgMajungRule: 'Điện thoại 02-3143-1158 · Tầng 4, Gwanghwamun Officia, 92 Saemunan-ro, Jongno-gu, Seoul',
   lgPaidNote: 'Danh sách này không phải quảng cáo và không bảo đảm luật sư hay văn phòng nào sẽ nhận vụ việc của bạn. Bạn tự quyết định có thuê hay không, và với chi phí nào, sau khi tự mình tư vấn.',
   lgChecked: 'Ngày kiểm tra: ' + LEGAL_CHECKED + ' · Theo hướng dẫn chính thức của Tổng công ty Hỗ trợ pháp lý Hàn Quốc và Ủy ban Nhân quyền Quốc gia',
-  ntTitle: 'Thông báo dễ đọc',
-  ntLead: 'Những công văn dài và khó được rút gọn còn phần quan trọng. Luôn kèm link gốc và ngày kiểm tra.',
+  ntTitle: 'Những thay đổi gần đây của chế độ',
+  ntLead: 'Khi quy định thay đổi, chúng tôi đăng kèm ngày tại đây. Những quy định không đổi, xem ở câu hỏi thường gặp.',
   ntSample: 'Các bài dưới đây là mẫu để trình diễn. Trong dịch vụ thật, thông báo được lấy từ kênh chính thức.',
   ntSourceLabel: 'Nguồn', ntCheckedLabel: 'Ngày kiểm tra', ntOriginal: 'Xem bản gốc ↗', ntAskBtn: 'Hỏi về thông báo này',
 

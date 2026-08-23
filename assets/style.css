@@ -893,3 +893,10 @@ button.board-row:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
   font-family:var(--f-mono);font-size:12px!important;color:var(--ink-3)!important;
   line-height:1.6!important;
 }
+
+/* 최신 제도 — 항목마다 바뀐 날짜를 눈에 띄게 둡니다.
+   "언제 바뀐 것인가" 가 이 쪽에서 가장 중요한 정보입니다. */
+.notice-date{
+  font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--go-d);
+  background:var(--go-l);border-radius:6px;padding:3px 8px;margin-left:8px;flex:none;
+}
