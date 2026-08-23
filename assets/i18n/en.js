@@ -282,7 +282,6 @@ I18N.en = {
   lgChecked: 'Checked: ' + LEGAL_CHECKED + ' · Based on official guidance from Korea Legal Aid Corporation and the National Human Rights Commission',
   ntTitle: 'Recent changes to the system',
   ntLead: 'When rules change we post them here with the date. For rules that do not change, see the frequently asked questions.',
-  ntSample: 'These posts are demo samples. In the live service, notices come from official channels.',
   ntSourceLabel: 'Source', ntCheckedLabel: 'Checked', ntOriginal: 'Read the original ↗', ntAskBtn: 'Ask about this notice',
 
   askTitle: 'Ask a question',

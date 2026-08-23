@@ -1,10 +1,27 @@
 /* E9-Bridge — 지식베이스 (RAG-lite)
    ------------------------------------------------------------------
-   · NOTICES : 게시판에 올라가는 공지 요약. 현재는 시연용 샘플입니다.
+   · NOTICES : 최신 제도 페이지에 올라가는 제도 요약.
    · KB      : 질문 답변 엔진이 참고하는 유일한 근거 묶음.
                keywords 는 언어를 가리지 않고 한 배열에 모아 둡니다.
    · 답변은 반드시 src(근거)를 함께 가집니다. 근거가 없으면 답하지 않습니다.
    · review:true 인 항목은 답변 위에 "실무자 검수" 표시가 붙습니다.
+   ------------------------------------------------------------------
+
+   ■ 제도 제목(title) 쓰는 규칙 — 새 제도를 추가할 때도 지켜 주세요
+
+   제목은 목록에서 훑어보는 자리입니다. 문장이 아니라 **명사형 한 덩어리**로
+   짧게 씁니다. 자세한 설명은 아래 points 에 넣으면 됩니다.
+
+     ○ 비수도권 제조업 고용 한도 확대
+     ✗ 비수도권 제조업의 고용 한도가 늘었습니다
+
+     ○ 2026년 최저임금 시급 10,320원
+     ✗ 2026년 최저임금은 시간당 10,320원입니다
+
+   · "~합니다 / ~됩니다 / ~입니다" 같은 서술어로 끝내지 않습니다.
+   · 무엇이 어떻게 바뀌었는지가 드러나게 씁니다 (확대 · 축소 · 강화 · 추가 · 논의 중).
+   · 숫자가 핵심이면 제목에 넣습니다.
+   · 다섯 언어 모두 같은 방식으로 짧게 씁니다. 번역투로 늘어지지 않게 하세요.
    ------------------------------------------------------------------ */
 
 const NOTICES = [
@@ -15,31 +32,31 @@ const NOTICES = [
     url: 'https://www.moel.go.kr',
     date: '2026-08-14',
     checked: '2026-08-23',
-    ko: { title: '카자흐스탄이 송출국에 추가됩니다',
+    ko: { title: '카자흐스탄 송출국 추가',
       points: [
         '제49차 외국인력정책위원회에서 카자흐스탄을 새 송출국으로 지정했습니다.',
         '이로써 E-9 송출국은 17개국에서 18개국으로 늘어납니다.',
         '중앙아시아에서는 우즈베키스탄·키르기스스탄·타지키스탄에 이어 네 번째입니다.'
       ] },
-    en: { title: 'Kazakhstan added as a sending country',
+    en: { title: 'Kazakhstan added as sending country',
       points: [
         'The 49th Foreign Workforce Policy Committee designated Kazakhstan as a new sending country.',
         'The number of E-9 sending countries rises from 17 to 18.',
         'It is the fourth in Central Asia, after Uzbekistan, Kyrgyzstan and Tajikistan.'
       ] },
-    vi: { title: 'Kazakhstan được bổ sung làm nước phái cử',
+    vi: { title: 'Bổ sung Kazakhstan làm nước phái cử',
       points: [
         'Ủy ban Chính sách Nhân lực Nước ngoài lần thứ 49 đã chỉ định Kazakhstan là nước phái cử mới.',
         'Số nước phái cử E-9 tăng từ 17 lên 18.',
         'Đây là nước thứ tư ở Trung Á, sau Uzbekistan, Kyrgyzstan và Tajikistan.'
       ] },
-    th: { title: 'คาซัคสถานถูกเพิ่มเป็นประเทศส่งแรงงาน',
+    th: { title: 'เพิ่มคาซัคสถานเป็นประเทศส่งแรงงาน',
       points: [
         'คณะกรรมการนโยบายแรงงานต่างชาติครั้งที่ 49 กำหนดให้คาซัคสถานเป็นประเทศส่งแรงงานใหม่',
         'ทำให้จำนวนประเทศส่งแรงงาน E-9 เพิ่มจาก 17 เป็น 18 ประเทศ',
         'เป็นประเทศที่สี่ในเอเชียกลาง ต่อจากอุซเบกิสถาน คีร์กีซสถาน และทาจิกิสถาน'
       ] },
-    id: { title: 'Kazakhstan ditambahkan sebagai negara pengirim',
+    id: { title: 'Penambahan Kazakhstan sebagai negara pengirim',
       points: [
         'Komite Kebijakan Tenaga Kerja Asing ke-49 menetapkan Kazakhstan sebagai negara pengirim baru.',
         'Jumlah negara pengirim E-9 bertambah dari 17 menjadi 18.',
@@ -53,31 +70,31 @@ const NOTICES = [
     url: 'https://www.moel.go.kr',
     date: '2026-08-14',
     checked: '2026-08-23',
-    ko: { title: '체류·사업장 관리가 강화됩니다',
+    ko: { title: '체류·사업장 관리 강화',
       points: [
         'E-9으로 들어온 근로자의 체류와 사업장 관리가 한층 엄격해졌습니다.',
         '무단 이탈과 불법체류 단속이 늘어납니다.',
         '허락 없이 근무처를 벗어나면 불이익이 커집니다. 사업장을 옮길 때는 반드시 고용센터를 거치세요.'
       ] },
-    en: { title: 'Stay and workplace management tightened',
+    en: { title: 'Stay and workplace controls tightened',
       points: [
         'Management of stay and workplaces for E-9 workers has become stricter.',
         'Crackdowns on leaving without permission and on overstaying are increasing.',
         'Leaving your workplace without approval now carries heavier consequences. Always go through the Employment Center to move.'
       ] },
-    vi: { title: 'Quản lý cư trú và nơi làm việc được siết chặt',
+    vi: { title: 'Siết chặt quản lý cư trú và nơi làm việc',
       points: [
         'Việc quản lý cư trú và nơi làm việc đối với lao động E-9 đã chặt chẽ hơn.',
         'Việc kiểm tra tình trạng tự ý bỏ việc và cư trú bất hợp pháp tăng lên.',
         'Rời nơi làm việc khi chưa được phép sẽ chịu bất lợi lớn hơn. Khi chuyển nơi làm việc hãy luôn qua Trung tâm việc làm.'
       ] },
-    th: { title: 'การจัดการการพำนักและสถานประกอบการเข้มงวดขึ้น',
+    th: { title: 'เข้มงวดการจัดการพำนักและสถานประกอบการ',
       points: [
         'การจัดการการพำนักและสถานประกอบการของแรงงาน E-9 เข้มงวดมากขึ้น',
         'การตรวจจับการหนีงานและการพำนักเกินกำหนดเพิ่มขึ้น',
         'การออกจากสถานประกอบการโดยไม่ได้รับอนุญาตจะมีผลเสียมากขึ้น เมื่อจะย้ายงานต้องผ่านศูนย์จัดหางานเสมอ'
       ] },
-    id: { title: 'Pengelolaan izin tinggal dan tempat kerja diperketat',
+    id: { title: 'Pengetatan izin tinggal dan tempat kerja',
       points: [
         'Pengelolaan izin tinggal dan tempat kerja bagi pekerja E-9 menjadi lebih ketat.',
         'Razia terhadap kaburnya pekerja dan tinggal melebihi izin meningkat.',
@@ -91,35 +108,35 @@ const NOTICES = [
     url: 'https://www.moel.go.kr',
     date: '2026-01-01',
     checked: '2026-08-23',
-    ko: { title: '2026년 최저임금은 시간당 10,320원입니다',
+    ko: { title: '2026년 최저임금 시급 10,320원',
       points: [
         '2026년 1월 1일부터 12월 31일까지 시간급 10,320원이 적용됩니다.',
         '주 40시간·월 209시간 기준 월 환산액은 2,156,880원입니다.',
         '업종 구분 없이 모든 사업장에 같게 적용되며, 외국인도 한국인과 똑같이 적용받습니다.',
         '이보다 적게 받고 있다면 임금 체불입니다. 고용노동부 1350으로 상담하세요.'
       ] },
-    en: { title: 'The 2026 minimum wage is 10,320 KRW per hour',
+    en: { title: '2026 minimum wage: 10,320 KRW per hour',
       points: [
         'From 1 January to 31 December 2026 the hourly minimum wage is 10,320 KRW.',
         'Converted to a month at 40 hours a week and 209 hours a month, that is 2,156,880 KRW.',
         'It applies equally to every workplace regardless of industry, and to foreign workers exactly as to Korean workers.',
         'If you are paid less than this, it is unpaid wages. Call the Ministry of Employment and Labor on 1350.'
       ] },
-    vi: { title: 'Lương tối thiểu năm 2026 là 10.320 won mỗi giờ',
+    vi: { title: 'Lương tối thiểu 2026: 10.320 won/giờ',
       points: [
         'Từ ngày 1/1 đến 31/12/2026, lương tối thiểu theo giờ là 10.320 won.',
         'Quy đổi theo tháng với 40 giờ/tuần và 209 giờ/tháng là 2.156.880 won.',
         'Áp dụng như nhau cho mọi nơi làm việc, không phân biệt ngành, và cho người nước ngoài giống hệt người Hàn Quốc.',
         'Nếu bạn nhận ít hơn mức này thì đó là nợ lương. Hãy gọi Bộ Việc làm và Lao động số 1350.'
       ] },
-    th: { title: 'ค่าจ้างขั้นต่ำปี 2026 คือ 10,320 วอนต่อชั่วโมง',
+    th: { title: 'ค่าจ้างขั้นต่ำ 2026: 10,320 วอน/ชั่วโมง',
       points: [
         'ตั้งแต่ 1 มกราคม ถึง 31 ธันวาคม 2026 ค่าจ้างขั้นต่ำรายชั่วโมงคือ 10,320 วอน',
         'คำนวณเป็นรายเดือนที่ 40 ชั่วโมงต่อสัปดาห์ และ 209 ชั่วโมงต่อเดือน เท่ากับ 2,156,880 วอน',
         'ใช้เท่ากันทุกสถานประกอบการโดยไม่แบ่งประเภทกิจการ และใช้กับชาวต่างชาติเช่นเดียวกับคนเกาหลี',
         'หากได้รับน้อยกว่านี้ถือเป็นการค้างจ่ายค่าจ้าง โทรปรึกษากระทรวงแรงงานที่ 1350'
       ] },
-    id: { title: 'Upah minimum 2026 adalah 10.320 won per jam',
+    id: { title: 'Upah minimum 2026: 10.320 won/jam',
       points: [
         'Mulai 1 Januari sampai 31 Desember 2026 upah minimum per jam adalah 10.320 won.',
         'Dikonversi per bulan dengan 40 jam seminggu dan 209 jam sebulan menjadi 2.156.880 won.',
@@ -134,35 +151,35 @@ const NOTICES = [
     url: 'https://www.moel.go.kr',
     date: '2025-12-22',
     checked: '2026-08-23',
-    ko: { title: '2026년 신규 도입 인원이 8만 명으로 줄었습니다',
+    ko: { title: '2026년 신규 도입 인원 축소 (8만 명)',
       points: [
         '2026년 고용허가제(E-9) 쿼터가 8만 명으로 정해졌습니다.',
         '2025년 13만 명에서 약 38% 줄어든 규모입니다.',
         '새로 들어오는 사람이 줄어드는 대신, 이미 한국에 있는 사람의 자리를 두고 경쟁이 커질 수 있습니다.',
         '사업장을 옮길 계획이라면 구직 기간 3개월을 더 넉넉히 잡고 준비하세요.'
       ] },
-    en: { title: 'The 2026 intake has been cut to 80,000',
+    en: { title: '2026 intake cut to 80,000',
       points: [
         'The 2026 Employment Permit System (E-9) quota is set at 80,000 people.',
         'That is about 38% lower than the 130,000 of 2025.',
         'Fewer new arrivals may mean more competition for places among those already in Korea.',
         'If you plan to change workplace, prepare early — the 3-month job-search period may feel tighter.'
       ] },
-    vi: { title: 'Chỉ tiêu tiếp nhận năm 2026 giảm còn 80.000 người',
+    vi: { title: 'Chỉ tiêu 2026 giảm còn 80.000 người',
       points: [
         'Chỉ tiêu Chương trình cấp phép việc làm (E-9) năm 2026 được ấn định là 80.000 người.',
         'Con số này thấp hơn khoảng 38% so với 130.000 của năm 2025.',
         'Người mới nhập cảnh ít đi có thể khiến cạnh tranh giữa những người đã ở Hàn Quốc tăng lên.',
         'Nếu định đổi nơi làm việc, hãy chuẩn bị sớm — 3 tháng tìm việc có thể trở nên eo hẹp hơn.'
       ] },
-    th: { title: 'โควตารับเข้าปี 2026 ลดเหลือ 80,000 คน',
+    th: { title: 'โควตาปี 2026 ลดเหลือ 80,000 คน',
       points: [
         'โควตาระบบอนุญาตจ้างงาน (E-9) ปี 2026 กำหนดไว้ที่ 80,000 คน',
         'ลดลงประมาณ 38% จาก 130,000 คนในปี 2025',
         'ผู้เข้ามาใหม่น้อยลงอาจทำให้การแข่งขันในหมู่คนที่อยู่ในเกาหลีแล้วสูงขึ้น',
         'หากวางแผนย้ายที่ทำงาน ควรเตรียมตัวแต่เนิ่น ๆ เพราะ 3 เดือนหางานอาจรู้สึกกระชั้นขึ้น'
       ] },
-    id: { title: 'Kuota penerimaan 2026 turun menjadi 80.000',
+    id: { title: 'Kuota 2026 turun jadi 80.000',
       points: [
         'Kuota Sistem Izin Kerja (E-9) tahun 2026 ditetapkan 80.000 orang.',
         'Angka itu sekitar 38% lebih rendah dari 130.000 pada 2025.',
@@ -177,31 +194,31 @@ const NOTICES = [
     url: 'https://www.moel.go.kr',
     date: '2025-12-22',
     checked: '2026-08-23',
-    ko: { title: '비수도권 제조업의 고용 한도가 늘었습니다',
+    ko: { title: '비수도권 제조업 고용 한도 확대',
       points: [
         '비수도권 제조업체가 외국인을 추가로 고용할 수 있는 한도가 내국인 대비 20%에서 30%로 올랐습니다.',
         '비수도권 유턴기업은 규모와 상관없이 외국인 고용이 가능해지고, 추가 고용 상한 50명도 없어집니다.',
         '수도권 밖에서 일자리를 찾는다면 선택지가 조금 넓어질 수 있습니다.'
       ] },
-    en: { title: 'Hiring limits raised for manufacturers outside the capital area',
+    en: { title: 'Higher hiring limits outside the capital area',
       points: [
         'Manufacturers outside the capital region may now hire foreign workers up to 30% of their Korean workforce, up from 20%.',
         'Returning companies outside the capital area can hire regardless of size, and the extra cap of 50 workers is removed.',
         'If you are looking for work outside the capital region, there may be a few more options.'
       ] },
-    vi: { title: 'Nâng hạn mức tuyển dụng cho ngành sản xuất ngoài vùng thủ đô',
+    vi: { title: 'Nâng hạn mức tuyển dụng ngoài vùng thủ đô',
       points: [
         'Doanh nghiệp sản xuất ngoài vùng thủ đô nay được tuyển lao động nước ngoài tới 30% so với lao động Hàn Quốc, tăng từ 20%.',
         'Doanh nghiệp hồi hương ngoài vùng thủ đô được tuyển bất kể quy mô, và trần bổ sung 50 người bị bãi bỏ.',
         'Nếu bạn tìm việc ngoài vùng thủ đô, lựa chọn có thể rộng hơn một chút.'
       ] },
-    th: { title: 'เพิ่มเพดานการจ้างงานสำหรับโรงงานนอกเขตเมืองหลวง',
+    th: { title: 'เพิ่มเพดานจ้างงานนอกเขตเมืองหลวง',
       points: [
         'โรงงานนอกเขตเมืองหลวงจ้างแรงงานต่างชาติเพิ่มได้ถึง 30% เทียบกับแรงงานเกาหลี จากเดิม 20%',
         'บริษัทที่ย้ายฐานกลับมาซึ่งตั้งอยู่นอกเขตเมืองหลวงจ้างได้โดยไม่จำกัดขนาดกิจการ และยกเลิกเพดานเพิ่มเติม 50 คน',
         'หากคุณหางานนอกเขตเมืองหลวง ตัวเลือกอาจกว้างขึ้นเล็กน้อย'
       ] },
-    id: { title: 'Batas perekrutan dinaikkan untuk manufaktur di luar wilayah ibu kota',
+    id: { title: 'Kenaikan batas perekrutan di luar ibu kota',
       points: [
         'Pabrik di luar wilayah ibu kota kini boleh mempekerjakan pekerja asing hingga 30% dari pekerja Korea, naik dari 20%.',
         'Perusahaan yang kembali dan berlokasi di luar ibu kota bisa merekrut tanpa memandang ukuran, dan batas tambahan 50 orang dihapus.',
@@ -215,31 +232,31 @@ const NOTICES = [
     url: 'https://www.moel.go.kr',
     date: '2026-08-03',
     checked: '2026-08-23',
-    ko: { title: '10년 이상 장기 체류 방안이 논의되고 있습니다',
+    ko: { title: '10년 이상 장기 체류 방안 논의 중',
       points: [
         'E-9 근로자의 장기 체류를 넓히는 방안이 논의 중이라고 알려졌습니다.',
         '아직 확정된 제도가 아니므로, 지금의 체류 기간(최장 4년 10개월)을 기준으로 계획하세요.',
         '확정되면 이 쪽에 다시 올리겠습니다. 소문만 듣고 움직이지 마세요.'
       ] },
-    en: { title: 'Longer stays of 10 years or more are under discussion',
+    en: { title: '10-year stay scheme under discussion',
       points: [
         'Ways to extend long-term stay for E-9 workers are reported to be under discussion.',
         'Nothing is decided yet, so plan around the current limit of 4 years and 10 months.',
         'We will post here once it is confirmed. Do not act on rumours alone.'
       ] },
-    vi: { title: 'Đang thảo luận phương án cư trú dài hạn từ 10 năm trở lên',
+    vi: { title: 'Đang thảo luận cư trú dài hạn 10 năm',
       points: [
         'Có thông tin rằng các phương án mở rộng cư trú dài hạn cho lao động E-9 đang được thảo luận.',
         'Chưa có gì được quyết định, vì vậy hãy lên kế hoạch theo thời hạn hiện tại là 4 năm 10 tháng.',
         'Chúng tôi sẽ đăng lại ở đây khi có quyết định. Đừng hành động chỉ vì tin đồn.'
       ] },
-    th: { title: 'กำลังหารือแนวทางพำนักระยะยาว 10 ปีขึ้นไป',
+    th: { title: 'หารือแนวทางพำนักระยะยาว 10 ปี',
       points: [
         'มีรายงานว่ากำลังหารือแนวทางขยายการพำนักระยะยาวสำหรับแรงงาน E-9',
         'ยังไม่มีข้อสรุป จึงควรวางแผนตามกำหนดปัจจุบันคือ 4 ปี 10 เดือน',
         'เมื่อมีการยืนยันจะนำมาลงที่นี่อีกครั้ง อย่าตัดสินใจจากข่าวลือเพียงอย่างเดียว'
       ] },
-    id: { title: 'Skema tinggal panjang 10 tahun atau lebih sedang dibahas',
+    id: { title: 'Pembahasan tinggal panjang 10 tahun',
       points: [
         'Dikabarkan sedang dibahas cara memperluas masa tinggal panjang bagi pekerja E-9.',
         'Belum ada keputusan, jadi rencanakan berdasarkan batas saat ini yaitu 4 tahun 10 bulan.',

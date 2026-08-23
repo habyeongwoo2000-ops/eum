@@ -282,7 +282,6 @@ I18N.id = {
   lgChecked: 'Diperiksa: ' + LEGAL_CHECKED + ' · Berdasarkan panduan resmi dari Korea Legal Aid Corporation dan Komisi Hak Asasi Manusia Nasional',
   ntTitle: 'Perubahan terbaru pada sistem',
   ntLead: 'Saat aturan berubah, kami memuatnya di sini beserta tanggalnya. Untuk aturan yang tidak berubah, lihat pertanyaan yang sering diajukan.',
-  ntSample: 'Tulisan di bawah adalah contoh untuk demo. Pada layanan sebenarnya, pengumuman diambil dari kanal resmi.',
   ntSourceLabel: 'Sumber', ntCheckedLabel: 'Diperiksa', ntOriginal: 'Baca aslinya ↗', ntAskBtn: 'Tanya soal pengumuman ini',
 
   askTitle: 'Ajukan pertanyaan',

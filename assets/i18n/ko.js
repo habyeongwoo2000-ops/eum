@@ -282,7 +282,6 @@ I18N.ko = {
   lgChecked: '확인일: ' + LEGAL_CHECKED + ' · 대한법률구조공단·국가인권위원회 공식 안내 기준',
   ntTitle: '최근에 바뀐 제도',
   ntLead: '제도가 바뀌면 날짜와 함께 여기에 올립니다. 바뀌지 않는 기본 규칙은 자주 묻는 질문에서 보세요.',
-  ntSample: '아래 글은 시연용 예시입니다. 실제 서비스에서는 공식 채널에서 받아 온 공지가 올라갑니다.',
   ntSourceLabel: '출처', ntCheckedLabel: '확인일', ntOriginal: '원문 보기 ↗', ntAskBtn: '이 공지에 대해 질문하기',
 
   askTitle: '질문하기',

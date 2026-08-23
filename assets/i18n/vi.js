@@ -282,7 +282,6 @@ I18N.vi = {
   lgChecked: 'Ngày kiểm tra: ' + LEGAL_CHECKED + ' · Theo hướng dẫn chính thức của Tổng công ty Hỗ trợ pháp lý Hàn Quốc và Ủy ban Nhân quyền Quốc gia',
   ntTitle: 'Những thay đổi gần đây của chế độ',
   ntLead: 'Khi quy định thay đổi, chúng tôi đăng kèm ngày tại đây. Những quy định không đổi, xem ở câu hỏi thường gặp.',
-  ntSample: 'Các bài dưới đây là mẫu để trình diễn. Trong dịch vụ thật, thông báo được lấy từ kênh chính thức.',
   ntSourceLabel: 'Nguồn', ntCheckedLabel: 'Ngày kiểm tra', ntOriginal: 'Xem bản gốc ↗', ntAskBtn: 'Hỏi về thông báo này',
 
   askTitle: 'Đặt câu hỏi',
