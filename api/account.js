@@ -25,7 +25,7 @@ function fail(res, code, key) {
 }
 
 // 고용허가제(E-9) 송출 16개국 + 기타. docs/profile.sql 의 체크 제약과 맞춰 둡니다.
-const NAT_CODES = ['PH', 'MN', 'LK', 'VN', 'TH', 'ID', 'UZ', 'PK', 'KH', 'CN', 'BD', 'NP', 'MM', 'KG', 'TL', 'LA', 'other'];
+const NAT_CODES = ['PH', 'MN', 'LK', 'VN', 'TH', 'ID', 'UZ', 'PK', 'KH', 'CN', 'BD', 'NP', 'MM', 'KG', 'TL', 'LA', 'TJ', 'KZ', 'other'];
 const GENDER_CODES = ['M', 'F'];
 
 module.exports = async function handler(req, res) {

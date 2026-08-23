@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자주 묻는 질문 · E9-Bridge</title>
+<meta name="description" content="E-9 사업장 변경 자주 묻는 질문 — 변경 횟수, 신청 기한, 구직 기간, 임금 체불, 기숙사 기준을 5개 언어로 안내합니다.">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://eum-six.vercel.app/faq.html">
+<!-- ▼ 공통 부트 코드 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
+<script>
+(function(){var l=null;try{l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('eum.lang');}catch(e){}
+if(!l){l=(navigator.languages&&navigator.languages[0])||navigator.language||'';}
+if(String(l||'').toLowerCase().indexOf('ko')!==0){var h=document.documentElement;
+h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute('data-lang-pending');},1500);}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+</head>
+<body data-page-title="faqTitle">
+
+<a class="skip" href="#top" data-i18n="skip">본문으로 건너뛰기</a>
+
+<!-- ▼ 공통 머리말 — 모든 페이지에 같은 내용. 고칠 때 전부 함께 고치세요. -->
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="index.html">
+      <img class="brand-mark" src="assets/logo-mark.png" alt="E9-Bridge">
+      <span class="brand-text">
+        <strong>E9-Bridge</strong>
+        <em data-i18n="brandSub">사업장 변경 안내</em>
+      </span>
+    </a>
+    <div class="auth-wrap">
+      <div class="auth-slot" id="authSlot"></div>
+      <!-- 로그인했을 때만 열리는 메뉴. 이름 단추 바로 아래에 붙습니다. -->
+      <div class="auth-menu" id="authMenu" hidden>
+        <a href="account.html" data-i18n="navAccount">계정 설정</a>
+        <button type="button" id="menuLogout" data-i18n="navLogout">로그아웃</button>
+      </div>
+    </div>
+    <div class="lang">
+      <label class="lang-label" for="langSelect" data-i18n="langLabel">언어</label>
+      <select id="langSelect" aria-label="Language">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="th">ไทย</option>
+        <option value="id">Bahasa Indonesia</option>
+      </select>
+    </div>
+  </div>
+
+  <nav class="secnav" data-i18n-aria="navLabel" aria-label="기능 바로가기">
+    <div class="wrap secnav-in" id="secnav">
+      <a href="index.html" data-i18n="secNo1">기한</a>
+      <a href="reason.html" data-i18n="secNo2">사유</a>
+      <a href="payout.html" data-i18n="secNoPay">출국 정산</a>
+      <div class="secnav-item">
+        <a href="board.html" data-i18n="secNo5">게시판</a>
+        <div class="secnav-drop">
+          <a href="notices.html" data-i18n="secNo3">공지</a>
+          <a href="ask.html" data-i18n="secNo4">질문</a>
+          <a href="board.html" data-i18n="secNo5">게시판</a>
+        </div>
+      </div>
+      <a href="faq.html" data-i18n="faqTitle">자주 묻는 질문</a>
+      <a href="legal.html" data-i18n="secNoLegal">법률 자문</a>
+    </div>
+  </nav>
+</header>
+
+<div id="langToast" class="toast" hidden>
+  <span id="langToastText" data-i18n="langAuto">기기 설정에 맞춰 언어를 골랐습니다.</span>
+  <button type="button" id="toastClose" data-i18n="ok">확인</button>
+</div>
+<!-- ▲ 공통 머리말 끝 -->
+
+<main id="top">
+  <section id="faq" class="band">
+    <div class="wrap wrap-narrow">
+      <p class="sec-no">FAQ</p>
+      <h2 data-i18n="faqTitle">자주 묻는 질문</h2>
+      <p class="sec-lead" data-i18n="faqLead">사업장 변경에서 가장 많이 나오는 질문을 모았습니다. 근거가 되는 법 조문과 확인한 날짜를 함께 적었습니다.</p>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_limit_count">사업장을 몇 번까지 바꿀 수 있나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_limit_count">최초 취업활동 기간 3년 동안 3회까지, 재고용으로 늘어난 1년 10개월 동안 2회까지 바꿀 수 있습니다. 다만 회사 잘못으로 그만두게 된 경우는 이 횟수에 넣지 않습니다.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인근로자의 고용 등에 관한 법률 제25조 · 고용노동부 사업장 변경제도 안내 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_employer_fault">회사 잘못으로 그만두면 횟수에 들어가나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_employer_fault">들어가지 않습니다. 임금 체불, 휴업·폐업, 근로조건 위반처럼 근로자 잘못이 아닌 사유로 옮기는 경우는 횟수에 넣지 않습니다. 3회를 다 썼다고 들었더라도 포기하지 말고 고용센터에 사유를 밝히세요.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인근로자의 고용 등에 관한 법률 제25조 · 고용노동부 사업장 변경제도 안내 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_apply_1month">언제까지 사업장 변경을 신청해야 하나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_apply_1month">근로계약이 끝난 날부터 1개월 안에 고용센터에 신청해야 합니다. 이 기간을 넘기면 출국 대상이 되므로, 접수증을 꼭 받아 보관하세요.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인근로자의 고용 등에 관한 법률 제25조제3항 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_search_3month">새 회사를 못 구하면 어떻게 되나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_search_3month">사업장 변경을 신청한 날부터 3개월 안에 새 근무처를 정하지 못하면 출국해야 합니다. 남은 날짜를 계속 확인하고, 고용센터의 알선을 적극적으로 받으세요.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인근로자의 고용 등에 관한 법률 제25조제3항 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_no_side_work">구직 기간에 다른 곳에서 일해도 되나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_no_side_work">안 됩니다. 사업장 변경 절차가 끝나기 전에 다른 곳에서 일하면 불법 취업이 되어 본인이 처벌받고, 일을 시킨 사업주도 처벌받습니다. 반드시 고용센터를 통한 정식 절차로만 취업하세요.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인근로자의 고용 등에 관한 법률 · 출입국관리법 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_dorm_standard">기숙사가 너무 나쁜데 옮길 수 있나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_dorm_standard">숙소가 기준에 못 미치면 사업장 변경 사유가 될 수 있습니다. 1인당 최소 면적과 냉난방·세탁·취사 시설 기준이 있으며, 컨테이너 숙소도 이 기준을 지켜야 합니다. 사진과 날짜를 남겨 두고 고용센터나 1345에 상담하세요.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 근로기준법 제100조 · 외국인근로자 숙식정보 제공 및 비용징수 지침 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_unpaid_wage">월급을 못 받았습니다. 어떻게 하나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_unpaid_wage">관할 지방고용노동청에 진정을 넣을 수 있고, 인터넷(노동포털)으로도 됩니다. 통장 입금 내역, 근로계약서, 근무 기록을 모아 두세요. 체불은 사업장 변경 사유가 되며, 이때는 변경 횟수에 넣지 않습니다.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 근로기준법 제36조·제43조 · 고용노동부 임금체불 신고 안내 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_stay_length">한국에서 최대 얼마나 일할 수 있나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_stay_length">기본 3년에 재고용 1년 10개월을 더해 한 번에 최장 4년 10개월입니다. 성실근로자 재입국 특례 요건을 갖추면 출국 후 다시 들어와 추가로 일할 수 있습니다.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인근로자의 고용 등에 관한 법률 제18조·제18조의2 · 제18조의4(재입국 취업 특례) · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_e74_change">E-7-4(숙련기능인력)로 바꾸면 뭐가 달라지나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_e74_change">점수제 심사를 통과하면 사업장 변경이 자유로워지고 가족을 초청할 수 있습니다. 한국어 능력, 근속 기간, 소득, 기술 자격 등이 점수에 반영되므로 근무하는 동안 미리 준비해 두면 좋습니다.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 출입국관리법 시행령 별표1의2 · 법무부 숙련기능인력(E-7-4) 점수제 안내 · 2026-08-23</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary><span data-i18n="faqQ_where_help">어디에 물어봐야 하나요?</span></summary>
+          <div class="faq-a">
+            <p data-i18n="faqA_where_help">외국인종합안내센터 1345는 여러 언어로 상담해 줍니다. 임금·근로조건 문제는 고용노동부 1350, 사업장 변경 절차는 관할 고용센터에 물어보세요. 이 서비스의 안내는 참고용이며, 확정 답변은 이 창구에서 받으세요.</p>
+            <p class="faq-src"><span data-i18n="faqSrcLabel">근거</span>: 외국인종합안내센터(1345) · 고용노동부 고객상담센터(1350) · 2026-08-23</p>
+          </div>
+        </details>
+      </div>
+
+      <p class="callout is-warn" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
+    </div>
+  </section>
+</main>
+<!-- 언어 파일은 고른 언어 하나만 받습니다. core.js 가 어떤 언어인지 정하고,
+     바로 아래 줄이 그 파일 하나만 불러옵니다 (예전에는 5개 언어를 전부 받았습니다). -->
+<script src="assets/i18n/core.js"></script>
+<script>document.write('<scr' + 'ipt src="assets/i18n/' + EUM_LANG + '.js"><\/scr' + 'ipt>');</script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

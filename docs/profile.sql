@@ -20,7 +20,7 @@ exception when duplicate_object then null; end $$;
 do $$ begin
   alter table eum_users add constraint eum_users_nationality_ck
     check (nationality is null or nationality in (
-      'PH','MN','LK','VN','TH','ID','UZ','PK','KH','CN','BD','NP','MM','KG','TL','LA','other'
+      'PH','MN','LK','VN','TH','ID','UZ','PK','KH','CN','BD','NP','MM','KG','TL','LA','TJ','KZ','other'
     ));
 exception when duplicate_object then null; end $$;
 

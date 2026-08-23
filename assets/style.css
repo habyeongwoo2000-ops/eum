@@ -853,3 +853,43 @@ button.board-row:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
 @media (max-width:520px){
   .ft-contact{flex-direction:column;align-items:flex-start;gap:16px}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   자주 묻는 질문 (faq.html)
+   <details>/<summary> 를 씁니다. 자바스크립트가 없어도 펼쳐지고,
+   화면 낭독기도 "펼침/접힘"을 스스로 읽어 줍니다.
+   ═══════════════════════════════════════════════════════════════ */
+.faq-list{display:grid;gap:12px;margin:24px 0 28px}
+.faq-item{
+  background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);
+  overflow:hidden;
+}
+.faq-item[open]{border-color:var(--go)}
+.faq-item summary{
+  list-style:none;cursor:pointer;
+  padding:18px 52px 18px 20px;position:relative;
+  font-family:var(--f-disp);font-size:17px;font-weight:700;color:var(--ink);
+  line-height:1.45;word-break:keep-all;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+/* 오른쪽 끝의 + 표시. 펼치면 −(빼기)로 바뀝니다. */
+.faq-item summary::after{
+  content:"";position:absolute;right:22px;top:50%;width:13px;height:13px;
+  margin-top:-6px;
+  background:
+    linear-gradient(var(--go-d),var(--go-d)) center/13px 2.5px no-repeat,
+    linear-gradient(var(--go-d),var(--go-d)) center/2.5px 13px no-repeat;
+  transition:transform .18s ease;
+}
+.faq-item[open] summary::after{
+  background:linear-gradient(var(--go-d),var(--go-d)) center/13px 2.5px no-repeat;
+  transform:rotate(180deg);
+}
+.faq-item summary:hover{background:var(--go-l)}
+.faq-item summary:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
+.faq-a{padding:0 20px 20px;border-top:1px solid var(--line-2);margin-top:-1px}
+.faq-a p{margin:16px 0 0;font-size:15.5px;line-height:1.75;color:var(--ink-2)}
+.faq-src{
+  font-family:var(--f-mono);font-size:12px!important;color:var(--ink-3)!important;
+  line-height:1.6!important;
+}
