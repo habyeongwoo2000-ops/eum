@@ -57,23 +57,52 @@ ${KB_TEXT}`;
     const url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
       MODEL + ':generateContent?key=' + encodeURIComponent(key);
 
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: system }] },
-        contents: [{ role: 'user', parts: [{ text: question }] }],
-        generationConfig: {
-          maxOutputTokens: 3000,
-          temperature: 0.2
-        }
-      })
+    const payload = JSON.stringify({
+      system_instruction: { parts: [{ text: system }] },
+      contents: [{ role: 'user', parts: [{ text: question }] }],
+      generationConfig: {
+        maxOutputTokens: 3000,
+        temperature: 0.2
+      }
     });
 
-    if (!r.ok) {
-      const detail = await r.text();
-      console.error('gemini error', r.status, detail);
-      return res.status(502).json({ error: 'upstream failed' });
+    /* 구글 쪽이 잠깐 몰려서 503(UNAVAILABLE)이나 429(요청 과다)를 주는 일이
+       자주 있습니다. 대개 몇 초면 풀리므로, 그 자리에서 조금 기다렸다 다시
+       물어봅니다. 기다리는 간격을 늘려 가며 최대 세 번까지 시도합니다.
+
+       500·400 처럼 다시 해도 같은 답이 올 오류는 재시도하지 않습니다.
+       괜히 사용자를 더 기다리게만 합니다. */
+    const RETRY_ON = [429, 500, 502, 503, 504];
+    const WAITS = [600, 1500];          // 1차 실패 후 0.6초, 2차 실패 후 1.5초
+
+    let r = null, lastStatus = 0, lastDetail = '';
+    for (let attempt = 0; attempt <= WAITS.length; attempt++) {
+      r = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: payload
+      });
+
+      if (r.ok) break;
+
+      lastStatus = r.status;
+      lastDetail = await r.text();
+      console.error('gemini error', lastStatus, 'attempt', attempt + 1, lastDetail.slice(0, 300));
+
+      const canRetry = RETRY_ON.indexOf(lastStatus) !== -1 && attempt < WAITS.length;
+      if (!canRetry) break;
+      await new Promise(function (done) { setTimeout(done, WAITS[attempt]); });
+    }
+
+    if (!r || !r.ok) {
+      /* 화면에서 "지금 몰려서 그렇다"와 "설정이 잘못됐다"를 다르게 안내할 수
+         있도록 구분해서 내려보냅니다. 사용자에게는 다시 눌러 보라고만 하면
+         되지만, 영영 안 되는 상황이면 다른 안내가 필요합니다. */
+      const busy = RETRY_ON.indexOf(lastStatus) !== -1;
+      return res.status(busy ? 503 : 502).json({
+        error: busy ? 'upstream busy' : 'upstream failed',
+        retryable: busy
+      });
     }
 
     const data = await r.json();

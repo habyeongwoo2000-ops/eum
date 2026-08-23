@@ -5,8 +5,10 @@
   'use strict';
 
   var STORE = 'eum.';
-  var lang = 'ko';
-  var T = I18N.ko;
+  /* core.js 가 미리 정한 언어입니다. 그 언어 파일 하나만 받아 둔 상태이므로
+     여기서 곧바로 씁니다. 다른 언어로 바꾸면 그때 그 파일을 받아 옵니다. */
+  var lang = (typeof EUM_LANG === 'string' && I18N[EUM_LANG]) ? EUM_LANG : 'ko';
+  var T = I18N[lang] || I18N.ko || {};
 
   /* ---------- 작은 도구들 ---------- */
   function $(s, r) { return (r || document).querySelector(s); }
@@ -36,9 +38,10 @@
   // 브라우저가 옛 코드나 세 글자 코드를 보내는 경우를 흡수합니다.
   var LANG_ALIAS = { in: 'id', ind: 'id', vie: 'vi', tha: 'th', kor: 'ko', eng: 'en' };
 
-  // I18N 에 실제로 있는 키만 통과시킵니다. ?lang=constructor 같은 입력도 여기서 막힙니다.
+  /* 지원 목록에 있는 코드만 통과시킵니다. ?lang=constructor 같은 입력도 여기서 막힙니다.
+     I18N 은 아직 안 받아 온 언어가 비어 있으므로 목록으로 판단합니다. */
   function isLang(code) {
-    return typeof code === 'string' && Object.prototype.hasOwnProperty.call(I18N, code);
+    return typeof code === 'string' && EUM_LANGS.indexOf(code) >= 0;
   }
 
   function pickLang(tag) {
@@ -71,7 +74,17 @@
   }
 
   function applyLang(code) {
-    lang = isLang(code) ? code : 'en';
+    var want = isLang(code) ? code : 'en';
+
+    /* 그 언어 파일을 아직 안 받았으면 받아 온 뒤 다시 부릅니다.
+       못 받으면(전파 지연·오프라인) 지금 언어를 그대로 두어, 화면이
+       빈 채로 남지 않게 합니다. */
+    if (!I18N[want]) {
+      eumLoadLang(want, function (ok) { if (ok) applyLang(want); });
+      return;
+    }
+
+    lang = want;
     T = I18N[lang];
     document.documentElement.lang = lang;
     /* 탭 제목: "사유 자가진단 · E9-Bridge — 사업장 변경 안내" 처럼 페이지 이름을 앞에 붙입니다.
@@ -1212,7 +1225,15 @@
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(function (r) {
-      if (!r.ok) throw new Error('http ' + r.status);
+      if (!r.ok) {
+        // 왜 실패했는지 화면에서 구분할 수 있도록 상태를 함께 실어 보냅니다.
+        var err = new Error('http ' + r.status);
+        err.status = r.status;
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          err.retryable = !!(d && d.retryable) || r.status === 503;
+          throw err;
+        });
+      }
       return r.json();
     });
   }
@@ -1235,10 +1256,15 @@
         if (!data || !data.answer) throw new Error('empty');
         fillAnswer(box, data.answer, null, false);
       })
-      .catch(function () {
-        // 서버가 없거나 실패하면 브라우저 안의 지식베이스로 답합니다.
+      .catch(function (e) {
+        /* 먼저 브라우저 안의 지식베이스에서 찾아 봅니다. 답이 있으면
+           서버가 잠깐 안 되더라도 사용자는 답을 얻습니다. */
         var hit = findEntry(question);
-        if (hit) fillAnswer(box, hit[lang] || hit.en, hit.src, true, hit.review);
+        if (hit) { fillAnswer(box, hit[lang] || hit.en, hit.src, true, hit.review); return; }
+
+        /* 지식베이스에도 없을 때 — 몰려서 실패한 것이면 그렇게 말해 줍니다.
+           "답을 못 찾았다" 고만 하면 다시 눌러 볼 생각을 못 합니다. */
+        if (e && e.retryable) fillAnswer(box, T.askBusy, null, true);
         else fillAnswer(box, T.askFallback, null, true);
       });
   }
