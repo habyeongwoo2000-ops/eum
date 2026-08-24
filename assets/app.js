@@ -288,18 +288,39 @@
   }
 
   /* ---------- 출국 정산 ---------- */
+  /* 안내문 안의 전화번호를 눌러서 바로 걸리게 만듭니다.
+     1600-0266 · 1350 · 132 처럼 자릿수가 제각각이라 한 번에 걸러 냅니다.
+     휴대폰으로 보는 사람이 번호를 손으로 옮겨 적지 않아도 됩니다. */
+  function withTelLinks(text, box) {
+    var re = /(\d{3,4}-\d{3,4}|\b1\d{3}\b|\b13[0-9]\b)/g;
+    var last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) box.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var a = document.createElement('a');
+      a.className = 'pay-tel';
+      a.href = 'tel:' + m[0].replace(/-/g, '');
+      a.textContent = m[0];
+      box.appendChild(a);
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) box.appendChild(document.createTextNode(text.slice(last)));
+  }
+
   function renderPayList() {
     var box = $('#payList');
     if (!box) return;
     box.innerHTML = '';
-    (T.pyItems || []).forEach(function (it) {
+    (T.pyItems || []).forEach(function (it, i) {
       var card = el('div', 'pay-item');
+      // 순서를 매겨 두면 "몇 개 중 몇 번째"가 한눈에 들어옵니다.
+      card.appendChild(el('span', 'pay-num', String(i + 1)));
       var h = el('h4');
-      h.appendChild(el('span', 'pay-check', '✓'));
       h.appendChild(el('span', null, it.t));
       card.appendChild(h);
       card.appendChild(el('p', null, it.w));
-      card.appendChild(el('p', 'pay-where', it.r));
+      var where = el('p', 'pay-where');
+      withTelLinks(it.r, where);
+      card.appendChild(where);
       box.appendChild(card);
     });
     $('#paySrc').textContent = T.askSourceLabel + ': ' + PAY_SRC + ' · ' + T.ntCheckedLabel + ' ' + PAY_CHECKED;

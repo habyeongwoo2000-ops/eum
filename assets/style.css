@@ -365,19 +365,68 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
 #payout .src{margin-top:24px!important}
 #payout .disclaim{max-width:60ch}
 
-.pay-hero{background:var(--go-l);border-radius:16px;padding:32px;margin-top:20px}
-.pay-hero .sub-h{font-size:19px;font-weight:800;border-left:4px solid var(--go);padding-left:12px}
-.pay-hero .pay-list{grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:0}
-.pay-hero .pay-item{border:0;border-left:5px solid var(--go);padding:22px;background:#fff}
+/* ── 떠나기 전에 확인할 것 — 법률 자문 쪽과 같은 카드 문법을 씁니다.
+   흰 카드 + 왼쪽 색띠 + 번호 배지 + 눌러서 걸리는 전화번호.
+   돈이 걸린 쪽이라 "어디에 연락하는가" 가 카드의 주인공이어야 합니다. */
+.pay-hero{
+  background:var(--go-l);border-radius:18px;padding:34px 32px;margin-top:24px;
+}
+.pay-hero .sub-h{
+  margin:0 0 6px;font-family:var(--f-disp);font-size:21px;font-weight:800;
+  border-left:4px solid var(--go);padding-left:13px;color:var(--ink);
+}
+.pay-hero-lead{margin:0 0 20px;font-size:15px;color:var(--ink-2);line-height:1.7}
+
+.pay-hero .pay-list{
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:0;
+}
+.pay-hero .pay-item{
+  position:relative;background:#fff;border:1.5px solid var(--line);
+  border-left:5px solid var(--go);border-radius:var(--r);
+  padding:22px 22px 18px 56px;
+}
+/* 항목마다 색을 조금씩 달리해 눈으로 셀 수 있게 합니다 */
 .pay-hero .pay-item:nth-child(2){border-left-color:var(--warn)}
 .pay-hero .pay-item:nth-child(3){border-left-color:var(--go-d)}
 .pay-hero .pay-item:nth-child(4){border-left-color:#a97c50}
-.pay-hero .pay-item.pay-c3{border-left-color:var(--go-d)}
-.pay-hero .pay-item.pay-c4{border-left-color:#a97c50}
+.pay-hero .pay-item:nth-child(5){border-left-color:#7a8f6e}
+
+/* 번호 배지 — 왼쪽 색띠 안쪽에 붙여 둡니다 */
+.pay-num{
+  position:absolute;left:16px;top:22px;
+  width:26px;height:26px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--go-l);color:var(--go-d);
+  font-family:var(--f-mono);font-size:13px;font-weight:700;
+}
+.pay-hero .pay-item:nth-child(2) .pay-num{background:var(--warn-l);color:#8a5a00}
+.pay-hero .pay-item:nth-child(5) .pay-num{background:#eaf0e6;color:#4c6340}
+
+.pay-hero .pay-item h4{
+  margin:0 0 9px;font-family:var(--f-disp);font-size:17.5px;font-weight:800;
+  color:var(--ink);line-height:1.35;display:block;
+}
+.pay-hero .pay-item p{margin:0 0 12px;font-size:14.5px;line-height:1.7;color:var(--ink-2)}
+.pay-hero .pay-item .pay-where{
+  margin:0;padding-top:12px;border-top:1px solid var(--line-2);
+  font-size:13px;color:var(--ink-3);line-height:1.9;
+}
 .pay-hero .pay-item .pay-check{display:none}
-.pay-hero .pay-item h4{font-size:17px;color:var(--go-d)}
-.pay-hero .pay-item p{font-size:14px}
-.pay-hero .pay-item .pay-where{color:#8a5a34;border-top-color:var(--line-2)}
+
+/* 전화번호 — 눌러서 바로 걸립니다. 손가락 표적을 확보합니다. */
+.pay-tel{
+  display:inline-flex;align-items:center;min-height:32px;padding:0 11px;
+  margin:2px 2px 2px 0;border-radius:8px;
+  background:var(--go);color:#fff;text-decoration:none;
+  font-family:var(--f-mono);font-size:14px;font-weight:700;letter-spacing:.02em;
+}
+.pay-tel:hover{background:var(--go-d);color:#fff}
+.pay-tel:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+@media (max-width:560px){
+  .pay-hero{padding:24px 18px;border-radius:14px}
+  .pay-hero .pay-item{padding:20px 18px 16px 50px}
+}
 .pay-form-card{margin-top:0}
 .pay-form-card h3{margin:0 0 18px;font-size:26px;font-weight:800;color:var(--ink)}
 @media (max-width:700px){

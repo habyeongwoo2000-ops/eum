@@ -3,6 +3,7 @@
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
 I18N.ko = {
+  pyHeroLead: '번호를 누르면 바로 전화가 걸립니다. 한 가지라도 빠뜨리면 나중에 청구하기 어려우니, 출국 전에 다섯 가지를 모두 확인하세요.',
   navFaq: 'FAQ',
   navChatbot: '챗봇 질문',
   navBoard: '질문게시판',

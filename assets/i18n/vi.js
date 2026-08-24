@@ -3,6 +3,7 @@
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
 I18N.vi = {
+  pyHeroLead: 'Chạm vào số để gọi ngay. Bỏ sót dù chỉ một mục cũng khiến việc đòi sau này khó khăn, hãy kiểm tra đủ năm mục trước khi xuất cảnh.',
   navFaq: 'FAQ',
   navChatbot: 'Hỏi chatbot',
   navBoard: 'Diễn đàn hỏi đáp',
