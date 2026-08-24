@@ -194,6 +194,24 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
           <p class="auth-msg" id="profileMsg" role="status" aria-live="polite"></p>
         </form>
 
+        <h3 class="ac-head" data-i18n="acSecMyQ">내가 남긴 질문</h3>
+        <p class="sec-lead" data-i18n="acMyQLead">질문게시판에 내가 남긴 질문과 답변을 모아 봅니다. 비공개로 남긴 글도 여기서는 보입니다.</p>
+
+        <div class="board-thead" aria-hidden="true">
+          <span class="bt-no" data-i18n="boardColNo">번호</span>
+          <span class="bt-q" data-i18n="boardColTitle">제목</span>
+          <span class="bt-user" data-i18n="boardColUser">글쓴이</span>
+          <span class="bt-at" data-i18n="boardColAt">작성일</span>
+        </div>
+
+        <div class="board-list" id="myqList"></div>
+
+        <nav class="pager" id="myqPager" hidden aria-label="page">
+          <button type="button" class="pg-arrow" id="myqPrev" data-i18n-aria="boardPrev" aria-label="이전">‹</button>
+          <span class="pg-nums" id="myqNums"></span>
+          <button type="button" class="pg-arrow" id="myqNext" data-i18n-aria="boardNext" aria-label="다음">›</button>
+        </nav>
+
         <p class="auth-swap"><a href="#" id="acLogout" data-i18n="navLogout">로그아웃</a></p>
       </div>
     </div>

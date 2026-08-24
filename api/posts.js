@@ -1,6 +1,7 @@
 /* 공개 게시판 — 목록 보기(누구나) / 글쓰기(로그인한 사람만) / 답변 달기(관리자만)
 
    GET  /api/posts?page=1&lang=ko                              → { items, page, pages, total }
+   GET  /api/posts?mine=1&page=1&lang=ko                        → 내가 쓴 글만. 로그인 필요 (마이페이지 "내가 남긴 질문").
    POST /api/posts { body, lang, private }                     → 글 등록. 쿠키로 로그인 확인.
    POST /api/posts { action:'answer', id, answer, src }         → 답변 저장. 관리자만.
 
@@ -38,6 +39,10 @@ module.exports = async function handler(req, res) {
       const me = A.currentUser(req);
       const canSeeAll = !!(me && me.isAdmin);
 
+      // 마이페이지 "내가 남긴 질문" — 본인 글만 봅니다. 로그인이 없으면 볼 수 없습니다.
+      const mineOnly = q.mine === '1' || q.mine === 'true';
+      if (mineOnly && !me) return fail(res, 401, 'errNeedLogin');
+
       // 검색어. PostgREST 의 ilike 패턴에서 뜻을 갖는 글자를 막아 둡니다.
       const term = String(q.q || '').trim().slice(0, 60).replace(/[%_*,()]/g, ' ').trim();
 
@@ -46,7 +51,11 @@ module.exports = async function handler(req, res) {
          다만 검색할 때는 남의 비공개 글을 아예 빼 둡니다. 검색어가 걸리는지
          아닌지로 내용을 한 글자씩 알아낼 수 있기 때문입니다. */
       let filter = '';
-      if (term) {
+      if (mineOnly) {
+        // 본인 글이므로 비공개 여부와 무관하게 전부 봅니다.
+        filter = '&user_id=eq.' + encodeURIComponent(me.uid);
+        if (term) filter += '&orig_body=ilike.*' + encodeURIComponent(term) + '*';
+      } else if (term) {
         if (canSeeAll) filter = '';
         else if (me) filter = '&or=(is_private.eq.false,user_id.eq.' + encodeURIComponent(me.uid) + ')';
         else filter = '&is_private=eq.false';

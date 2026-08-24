@@ -115,6 +115,7 @@
     renderChips();
     renderPayList();
     renderBoard();
+    renderMyQuestions();
     boardMsg(boardMsgKey, boardMsgKind); // 안내 문구도 새 언어로 다시 씁니다
     authMsg(authMsgKey, authMsgKind);
     paintAuth();
@@ -252,39 +253,104 @@
   /* ---------- 자가진단 ---------- */
   var lastQuiz = null;
 
-  function showQuizResult() {
-    if (!lastQuiz) return;
+  /* showQuizResult 와 이메일 전송용 quizEmailBody 가 같은 판정을 쓰므로
+     여기서 한 번만 계산합니다. */
+  function quizFields() {
+    if (!lastQuiz) return null;
     var q1 = lastQuiz.q1, q2 = lastQuiz.q2, q3 = lastQuiz.q3;
-    var box = $('#quizResult');
     var employerFault = q1 !== 'own';
     var overLimit = q3 === '3';
 
-    box.hidden = false;
-    box.classList.remove('is-warn', 'is-stop');
-
-    var tag, title, body;
+    var kind, tag, title, body;
     if (overLimit) {
-      box.classList.add('is-stop');
+      kind = 'stop';
       tag = T.resCountTag; title = T.resCountTitle; body = T.resCountBody;
     } else if (employerFault) {
+      kind = null;
       tag = T.resEmpTag; title = T.resEmpTitle; body = T.resEmpBody;
     } else {
-      box.classList.add('is-warn');
+      kind = 'warn';
       tag = T.resOwnTag; title = T.resOwnTitle; body = T.resOwnBody;
     }
 
     var ev = q2 === 'yes' ? T.evYes : (q2 === 'some' ? T.evSome : T.evNo);
     var count = T.countLine.replace('{n}', q3 === '3' ? '3+' : q3);
 
-    $('#resultTag').textContent = tag;
-    $('#resultTitle').textContent = title;
-    $('#resultBody').textContent = body + ' ' + ev + ' ' + count;
+    return { kind: kind, tag: tag, title: title, body: body, ev: ev, count: count };
+  }
+
+  function showQuizResult() {
+    var f = quizFields();
+    if (!f) return;
+    var box = $('#quizResult');
+
+    box.hidden = false;
+    box.classList.remove('is-warn', 'is-stop');
+    if (f.kind) box.classList.add('is-' + f.kind);
+
+    $('#resultTag').textContent = f.tag;
+    $('#resultTitle').textContent = f.title;
+    $('#resultBody').textContent = f.body + ' ' + f.ev + ' ' + f.count;
 
     var ul = $('#resultDocs');
     ul.innerHTML = '';
     T.docs.forEach(function (d) { ul.appendChild(el('li', null, d)); });
     $('#resultSrc').textContent = T.askSourceLabel + ': 외국인근로자의 고용 등에 관한 법률 제25조 · ' +
       T.ntCheckedLabel + ' ' + CHECKED_ON;
+
+    // 언어를 바꾸거나 다시 제출하면 전에 눌렀던 "메일 앱을 열었습니다" 같은
+    // 안내는 지금 상황과 안 맞으므로 지웁니다. 입력해 둔 이메일 주소는 남깁니다.
+    var emsg = $('#resultEmailMsg');
+    if (emsg) { emsg.textContent = ''; emsg.className = 'result-email-msg'; }
+  }
+
+  /* 결과를 이메일로 보내기 — 서버 없이 동작해야 하므로(README 5장 "알림 발송"은
+     서버가 필요해 아직 없다고 명시) mailto: 로 이 기기의 이메일 앱을 열어
+     본문을 채워 둡니다. 실제 전송은 그 앱에서 사용자가 한 번 더 눌러야 됩니다. */
+  function quizEmailBody() {
+    var f = quizFields();
+    if (!f) return '';
+
+    var lines = [f.title, '', f.body + ' ' + f.ev + ' ' + f.count];
+
+    lines.push('', T.ckDocsTitle);
+    (T.docs || []).forEach(function (d) { lines.push('- ' + d); });
+
+    lines.push('', T.askSourceLabel + ': 외국인근로자의 고용 등에 관한 법률 제25조 · ' +
+      T.ntCheckedLabel + ' ' + CHECKED_ON);
+
+    // 사진을 올려 읽은 내용이 있으면 함께 담습니다.
+    var readOut = $('#docReadOut');
+    if (readOut && !readOut.hidden && readOut.textContent.trim()) {
+      lines.push('', T.ckReadOk, readOut.textContent.replace(/\s+/g, ' ').trim());
+    }
+
+    lines.push('', T.disclaimer);
+    return lines.join('\n');
+  }
+
+  function sendQuizEmail() {
+    var input = $('#resultEmail'), msg = $('#resultEmailMsg');
+    if (!input || !msg) return;
+    var addr = input.value.trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr)) {
+      msg.textContent = T.ckEmailBad; msg.className = 'result-email-msg is-bad';
+      input.focus();
+      return;
+    }
+
+    // encodeURIComponent 는 '@'도 %40 으로 바꿔서, 그대로 두면 일부 메일
+    // 앱이 받는 사람 주소를 알아보지 못합니다. '@'만 다시 풀어 둡니다.
+    var addrPart = encodeURIComponent(addr).replace(/%40/g, '@');
+    var url = 'mailto:' + addrPart +
+      '?subject=' + encodeURIComponent(T.ckEmailSubject) +
+      '&body=' + encodeURIComponent(quizEmailBody());
+
+    // 여기서는 전송 성공 여부를 알 수 없습니다 — 메일 앱을 여는 것까지가
+    // 이 기기 안에서 할 수 있는 전부입니다. 안내문도 그렇게 씁니다.
+    window.location.href = url;
+    msg.textContent = T.ckEmailOpened; msg.className = 'result-email-msg is-good';
   }
 
   /* ---------- 출국 정산 ---------- */
@@ -657,14 +723,7 @@
     if (empty) empty.hidden = !!has;
     list.hidden = !has;
     list.innerHTML = '';
-
-    var quotes = $('#itvQuotes'), qEmpty = $('#itvQuotesEmpty');
-    if (quotes) quotes.innerHTML = '';
-    if (!has) {
-      if (qEmpty) qEmpty.hidden = false;
-      return;
-    }
-    if (qEmpty) qEmpty.hidden = true;
+    if (!has) return;
 
     var sorted = INTERVIEWS.slice().sort(function (a, b) {
       return String(b.date || '').localeCompare(String(a.date || ''));
@@ -697,19 +756,21 @@
         art.appendChild(qa);
       });
 
-      if (it.date) art.appendChild(el('p', 'itv-date', it.date));
-      list.appendChild(art);
-
-      /* 사이트를 써 본 소감은 아래 칸에 따로 모읍니다. */
-      if (quotes && body.useQuote) {
+      /* 사이트를 써 본 소감이 있으면 인터뷰 카드 안에 그대로 이어 붙입니다.
+         전에는 이 내용만 따로 모아 별도 섹션에 보여줬지만, 지금은 인터뷰
+         하나에 모든 이야기를 함께 싣습니다. */
+      if (body.useQuote) {
+        var uq = el('div', 'itv-usequote');
+        if (T.itvUseQuoteLabel) uq.appendChild(el('p', 'itv-usequote-label', T.itvUseQuoteLabel));
         var q = el('blockquote', 'itv-quote');
         q.appendChild(el('p', null, body.useQuote));
-        q.appendChild(el('cite', null, label));
-        quotes.appendChild(q);
+        uq.appendChild(q);
+        art.appendChild(uq);
       }
-    });
 
-    if (quotes && !quotes.children.length && qEmpty) qEmpty.hidden = false;
+      if (it.date) art.appendChild(el('p', 'itv-date', it.date));
+      list.appendChild(art);
+    });
   }
 
   /* ---------- 묻고 답하기 ---------- */
@@ -960,6 +1021,79 @@
       });
   }
 
+  /* ---------- 마이페이지 · 내가 남긴 질문 ----------
+     질문게시판(#boardList)과 같은 글 한 줄 표시(boardRow)를 그대로 씁니다.
+     다른 점은 서버에 mine=1 을 붙여 본인 글만 받아 오는 것과, 쪽 넘김 상태를
+     따로 관리하는 것뿐입니다(게시판을 같은 화면에 함께 둘 일이 없어서
+     boardPage 등을 그대로 나눠 써도 되지만, 헷갈리지 않게 이름을 다르게 둡니다). */
+  var myqSeq = 0;
+  var myqPage = 1, myqPages = 1, myqTotal = 0, myqPer = 10;
+
+  function paintMyqPager() {
+    var nav = $('#myqPager');
+    if (!nav) return;
+    nav.hidden = myqPages <= 1;
+
+    var box = $('#myqNums');
+    if (box) {
+      box.innerHTML = '';
+      var block = 10;
+      var start = Math.floor((myqPage - 1) / block) * block + 1;
+      var end = Math.min(myqPages, start + block - 1);
+      for (var n = start; n <= end; n++) {
+        (function (num) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pg-num' + (num === myqPage ? ' is-on' : '');
+          b.textContent = String(num);
+          if (num === myqPage) b.setAttribute('aria-current', 'page');
+          b.addEventListener('click', function () { renderMyQuestions(num); });
+          box.appendChild(b);
+        })(n);
+      }
+    }
+    $('#myqPrev').disabled = myqPage <= 1;
+    $('#myqNext').disabled = myqPage >= myqPages;
+  }
+
+  function renderMyQuestions(page) {
+    var list = $('#myqList');
+    if (!list || !me) return;
+    if (page) myqPage = page;
+    var seq = ++myqSeq;
+
+    var url = 'api/posts?mine=1&page=' + myqPage + '&lang=' + encodeURIComponent(lang);
+
+    fetch(url, { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
+      .then(function (data) {
+        if (seq !== myqSeq) return;
+        var items = (data && data.items) || [];
+        myqPage = (data && data.page) || 1;
+        myqPages = (data && data.pages) || 1;
+        myqTotal = (data && data.total) || 0;
+        myqPer = (data && data.perPage) || 10;
+
+        list.innerHTML = '';
+        if (!items.length) {
+          list.appendChild(el('p', 'board-empty', T.acMyQEmpty));
+        } else {
+          var first = myqTotal - (myqPage - 1) * myqPer;
+          items.forEach(function (it, i) { list.appendChild(boardRow(it, first - i)); });
+        }
+        paintMyqPager();
+        if (page) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      })
+      .catch(function (e) {
+        if (seq !== myqSeq) return;
+        console.warn('my questions unavailable', e);
+        list.innerHTML = '';
+        list.appendChild(el('p', 'board-empty', T.boardListFail));
+        myqPages = 1;
+        paintMyqPager();
+      });
+  }
+
   function submitQuestion(text, isPrivate) {
     var btn = $('#boardSend');
     btn.disabled = true;
@@ -1081,6 +1215,8 @@
         // 관리자 답변 칸은 로그인 여부를 알아야 그리므로, 로그인 확인이
         // 끝난 뒤 게시판을 한 번 더(비로그인 상태로 이미 그렸다면) 그립니다.
         if ($('#boardList')) renderBoard(boardPage);
+        // 마이페이지 "내가 남긴 질문"도 로그인 확인이 끝난 뒤에야 그릴 수 있습니다.
+        if ($('#myqList')) renderMyQuestions(myqPage);
       });
   }
 
@@ -1122,6 +1258,7 @@
       .then(function () {
         setUser(null); paintAuth();
         if ($('#boardList')) renderBoard(boardPage);
+        if ($('#myqList')) { $('#myqList').innerHTML = ''; if ($('#myqPager')) $('#myqPager').hidden = true; }
       });
   }
 
@@ -1618,6 +1755,10 @@
     on('#pagePrev', 'click', function () { if (boardPage > 1) renderBoard(boardPage - 1); });
     on('#pageNext', 'click', function () { if (boardPage < boardPages) renderBoard(boardPage + 1); });
 
+    // 마이페이지 — 내가 남긴 질문
+    on('#myqPrev', 'click', function () { if (myqPage > 1) renderMyQuestions(myqPage - 1); });
+    on('#myqNext', 'click', function () { if (myqPage < myqPages) renderMyQuestions(myqPage + 1); });
+
     on('#boardSearch', 'submit', function (e) {
       e.preventDefault();
       boardQ = $('#boardQ').value.trim().slice(0, 60);
@@ -1805,6 +1946,8 @@
       $('#quizResult').hidden = true;
       $('#docPreview').hidden = true;
       $('#docReadOut').hidden = true;
+      if ($('#resultEmail')) $('#resultEmail').value = '';
+      if ($('#resultEmailMsg')) { $('#resultEmailMsg').textContent = ''; $('#resultEmailMsg').className = 'result-email-msg'; }
     });
 
     // 서류 미리보기 (기기 안에서만)
@@ -1821,6 +1964,7 @@
       $('#docPreview').hidden = true;
       $('#docReadOut').hidden = true;
     });
+    on('#resultEmailSend', 'click', sendQuizEmail);
 
     // 질문
     on('#askForm', 'submit', function (e) {

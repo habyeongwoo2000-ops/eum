@@ -142,6 +142,18 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
           <ul id="resultDocs"></ul>
         </div>
         <p class="src" id="resultSrc"></p>
+
+        <div class="result-email">
+          <label for="resultEmail" data-i18n="ckEmailLabel">이 결과를 내 이메일로 받기</label>
+          <p class="hint" data-i18n="ckEmailHint">이메일을 넣고 보내기를 누르면 이 기기의 이메일 앱이 열립니다. 그 앱에서 한 번 더 보내기를 눌러야 실제로 전송됩니다. 사진을 올려 읽은 내용이 있다면 함께 담깁니다.</p>
+          <div class="result-email-row">
+            <input type="email" id="resultEmail" inputmode="email" autocomplete="email"
+                   placeholder="you@example.com" data-i18n-ph="ckEmailPh">
+            <button type="button" class="btn btn-go btn-sm" id="resultEmailSend" data-i18n="ckEmailSend">보내기</button>
+          </div>
+          <p class="result-email-msg" id="resultEmailMsg" role="status" aria-live="polite"></p>
+        </div>
+
         <p class="disclaim" data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
       </div>
     </div>

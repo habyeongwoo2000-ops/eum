@@ -345,6 +345,16 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
 .result-docs ul{margin:0;padding-left:20px}
 .result-docs li{margin-bottom:4px;font-size:15px}
 .src{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);margin:0 0 10px!important}
+
+.result-email{margin:6px 0 18px;padding-top:16px;border-top:1px solid var(--line-2)}
+.result-email>label{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
+.result-email .hint{margin:0 0 10px}
+.result-email-row{display:flex;gap:10px;flex-wrap:wrap}
+.result-email-row input{flex:1 1 220px;min-width:0}
+.result-email-msg{margin:8px 0 0;font-size:14px;min-height:20px;color:var(--ink-2)}
+.result-email-msg.is-good{color:var(--go-d)}
+.result-email-msg.is-bad{color:var(--stop)}
+
 .disclaim{font-size:13px;color:var(--ink-3);margin:0!important;border-top:1px solid var(--line-2);padding-top:12px}
 
 /* ---------- 출국 정산 ---------- */
@@ -589,17 +599,14 @@ input[type=date]:focus,input[type=text]:focus,input[type=password]:focus,input[t
 .itv-a{margin:0;font-size:15px;line-height:1.75;color:var(--ink)}
 .itv-date{margin:14px 0 0;font-family:var(--f-mono);font-size:12px;color:var(--ink-3)}
 
-/* 사이트 사용 소감 — 인터뷰 본문과 섞이지 않게 인용 모양으로 뗍니다 */
-.itv-quotes{display:grid;gap:14px}
-@media (min-width:760px){.itv-quotes{grid-template-columns:repeat(2,1fr)}}
-.itv-quote{
-  margin:0;background:var(--card);border:1.5px solid var(--line);
-  border-radius:var(--r);padding:20px 22px;
-}
-.itv-quote p{margin:0 0 10px;font-size:15px;line-height:1.75;color:var(--ink)}
+/* 사이트 사용 소감 — 예전에는 따로 모아 별도 섹션에 보였지만, 지금은
+   해당 인터뷰 카드 안에 이어서 그대로 싣습니다. */
+.itv-usequote{margin:14px 0 0;padding-top:14px;border-top:1px dashed var(--line-2)}
+.itv-usequote-label{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--go-d)}
+.itv-quote{margin:0;padding-left:14px;border-left:2px solid var(--line-2)}
+.itv-quote p{margin:0;font-size:15px;line-height:1.75;color:var(--ink);font-style:italic}
 .itv-quote p::before{content:"\201C"}
 .itv-quote p::after{content:"\201D"}
-.itv-quote cite{font-style:normal;font-size:13px;color:var(--ink-3)}
 
 /* ---------- 법률 자문 ---------- */
 .band-legal .sub-h{margin-top:38px}
