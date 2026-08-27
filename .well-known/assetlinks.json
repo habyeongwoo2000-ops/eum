@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.eum_six.twa",
+        "sha256_cert_fingerprints": ["E8:51:45:36:7E:73:2D:BE:3B:7F:D0:75:29:99:15:53:59:1C:86:0C:EC:B1:16:BD:2C:60:A7:B3:B0:38:A7:56"]
+      }
+    }]
