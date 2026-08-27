@@ -138,17 +138,34 @@ function loadKo() {
 }
 
 function dump(lang, obj) {
-  // 상수 자리는 다시 변수 참조로 되돌립니다.
+  /* 상수 자리표시자(@@CHECKED_ON@@)를 다시 변수 참조로 되돌립니다.
+     문장 한가운데 박혀 있는 경우도 있어서( '확인일: ' + CHECKED_ON ),
+     문자열 전체를 훑어 이어 붙이는 식(" + CONST + ")으로 바꿔 줍니다.
+     이걸 안 하면 화면에 @@CHECKED_ON@@ 이 그대로 보입니다. */
+  const CONSTS = ['CHECKED_ON', 'PAY_CHECKED', 'LEGAL_CHECKED', 'PAY_SRC'];
+  const marker = /@@(CHECKED_ON|PAY_CHECKED|LEGAL_CHECKED|PAY_SRC)@@/;
+
   let json = JSON.stringify(obj, null, 2);
-  json = json
-    .replace(/"@@CHECKED_ON@@"/g, 'CHECKED_ON')
-    .replace(/"@@PAY_CHECKED@@"/g, 'PAY_CHECKED')
-    .replace(/"@@LEGAL_CHECKED@@"/g, 'LEGAL_CHECKED')
-    .replace(/"@@PAY_SRC@@"/g, 'PAY_SRC')
-    .replace(/"([^"]*)@@CHECKED_ON@@"/g, "'$1' + CHECKED_ON");
+  json = json.replace(/"((?:[^"\\]|\\.)*)"/g, (whole, inner) => {
+    if (!marker.test(inner)) return whole;
+
+    const parts = inner.split(/@@(?:CHECKED_ON|PAY_CHECKED|LEGAL_CHECKED|PAY_SRC)@@/);
+    const names = [];
+    let m, rest = inner;
+    const g = /@@(CHECKED_ON|PAY_CHECKED|LEGAL_CHECKED|PAY_SRC)@@/g;
+    while ((m = g.exec(inner)) !== null) names.push(m[1]);
+
+    const pieces = [];
+    parts.forEach((text, i) => {
+      if (text) pieces.push('"' + text + '"');
+      if (i < names.length) pieces.push(names[i]);
+    });
+    return pieces.length ? pieces.join(' + ') : '""';
+  });
+
   return `/* E9-Bridge — UI 문자열 (${lang})
    ⚠ tools/make-lang.mjs 가 만든 기계 번역 초안입니다.
-      사람이 검수하기 전에는 core.js 의 EUM_LANGS 에 넣지 마세요.
+      사람이 검수하기 전에는 core.js 의 EUM_DRAFT_LANGS 에서 빼지 마세요.
       특히 기한·횟수·전화번호가 원문과 같은지 확인이 필요합니다.
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
