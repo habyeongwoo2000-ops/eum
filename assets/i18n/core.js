@@ -7,7 +7,29 @@
    이제 이 파일(작음)만 먼저 받고, 고른 언어 파일 하나만 더 받습니다.
    기숙사에서 데이터를 아껴 쓰는 사람에게는 이 차이가 큽니다. */
 
+/* 지금 파일이 있는 언어만 넣습니다. 새 언어 파일을 만들면 여기에 코드를 더하세요.
+   목록에 없는 코드는 감지에서도 선택기에서도 제외됩니다. */
 var EUM_LANGS = ['ko', 'en', 'vi', 'th', 'id'];
+
+/* 고용허가제(E-9) 송출국에서 쓰는 말들. 화면에 보일 이름을 그 언어 그대로 적습니다.
+   자기 언어를 찾는 사람은 "Khmer" 가 아니라 "ខ្មែរ" 를 찾습니다.
+   tools/make-lang.mjs 로 파일을 만든 뒤 위 EUM_LANGS 에 코드를 추가하면 켜집니다. */
+var EUM_LANG_NAMES = {
+  ko: '한국어',
+  en: 'English',
+  vi: 'Tiếng Việt',
+  th: 'ไทย',
+  id: 'Bahasa Indonesia',
+  km: 'ខ្មែរ',          // 캄보디아
+  ne: 'नेपाली',          // 네팔
+  my: 'မြန်မာ',          // 미얀마
+  si: 'සිංහල',          // 스리랑카
+  uz: 'Oʻzbekcha',      // 우즈베키스탄
+  mn: 'Монгол',         // 몽골
+  bn: 'বাংলা',           // 방글라데시
+  zh: '中文',            // 중국
+  tl: 'Tagalog'         // 필리핀
+};
 
 /* 언어 파일들이 여기에 자기 몫을 채워 넣습니다. */
 var I18N = {};
@@ -36,8 +58,12 @@ var EUM_LANG = (function () {
   for (var i = 0; i < EUM_LANGS.length; i++) {
     if (l.indexOf(EUM_LANGS[i]) === 0) return EUM_LANGS[i];
   }
-  // 인도네시아어는 기기에 따라 옛 코드 'in' 으로 들어옵니다.
-  if (l.indexOf('in') === 0) return 'id';
+  // 기기·OS 에 따라 다른 코드로 들어오는 경우를 함께 받습니다.
+  //   in → id (인도네시아어 옛 코드)   my/bur → 미얀마   si/sin → 스리랑카
+  var ALIAS = { 'in': 'id', 'bur': 'my', 'sin': 'si', 'khm': 'km', 'nep': 'ne', 'uzb': 'uz' };
+  for (var a in ALIAS) {
+    if (l.indexOf(a) === 0 && EUM_LANGS.indexOf(ALIAS[a]) !== -1) return ALIAS[a];
+  }
   return 'en';
 })();
 

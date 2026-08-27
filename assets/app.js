@@ -105,8 +105,24 @@
       var v = T[n.getAttribute('data-i18n-aria')];
       if (typeof v === 'string') n.setAttribute('aria-label', v);
     });
+    /* 선택기 항목을 EUM_LANGS 로 다시 채웁니다. HTML 에는 5개가 박혀 있지만,
+       언어 파일을 늘리면 core.js 의 목록만 고쳐도 12개 페이지가 함께 바뀝니다.
+       (HTML 을 12군데 고치다 보면 한두 곳이 반드시 빠집니다.) */
     var sel = $('#langSelect');
-    if (sel) sel.value = lang;
+    if (sel) {
+      var want = EUM_LANGS.join(',');
+      if (sel.getAttribute('data-built') !== want) {
+        sel.innerHTML = '';
+        EUM_LANGS.forEach(function (code) {
+          var o = document.createElement('option');
+          o.value = code;
+          o.textContent = (typeof EUM_LANG_NAMES !== 'undefined' && EUM_LANG_NAMES[code]) || code;
+          sel.appendChild(o);
+        });
+        sel.setAttribute('data-built', want);
+      }
+      sel.value = lang;
+    }
 
     /* 페이지마다 들어 있는 기능이 다릅니다. 각 함수가 자기 요소가 없으면
        조용히 넘어가므로 여기서는 그냥 다 부릅니다. */

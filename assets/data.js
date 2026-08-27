@@ -566,6 +566,225 @@ const INTERVIEWS = [
       useQuote: 'Saya selalu berharap bisa membaca hal seperti ini dalam bahasa saya sendiri.'
     }
   }
+,
+{
+    key: 'itv-owner',
+    alias: '베트남 음식점 사장 (익명)',
+    country: 'vi',
+    years: 16,
+    field: 'rest',
+    date: '2026-08-27',
+    photo: 'assets/itv-owner.jpg',
+    photoAlt: '가게에서 인터뷰를 마치고 함께 앉은 모습',
+    ko: {
+      intro: '2010년에 한국에 오셨습니다. 자녀를 공부시키려고 오셨고, 지금은 베트남 음식점을 운영하며 일한 지 5년째입니다.',
+      qa: [
+        { q: '한국에 오신 지 얼마나 되셨나요?',
+          a: '2010년에 왔습니다.' },
+        { q: '왜 한국을 선택하셨나요?',
+          a: '아이들을 공부시키려고 왔습니다.' },
+        { q: '지금 어떤 일을 하고 계신가요?',
+          a: '베트남 음식점을 하고 있습니다. 일한 지는 5년째 되었습니다.' },
+        { q: '제도나 근로 문제가 생기면 보통 어디에 물어보시나요?',
+          a: '한국말이 힘들어서, 한국말을 잘하시는 분이 도와주십니다. 그런데 그런 도움을 못 받는 사람이 많습니다. 해결 방법을 찾는 것 자체가 어렵습니다.' },
+        { q: '고용센터나 다문화가족센터에 전화해 보신 적은요?',
+          a: '전화를 하면 사람이 아니라 AI가 받습니다. 질문을 해도 잘 해결이 안 되고, 설명이 무슨 말인지 이해가 안 됩니다. 그래서 전화를 잘 안 하게 됩니다. 사람이 직접 필요합니다.' },
+        { q: '주변에서 도움을 못 받는 경우도 보셨나요?',
+          a: '허가 없이 들어온 사람들은 문제가 생겨도 조용히 일해야 해서 도움을 받기 어렵습니다. 임금을 못 받아 경찰을 부르면 돈은 받지만, 본국으로 돌아가야 합니다.' },
+        { q: '서류를 보다가 몰라서 곤란하셨던 적이 있나요?',
+          a: '모를 때가 많습니다.' },
+        { q: '저희 서비스를 보시니 어떠세요?',
+          a: '좋습니다. 다만 더 많은 사람이 알게 하려면 전단지로 알리는 것이 필요할 것 같습니다.' }
+      ],
+      useQuote: '전화하면 AI가 받는데 무슨 말인지 이해가 안 됩니다. 이런 건 글로 내 언어로 볼 수 있으면 좋겠습니다.'
+    },
+    en: {
+      intro: 'She came to Korea in 2010 so that her children could study. She now runs a Vietnamese restaurant and is in her fifth year of work.',
+      qa: [
+        { q: 'How long have you been in Korea?',
+          a: 'I came in 2010.' },
+        { q: 'Why did you choose Korea?',
+          a: 'I came so that my children could study.' },
+        { q: 'What work do you do now?',
+          a: 'I run a Vietnamese restaurant. I have been working for five years now.' },
+        { q: 'When a problem comes up with the rules or with work, where do you usually ask?',
+          a: 'Korean is hard for me, so someone who speaks it well helps me. But many people do not have that kind of help. Finding a way to solve things is itself difficult.' },
+        { q: 'Have you tried calling the Employment Center or a multicultural family centre?',
+          a: 'When you call, an AI answers instead of a person. Even when you ask, it does not really get resolved, and I cannot understand the explanation. So I end up not calling. A real person is needed.' },
+        { q: 'Have you seen people around you who cannot get help?',
+          a: 'People who came without permission have to keep working quietly even when something goes wrong, so it is hard for them to get help. If wages go unpaid and the police are called, they get the money but have to return to their country.' },
+        { q: 'Have you been stuck on documents you did not understand?',
+          a: 'There are many times I do not understand.' },
+        { q: 'What do you think of our service?',
+          a: 'It is good. But to let more people know about it, I think leaflets would be needed.' }
+      ],
+      useQuote: 'When I call, an AI answers and I cannot understand it. I wish I could read this kind of thing in my own language instead.'
+    },
+    vi: {
+      intro: 'Chị sang Hàn Quốc năm 2010 để lo cho các con ăn học. Hiện chị mở nhà hàng Việt và đã làm được năm năm.',
+      qa: [
+        { q: 'Chị sang Hàn Quốc được bao lâu rồi?',
+          a: 'Tôi sang năm 2010.' },
+        { q: 'Vì sao chị chọn Hàn Quốc?',
+          a: 'Tôi sang để lo cho các con được ăn học.' },
+        { q: 'Hiện chị đang làm công việc gì?',
+          a: 'Tôi mở nhà hàng Việt. Làm được năm năm rồi.' },
+        { q: 'Khi có vấn đề về chế độ hay công việc, chị thường hỏi ở đâu?',
+          a: 'Tiếng Hàn khó với tôi nên có người giỏi tiếng Hàn giúp. Nhưng nhiều người không có được sự giúp đỡ như vậy. Ngay cả việc tìm cách giải quyết cũng đã khó.' },
+        { q: 'Chị từng gọi đến Trung tâm việc làm hay trung tâm gia đình đa văn hóa chưa?',
+          a: 'Gọi đến thì không phải người mà là AI nghe máy. Hỏi cũng không giải quyết được, mà lời giải thích thì tôi không hiểu. Nên rốt cuộc tôi ít gọi. Cần có người thật.' },
+        { q: 'Chị có thấy những người xung quanh không nhận được giúp đỡ không?',
+          a: 'Những người sang không có phép thì dù gặp chuyện cũng phải làm lặng lẽ nên khó nhận giúp đỡ. Bị nợ lương mà gọi công an thì lấy được tiền nhưng phải về nước.' },
+        { q: 'Chị từng lúng túng vì không hiểu giấy tờ chưa?',
+          a: 'Nhiều lúc không hiểu lắm.' },
+        { q: 'Chị thấy dịch vụ của chúng tôi thế nào?',
+          a: 'Tốt. Nhưng để nhiều người biết đến thì chắc cần phát tờ rơi.' }
+      ],
+      useQuote: 'Gọi điện thì AI nghe máy mà tôi không hiểu gì. Những thứ như thế này đọc bằng tiếng nước mình thì tốt hơn.'
+    },
+    th: {
+      intro: 'เธอมาเกาหลีในปี 2010 เพื่อส่งลูกเรียนหนังสือ ปัจจุบันเปิดร้านอาหารเวียดนามและทำงานมาได้ห้าปี',
+      qa: [
+        { q: 'มาอยู่เกาหลีนานเท่าไรแล้ว',
+          a: 'มาเมื่อปี 2010 ค่ะ' },
+        { q: 'ทำไมถึงเลือกเกาหลี',
+          a: 'มาเพื่อส่งลูก ๆ เรียนหนังสือค่ะ' },
+        { q: 'ตอนนี้ทำงานอะไรอยู่',
+          a: 'เปิดร้านอาหารเวียดนามค่ะ ทำมาได้ห้าปีแล้ว' },
+        { q: 'เวลามีปัญหาเรื่องระบบหรือการทำงาน ปกติถามที่ไหน',
+          a: 'ภาษาเกาหลียากสำหรับฉัน จึงมีคนที่เก่งภาษาเกาหลีช่วย แต่หลายคนไม่มีคนช่วยแบบนั้น แค่จะหาทางแก้ก็ยากแล้ว' },
+        { q: 'เคยโทรหาศูนย์จัดหางานหรือศูนย์ครอบครัวพหุวัฒนธรรมไหม',
+          a: 'โทรไปแล้วไม่ใช่คนรับ แต่เป็น AI รับสาย ถามไปก็ไม่ค่อยได้คำตอบ แถมคำอธิบายก็ฟังไม่เข้าใจ สุดท้ายเลยไม่ค่อยโทร ต้องมีคนจริง ๆ' },
+        { q: 'เคยเห็นคนรอบตัวที่ไม่ได้รับความช่วยเหลือไหม',
+          a: 'คนที่เข้ามาโดยไม่มีใบอนุญาต ต่อให้มีปัญหาก็ต้องทำงานเงียบ ๆ จึงขอความช่วยเหลือได้ยาก ถ้าไม่ได้ค่าจ้างแล้วแจ้งตำรวจ ก็ได้เงินแต่ต้องกลับประเทศ' },
+        { q: 'เคยลำบากใจเพราะไม่เข้าใจเอกสารไหม',
+          a: 'ไม่เข้าใจบ่อยค่ะ' },
+        { q: 'เห็นบริการของเราแล้วรู้สึกอย่างไร',
+          a: 'ดีค่ะ แต่ถ้าจะให้คนรู้จักมากขึ้น คิดว่าต้องแจกใบปลิวด้วย' }
+      ],
+      useQuote: 'โทรไปแล้ว AI รับสาย ฟังไม่เข้าใจเลย เรื่องแบบนี้ถ้าได้อ่านเป็นภาษาบ้านตัวเองก็คงดี'
+    },
+    id: {
+      intro: 'Ia datang ke Korea pada 2010 agar anak-anaknya bisa bersekolah. Kini ia menjalankan rumah makan Vietnam dan sudah lima tahun bekerja.',
+      qa: [
+        { q: 'Sudah berapa lama Anda di Korea?',
+          a: 'Saya datang tahun 2010.' },
+        { q: 'Mengapa memilih Korea?',
+          a: 'Saya datang agar anak-anak saya bisa bersekolah.' },
+        { q: 'Sekarang Anda bekerja apa?',
+          a: 'Saya menjalankan rumah makan Vietnam. Sudah lima tahun bekerja.' },
+        { q: 'Kalau ada masalah soal aturan atau pekerjaan, biasanya bertanya ke mana?',
+          a: 'Bahasa Korea sulit bagi saya, jadi ada orang yang fasih membantu. Tapi banyak orang tidak punya bantuan seperti itu. Mencari cara menyelesaikannya saja sudah sulit.' },
+        { q: 'Pernah menelepon Pusat Ketenagakerjaan atau pusat keluarga multikultural?',
+          a: 'Kalau menelepon, yang menjawab bukan orang melainkan AI. Sudah bertanya pun tidak terselesaikan, dan penjelasannya tidak saya mengerti. Akhirnya saya jarang menelepon. Perlu orang sungguhan.' },
+        { q: 'Apakah Anda melihat orang di sekitar yang tidak bisa mendapat bantuan?',
+          a: 'Orang yang datang tanpa izin harus tetap bekerja diam-diam meski ada masalah, jadi sulit mendapat bantuan. Kalau upah tidak dibayar lalu polisi dipanggil, uangnya didapat tapi harus pulang ke negaranya.' },
+        { q: 'Pernah bingung karena tidak paham dokumen?',
+          a: 'Sering tidak paham.' },
+        { q: 'Bagaimana pendapat Anda tentang layanan kami?',
+          a: 'Bagus. Tapi supaya lebih banyak orang tahu, sepertinya perlu dibagikan selebaran.' }
+      ],
+      useQuote: 'Kalau menelepon, AI yang menjawab dan saya tidak mengerti. Hal seperti ini lebih baik bisa dibaca dalam bahasa sendiri.'
+    }
+  },
+  {
+    key: 'itv-boss',
+    alias: '음식점 사장 (익명)',
+    field: 'rest',
+    date: '2026-08-27',
+    photo: 'assets/itv-boss.jpg',
+    photoAlt: '가게에서 화면을 함께 보며 인터뷰하는 모습',
+    ko: {
+      intro: '음식점을 운영하며 아내와 함께 장사합니다. 외국인 근로자를 곁에서 지켜본 자리에서, 계약과 서류 문제를 자주 본다고 하셨습니다.',
+      qa: [
+        { q: '현재 어떤 일을 하고 계신가요?',
+          a: '음식점을 하고 있습니다. 아내와 둘이서 함께 가게를 꾸려 갑니다.' },
+        { q: '한국에서 일하면서 계약 문제로 곤란했던 적이 있나요?',
+          a: '계약이 끝날 때가 가장 조심스럽습니다. 기간이 끝난 뒤에 연장을 해준다고 했다가 갑자기 안 된다고 하면, 그때부터 준비할 시간이 거의 없습니다.' },
+        { q: '그런 일이 생기면 어디에 물어보시나요?',
+          a: '한국어를 잘하는 사람에게 먼저 물어봅니다. 어디에 전화해야 하는지, 무엇을 준비해야 하는지 혼자서는 알기 어렵습니다.' },
+        { q: '한국어로 된 서류를 볼 때는 어떠신가요?',
+          a: '계약서나 안내문에 모르는 말이 많습니다. 대충 알겠다 싶어도, 정확히 무슨 뜻인지 확신이 안 서면 그냥 넘어가게 됩니다.' },
+        { q: '사업장을 옮기는 제도에 대해서는 알고 계셨나요?',
+          a: '있다는 건 들었지만 자세히는 모릅니다. 몇 번까지 되는지, 언제까지 신청해야 하는지 같은 건 물어봐야 알 수 있습니다.' },
+        { q: '이런 정보를 미리 볼 수 있다면 어떨 것 같으세요?',
+          a: '도움이 될 것 같습니다. 문제가 생긴 다음에 찾는 것보다, 미리 알고 있으면 마음이 놓입니다.' }
+      ],
+      useQuote: '계약이 끝날 때가 가장 불안합니다. 미리 알 수 있으면 좋겠습니다.'
+    },
+    en: {
+      intro: 'He runs a restaurant together with his wife. From that vantage point he sees contract and paperwork problems among foreign workers often.',
+      qa: [
+        { q: 'What work do you do now?',
+          a: 'I run a restaurant. My wife and I keep the place going between the two of us.' },
+        { q: 'Have you had trouble over a contract while working in Korea?',
+          a: 'The end of a contract is the most delicate time. If you are told the term will be extended and then suddenly it is not, you are left with almost no time to prepare.' },
+        { q: 'When that happens, where do you ask?',
+          a: 'I ask someone who speaks Korean well first. Which number to call, what to prepare — it is hard to work that out alone.' },
+        { q: 'How is it when you have to read Korean documents?',
+          a: 'There are many words I do not know in contracts and notices. Even when I roughly get it, if I am not sure of the exact meaning I tend to just let it pass.' },
+        { q: 'Did you know about the workplace change system?',
+          a: 'I had heard it exists, but not the details. How many times it is allowed, by when you have to apply — I have to ask someone to find out.' },
+        { q: 'How would it be if you could check this kind of information in advance?',
+          a: 'It would help. Knowing beforehand puts your mind at ease, rather than looking it up after something has already gone wrong.' }
+      ],
+      useQuote: 'The end of a contract is when I feel most uneasy. It would be good to know in advance.'
+    },
+    vi: {
+      intro: 'Anh điều hành một nhà hàng cùng vợ. Ở vị trí đó, anh thường thấy những rắc rối về hợp đồng và giấy tờ của người lao động nước ngoài.',
+      qa: [
+        { q: 'Hiện tại anh đang làm công việc gì?',
+          a: 'Tôi mở nhà hàng. Hai vợ chồng tôi cùng nhau lo liệu quán.' },
+        { q: 'Anh từng gặp rắc rối về hợp đồng khi làm việc ở Hàn Quốc chưa?',
+          a: 'Lúc hợp đồng sắp hết là lúc phải cẩn thận nhất. Nếu được hứa gia hạn rồi đột nhiên bảo không được, thì gần như không còn thời gian để chuẩn bị.' },
+        { q: 'Khi xảy ra chuyện đó anh hỏi ở đâu?',
+          a: 'Tôi hỏi người giỏi tiếng Hàn trước. Phải gọi đến đâu, cần chuẩn bị gì, một mình rất khó biết.' },
+        { q: 'Khi phải đọc giấy tờ tiếng Hàn thì thế nào?',
+          a: 'Trong hợp đồng và thông báo có nhiều từ tôi không biết. Dù hiểu đại khái, nếu không chắc nghĩa chính xác thì tôi hay bỏ qua luôn.' },
+        { q: 'Anh có biết về chế độ chuyển nơi làm việc không?',
+          a: 'Tôi nghe nói là có, nhưng không rõ chi tiết. Được mấy lần, phải nộp trước khi nào — phải hỏi mới biết.' },
+        { q: 'Nếu xem trước được những thông tin này thì sao?',
+          a: 'Chắc sẽ giúp ích. Biết trước thì yên tâm hơn là đợi có chuyện rồi mới đi tìm.' }
+      ],
+      useQuote: 'Lúc hợp đồng sắp hết là lúc tôi bất an nhất. Biết trước được thì tốt.'
+    },
+    th: {
+      intro: 'เขาเปิดร้านอาหารร่วมกับภรรยา จากจุดนั้นเขาเห็นปัญหาเรื่องสัญญาและเอกสารของแรงงานต่างชาติอยู่บ่อย ๆ',
+      qa: [
+        { q: 'ตอนนี้ทำงานอะไรอยู่',
+          a: 'ผมเปิดร้านอาหารครับ ผมกับภรรยาช่วยกันดูแลร้านสองคน' },
+        { q: 'เคยมีปัญหาเรื่องสัญญาระหว่างทำงานที่เกาหลีไหม',
+          a: 'ช่วงที่สัญญาใกล้หมดคือช่วงที่ต้องระวังที่สุด ถ้าบอกว่าจะต่อให้แล้วจู่ ๆ บอกว่าไม่ได้ ก็แทบไม่เหลือเวลาเตรียมตัว' },
+        { q: 'ถ้าเกิดเรื่องแบบนั้นถามที่ไหน',
+          a: 'ถามคนที่เก่งภาษาเกาหลีก่อนครับ ต้องโทรไปที่ไหน ต้องเตรียมอะไร ลำพังตัวเองรู้ยาก' },
+        { q: 'เวลาต้องอ่านเอกสารภาษาเกาหลีเป็นอย่างไร',
+          a: 'ในสัญญาและหนังสือแจ้งมีคำที่ไม่รู้เยอะ ถึงพอเดาได้ แต่ถ้าไม่มั่นใจความหมายที่แน่ชัดก็มักปล่อยผ่านไป' },
+        { q: 'รู้เรื่องระบบเปลี่ยนสถานประกอบการไหม',
+          a: 'เคยได้ยินว่ามี แต่ไม่รู้รายละเอียด ได้กี่ครั้ง ต้องยื่นภายในเมื่อไร ต้องถามถึงจะรู้' },
+        { q: 'ถ้าดูข้อมูลแบบนี้ล่วงหน้าได้จะเป็นอย่างไร',
+          a: 'น่าจะช่วยได้ครับ รู้ไว้ก่อนก็สบายใจกว่ามารื้อหาตอนเกิดเรื่องแล้ว' }
+      ],
+      useQuote: 'ช่วงสัญญาใกล้หมดคือตอนที่ผมกังวลที่สุด ถ้ารู้ล่วงหน้าได้ก็ดี'
+    },
+    id: {
+      intro: 'Ia menjalankan rumah makan bersama istrinya. Dari posisi itu ia sering melihat masalah kontrak dan dokumen yang dialami pekerja asing.',
+      qa: [
+        { q: 'Sekarang Anda bekerja apa?',
+          a: 'Saya menjalankan rumah makan. Saya dan istri berdua mengurus tempat ini.' },
+        { q: 'Pernahkah Anda kesulitan soal kontrak selama bekerja di Korea?',
+          a: 'Menjelang kontrak berakhir adalah masa paling rawan. Kalau dijanjikan diperpanjang lalu tiba-tiba dibatalkan, hampir tidak ada waktu untuk bersiap.' },
+        { q: 'Kalau itu terjadi, ke mana Anda bertanya?',
+          a: 'Saya tanya orang yang fasih berbahasa Korea dulu. Harus menelepon ke mana, harus menyiapkan apa — sendirian sulit tahu.' },
+        { q: 'Bagaimana rasanya membaca dokumen berbahasa Korea?',
+          a: 'Banyak kata yang tidak saya tahu dalam kontrak dan surat pemberitahuan. Meski kira-kira paham, kalau tidak yakin arti persisnya saya cenderung membiarkannya.' },
+        { q: 'Apakah Anda tahu tentang sistem pindah tempat kerja?',
+          a: 'Saya dengar ada, tapi detailnya tidak tahu. Boleh berapa kali, harus mengajukan sampai kapan — harus bertanya dulu baru tahu.' },
+        { q: 'Bagaimana kalau informasi seperti ini bisa dilihat lebih dulu?',
+          a: 'Pasti membantu. Tahu lebih dulu membuat tenang, daripada mencari setelah masalah terlanjur terjadi.' }
+      ],
+      useQuote: 'Menjelang kontrak berakhir adalah saat saya paling cemas. Kalau bisa tahu lebih dulu tentu bagus.'
+    }
+  }
 ];
 
 
