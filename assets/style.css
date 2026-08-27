@@ -1051,3 +1051,17 @@ button.board-row:focus-visible{outline:3px solid var(--go);outline-offset:-3px}
   font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--go-d);
   background:var(--go-l);border-radius:6px;padding:3px 8px;margin-left:8px;flex:none;
 }
+
+/* 인터뷰 사진 — 얼굴이 보이는 사진이라 크게 싣되, 카드 안에서 넘치지 않게 합니다. */
+.itv-photo{
+  margin:14px 0 18px;padding:0;
+  border-radius:14px;overflow:hidden;border:1.5px solid var(--line);
+  background:var(--go-l);
+}
+.itv-photo img{
+  display:block;width:100%;height:auto;
+  max-height:420px;object-fit:cover;object-position:center;
+}
+@media (max-width:560px){
+  .itv-photo img{max-height:300px}
+}

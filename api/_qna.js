@@ -4,7 +4,8 @@
    환경변수
      SUPABASE_URL                 예) https://abcd.supabase.co
      SUPABASE_SERVICE_ROLE_KEY    service_role 키. 절대 브라우저로 보내지 마세요.
-     GEMINI_API_KEY               번역용. 질문 등록 1회 + 답변 게시 1회만 부릅니다.
+     GEMINI_API_KEY(_2.._5)       번역용. 질문 등록 1회 + 답변 게시 1회만 부릅니다.
+                                  키가 여러 개면 _gemini.js 가 돌려 씁니다.
      ADMIN_TOKEN                  /api/qna-publish 보호용. 길고 무작위하게.
 
    번역 정책 — 이 서비스의 비용 구조가 여기서 결정됩니다.
@@ -15,6 +16,8 @@
 const { LANG_NAME } = require('./_kb');
 
 const LANGS = ['ko', 'en', 'vi', 'th', 'id'];
+const G = require('./_gemini');
+
 const MODEL = 'gemini-flash-latest';
 
 /* ---------- Supabase REST ---------- */
@@ -44,31 +47,25 @@ async function sb(path, init) {
 /* ---------- 번역 ---------- */
 
 async function gemini(system, userText, wantJson) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) throw new Error('GEMINI_API_KEY not set');
+  if (!G.keyCount()) throw new Error('GEMINI_API_KEY not set');
 
   const generationConfig = { maxOutputTokens: 4000, temperature: 0 };
   if (wantJson) generationConfig.responseMimeType = 'application/json';
 
-  const r = await fetch(
-    'https://generativelanguage.googleapis.com/v1beta/models/' + MODEL +
-      ':generateContent?key=' + encodeURIComponent(key),
-    {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: system }] },
-        contents: [{ role: 'user', parts: [{ text: userText }] }],
-        generationConfig: generationConfig
-      })
-    }
-  );
-  if (!r.ok) throw new Error('gemini ' + r.status + ' ' + (await r.text()).slice(0, 300));
+  /* 키를 여러 개 넣어 두었으면 한 키의 한도가 찼을 때 다음 키로 넘어갑니다.
+     번역은 글이 올라오는 순간 한 번만 도는데, 그 한 번이 실패하면 그 글은
+     한 언어로만 남습니다. 그래서 여기서도 순환을 씁니다. */
+  const out = await G.generate({
+    system_instruction: { parts: [{ text: system }] },
+    contents: [{ role: 'user', parts: [{ text: userText }] }],
+    generationConfig: generationConfig
+  }, { model: MODEL });
 
-  const data = await r.json();
-  const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-  return parts.map(function (p) { return p.text || ''; }).join('')
-    .replace(/```json|```/g, '').trim();
+  if (!out.ok) {
+    throw new Error('gemini ' + out.status + ' ' + String(out.detail || '').slice(0, 300));
+  }
+
+  return G.textOf(out.data).replace(/```json|```/g, '').trim();
 }
 
 /* 사용자 질문 → 한국어. 관리자가 읽기 위한 것이며 공개되지 않습니다. */

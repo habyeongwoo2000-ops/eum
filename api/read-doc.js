@@ -2,11 +2,14 @@
    받는 값 : { image: "<base64, 헤더 없음>", mediaType: "image/jpeg", lang: "ko" }
    주는 값 : { docType, endDate, employer, statedReason, reasonCategory, note }
 
-   Google Gemini API 무료 등급을 사용합니다. 환경변수 이름: GEMINI_API_KEY
+   Google Gemini API 무료 등급을 사용합니다. 키는 _gemini.js 가 여러 개를
+   돌려 씁니다 (GEMINI_API_KEY, GEMINI_API_KEY_2 ...).
    AI는 사진에서 사실만 뽑습니다. 법정 사유 해당 여부 판단은 하지 않습니다.
    판단은 브라우저의 규칙 엔진(자가진단 3문항)이 합니다. */
 
 const { LANG_NAME } = require('./_kb');
+
+const G = require('./_gemini');
 
 const MODEL = 'gemini-flash-latest';
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
@@ -16,8 +19,7 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'POST only' });
   }
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) {
+  if (!G.keyCount()) {
     return res.status(500).json({ error: 'GEMINI_API_KEY not set' });
   }
 
@@ -54,39 +56,32 @@ Rules:
 - Never write that the worker does or does not qualify for a workplace change. That is not your job.
 - If the photo is not an employment document, set docType to a short description and everything else to null with reasonCategory "unknown".`;
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
-      MODEL + ':generateContent?key=' + encodeURIComponent(key);
+    /* 사진 판독도 같은 키 묶음을 씁니다. 한 키가 막히면 다음 키로 넘어갑니다. */
+    const call = await G.generate({
+      system_instruction: { parts: [{ text: system }] },
+      contents: [{
+        role: 'user',
+        parts: [
+          { inline_data: { mime_type: mediaType, data: image } },
+          { text: 'Extract the fields as JSON.' }
+        ]
+      }],
+      generationConfig: {
+        maxOutputTokens: 3000,
+        temperature: 0,
+        responseMimeType: 'application/json'
+      }
+    }, { model: MODEL });
 
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: system }] },
-        contents: [{
-          role: 'user',
-          parts: [
-            { inline_data: { mime_type: mediaType, data: image } },
-            { text: 'Extract the fields as JSON.' }
-          ]
-        }],
-        generationConfig: {
-          maxOutputTokens: 3000,
-          temperature: 0,
-          responseMimeType: 'application/json'
-        }
-      })
-    });
-
-    if (!r.ok) {
-      const detail = await r.text();
-      console.error('gemini error', r.status, detail);
-      return res.status(502).json({ error: 'upstream failed' });
+    if (!call.ok) {
+      const busy = call.reason === 'busy' || call.reason === 'quota';
+      return res.status(busy ? 503 : 502).json({
+        error: busy ? 'upstream busy' : 'upstream failed',
+        retryable: busy
+      });
     }
 
-    const data = await r.json();
-    const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-    const raw = parts.map(function (p) { return p.text || ''; }).join('')
-      .replace(/```json|```/g, '').trim();
+    const raw = G.textOf(call.data).replace(/```json|```/g, '').trim();
 
     let out;
     try {

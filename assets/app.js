@@ -742,10 +742,24 @@
       who.appendChild(el('span', 'itv-alias', label));
       var facts = [];
       if (it.country && T.itvCountries) facts.push(T.itvCountries[it.country] || it.country);
+      if (it.age) facts.push((T.itvAge || '{a}').replace('{a}', it.age));
       if (it.years) facts.push((T.itvYears || '{y}').replace('{y}', it.years));
       if (it.field && T.itvFields) facts.push(T.itvFields[it.field] || it.field);
       if (facts.length) who.appendChild(el('span', 'itv-facts', facts.join(' · ')));
       art.appendChild(who);
+
+      /* 사진이 있으면 소개 글 위에 싣습니다. 얼굴이 보이는 사진이므로
+         본인 동의를 받은 것만 photo 를 채워 두세요.
+         loading="lazy" — 목록이 길어져도 처음 여는 속도가 느려지지 않게 합니다. */
+      if (it.photo) {
+        var fig = el('figure', 'itv-photo');
+        var img = document.createElement('img');
+        img.src = it.photo;
+        img.alt = it.photoAlt || '';
+        img.loading = 'lazy';
+        fig.appendChild(img);
+        art.appendChild(fig);
+      }
 
       if (body.intro) art.appendChild(el('p', 'itv-intro', body.intro));
 

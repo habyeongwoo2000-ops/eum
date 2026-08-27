@@ -305,7 +305,229 @@ const NOTICES = [
    }
    ------------------------------------------------------------------ */
 
-const INTERVIEWS = [];
+const INTERVIEWS = [
+  {
+    key: 'itv-sohee',
+    alias: '박소희 (Luong Thi Luong)',
+    country: 'vi',
+    years: 17,
+    field: 'rest',
+    date: '2026-08-27',
+    photo: 'assets/itv-sohee.jpg',
+    photoAlt: '인터뷰를 마치고 악수하는 박소희 님',
+    ko: {
+      intro: '베트남에서 온 1973년생. 고용허가제로 입국해 17년을 지냈고, 그 사이 사업장을 한 번 옮겼습니다. 지금은 한국 국적을 얻어 직접 베트남 음식점을 운영합니다.',
+      qa: [
+        { q: '한국에 관심을 갖게 된 계기는 무엇이었나요?',
+          a: '베트남에서 방영된 한국 드라마를 보면서 한국이라는 나라가 좋아지기 시작했습니다. 그러다 이것저것 알아가면서, 언젠가 직접 가서 살아보고 싶다는 마음이 커졌습니다.' },
+        { q: '한국에 오기로 결정하는 데 결정적이었던 계기가 있었나요?',
+          a: '가까운 지인이 한국행을 권해준 것이 계기가 되었습니다. 드라마로 막연히 좋아하던 나라였는데, 그 권유를 듣고 나서 실제로 가야겠다고 마음을 굳혔습니다.' },
+        { q: '사업장을 옮기신 적이 있으신가요?',
+          a: '네, E-9으로 일하던 중 한 번 옮긴 적이 있습니다. 그때 한국어로 된 안내문을 혼자 읽고 이해하기가 쉽지 않아 많이 답답했습니다.' },
+        { q: '그 어려운 순간을 어떻게 헤쳐나가셨나요?',
+          a: '한국어를 잘하는 지인이 곁에 있어 준 덕분입니다. 무엇을 준비해야 하는지, 서류에 뭐라고 쓰여 있는지, 기한이 언제까지인지 — 막막할 때마다 먼저 물어볼 사람이 있다는 게 정말 큰 힘이 되었습니다.' },
+        { q: '지금도 제도나 절차가 궁금할 때는 어떻게 하시나요?',
+          a: '지금도 가장 먼저 찾는 건 관공서 상담 전화가 아니라 그 지인입니다. 어려운 일이 생겼을 때도 마찬가지로 그분을 통해 해결해 왔습니다.' },
+        { q: '현재 어떤 일을 하고 계신가요?',
+          a: '지금은 제가 직접 베트남 음식점을 운영하고 있습니다. 고용허가제로 시작해서 한국 국적을 얻고 사장이 되기까지, 긴 시간이 걸렸습니다.' },
+        { q: '앞으로의 계획이 있으신가요?',
+          a: '지금 하는 음식점을 계속 잘 꾸려나가면서, 한국에서 안정적으로 지내고 싶습니다.' },
+        { q: '비슷한 어려움을 겪고 있는 분들께 하고 싶은 말씀이 있다면요?',
+          a: '혼자 해결하려고 애쓰지 마세요. 믿을 만한 사람에게 먼저 물어보는 게 훨씬 빠르고, 마음도 편해집니다. 저도 그렇게 17년을 버텨왔습니다.' }
+      ],
+      useQuote: '이런 정보를 자기 나라 말로 미리 정리해서 볼 수 있는 사이트가 있다면 훨씬 편할 것 같습니다. 지인에게 매번 물어보지 않아도 스스로 먼저 확인해볼 수 있으니까요.'
+    },
+    en: {
+      intro: 'Born in 1973, from Vietnam. She came under the Employment Permit System and has spent 17 years in Korea, changing workplace once along the way. She now holds Korean citizenship and runs her own Vietnamese restaurant.',
+      qa: [
+        { q: 'What first drew you to Korea?',
+          a: 'I started to like Korea while watching Korean dramas back in Vietnam. As I learned more about the country, the wish to go and live there myself grew stronger.' },
+        { q: 'Was there a moment that decided it for you?',
+          a: 'Someone close to me suggested I go. Korea had been a country I vaguely liked from dramas, but after that suggestion I made up my mind to actually go.' },
+        { q: 'Have you ever changed workplace?',
+          a: 'Yes, once while I was working on an E-9 visa. Reading and understanding the Korean-language guidance on my own was not easy, and it was very frustrating.' },
+        { q: 'How did you get through that?',
+          a: 'Because someone who spoke Korean well was there beside me. What to prepare, what the documents said, when the deadline was — having someone to ask first, whenever I was lost, made an enormous difference.' },
+        { q: 'When you have a question about rules or procedures now, what do you do?',
+          a: 'Even now the first person I turn to is not a government helpline but that same acquaintance. Whenever something difficult comes up, I have solved it through her.' },
+        { q: 'What work do you do now?',
+          a: 'I run my own Vietnamese restaurant. From starting under the Employment Permit System to gaining Korean citizenship and becoming an owner, it took a long time.' },
+        { q: 'What are your plans from here?',
+          a: 'To keep running the restaurant well and to go on living steadily in Korea.' },
+        { q: 'What would you say to people facing similar difficulties?',
+          a: 'Do not try to solve everything alone. Asking someone you trust is far faster, and it is much easier on your mind. That is how I got through 17 years.' }
+      ],
+      useQuote: 'It would be so much easier if there were a site where this was laid out in your own language beforehand. You could check for yourself first instead of asking someone every time.'
+    },
+    vi: {
+      intro: 'Sinh năm 1973, người Việt Nam. Chị sang Hàn theo Chương trình cấp phép việc làm và đã ở 17 năm, trong đó một lần chuyển nơi làm việc. Hiện chị đã có quốc tịch Hàn Quốc và tự mở nhà hàng Việt.',
+      qa: [
+        { q: 'Điều gì khiến chị quan tâm đến Hàn Quốc?',
+          a: 'Tôi bắt đầu thích Hàn Quốc khi xem phim Hàn ở Việt Nam. Càng tìm hiểu về đất nước đó, mong muốn được sang sống thử càng lớn dần.' },
+        { q: 'Có điều gì quyết định để chị sang Hàn không?',
+          a: 'Một người thân quen khuyên tôi nên đi. Trước đó tôi chỉ thích Hàn Quốc một cách mơ hồ qua phim, nhưng sau lời khuyên ấy tôi quyết tâm sang thật.' },
+        { q: 'Chị đã từng chuyển nơi làm việc chưa?',
+          a: 'Có, một lần khi đang làm theo visa E-9. Lúc đó tự đọc và hiểu tờ hướng dẫn bằng tiếng Hàn không hề dễ, tôi thấy rất bí bách.' },
+        { q: 'Chị đã vượt qua lúc khó khăn đó thế nào?',
+          a: 'Nhờ có người quen giỏi tiếng Hàn ở bên cạnh. Phải chuẩn bị gì, giấy tờ viết gì, hạn đến khi nào — mỗi lúc bối rối mà có người để hỏi trước thì thật sự là chỗ dựa rất lớn.' },
+        { q: 'Bây giờ khi thắc mắc về chế độ hay thủ tục thì chị làm thế nào?',
+          a: 'Đến giờ người tôi tìm đầu tiên vẫn không phải tổng đài cơ quan nhà nước mà là người quen đó. Có việc khó tôi cũng giải quyết qua chị ấy.' },
+        { q: 'Hiện chị đang làm công việc gì?',
+          a: 'Bây giờ tôi tự mở nhà hàng Việt. Từ lúc bắt đầu theo Chương trình cấp phép việc làm đến khi có quốc tịch Hàn Quốc và làm chủ, mất một thời gian rất dài.' },
+        { q: 'Chị có dự định gì sắp tới không?',
+          a: 'Tôi muốn tiếp tục lo cho nhà hàng thật tốt và sống ổn định ở Hàn Quốc.' },
+        { q: 'Chị muốn nói gì với những người đang gặp khó khăn tương tự?',
+          a: 'Đừng cố tự mình giải quyết tất cả. Hỏi người mình tin tưởng trước thì nhanh hơn nhiều, mà lòng cũng nhẹ hơn. Tôi đã trụ qua 17 năm như vậy.' }
+      ],
+      useQuote: 'Nếu có một trang web sắp xếp sẵn những thông tin này bằng tiếng nước mình thì tiện hơn nhiều. Mình có thể tự kiểm tra trước thay vì lần nào cũng phải hỏi người quen.'
+    },
+    th: {
+      intro: 'เกิดปี 1973 จากเวียดนาม เธอเดินทางมาตามระบบอนุญาตจ้างงานและอยู่ที่เกาหลีมา 17 ปี ระหว่างนั้นเคยเปลี่ยนสถานประกอบการหนึ่งครั้ง ปัจจุบันได้สัญชาติเกาหลีและเปิดร้านอาหารเวียดนามของตัวเอง',
+      qa: [
+        { q: 'อะไรทำให้เริ่มสนใจเกาหลี',
+          a: 'ฉันเริ่มชอบเกาหลีตอนดูซีรีส์เกาหลีที่เวียดนาม พอได้รู้จักประเทศนั้นมากขึ้น ความอยากไปใช้ชีวิตที่นั่นก็ค่อย ๆ มากขึ้น' },
+        { q: 'มีอะไรที่ทำให้ตัดสินใจมาเกาหลีจริง ๆ ไหม',
+          a: 'คนรู้จักสนิทแนะนำให้ไป ก่อนหน้านั้นฉันแค่ชอบเกาหลีแบบเลือน ๆ จากซีรีส์ แต่พอได้ฟังคำแนะนำนั้นก็ตัดสินใจไปจริง' },
+        { q: 'เคยเปลี่ยนสถานประกอบการไหม',
+          a: 'เคยค่ะ หนึ่งครั้งตอนทำงานด้วยวีซ่า E-9 ตอนนั้นการอ่านและทำความเข้าใจเอกสารภาษาเกาหลีด้วยตัวเองไม่ง่ายเลย รู้สึกอึดอัดมาก' },
+        { q: 'ผ่านช่วงยากลำบากนั้นมาได้อย่างไร',
+          a: 'เพราะมีคนรู้จักที่เก่งภาษาเกาหลีอยู่ข้าง ๆ ต้องเตรียมอะไร เอกสารเขียนว่าอะไร กำหนดถึงเมื่อไร ทุกครั้งที่ตัน การมีคนให้ถามก่อนเป็นกำลังใจที่ใหญ่มาก' },
+        { q: 'ตอนนี้ถ้าสงสัยเรื่องระบบหรือขั้นตอน ทำอย่างไร',
+          a: 'จนถึงตอนนี้คนแรกที่นึกถึงก็ยังไม่ใช่สายด่วนราชการ แต่เป็นคนรู้จักคนนั้น มีเรื่องยากก็แก้ผ่านเธอเหมือนเดิม' },
+        { q: 'ตอนนี้ทำงานอะไรอยู่',
+          a: 'ตอนนี้เปิดร้านอาหารเวียดนามของตัวเองค่ะ จากที่เริ่มด้วยระบบอนุญาตจ้างงาน จนได้สัญชาติเกาหลีและมาเป็นเจ้าของร้าน ใช้เวลานานมาก' },
+        { q: 'มีแผนอะไรต่อไปไหม',
+          a: 'อยากดูแลร้านให้ดีต่อไป และใช้ชีวิตอย่างมั่นคงในเกาหลี' },
+        { q: 'อยากบอกอะไรกับคนที่กำลังลำบากแบบเดียวกัน',
+          a: 'อย่าพยายามแก้ทุกอย่างคนเดียว ถามคนที่ไว้ใจได้ก่อนเร็วกว่ามาก และสบายใจกว่าด้วย ฉันก็ผ่าน 17 ปีมาแบบนั้น' }
+      ],
+      useQuote: 'ถ้ามีเว็บไซต์ที่เรียบเรียงข้อมูลแบบนี้เป็นภาษาบ้านตัวเองไว้ล่วงหน้าก็คงสะดวกกว่ามาก จะได้ตรวจดูเองก่อน ไม่ต้องถามคนรู้จักทุกครั้ง'
+    },
+    id: {
+      intro: 'Lahir tahun 1973, dari Vietnam. Ia datang lewat Sistem Izin Kerja dan telah 17 tahun di Korea, dengan sekali berpindah tempat kerja. Kini ia berkewarganegaraan Korea dan menjalankan restoran Vietnam miliknya sendiri.',
+      qa: [
+        { q: 'Apa yang awalnya menarik Anda ke Korea?',
+          a: 'Saya mulai menyukai Korea saat menonton drama Korea di Vietnam. Semakin saya mengenal negara itu, keinginan untuk pergi dan tinggal di sana semakin besar.' },
+        { q: 'Adakah hal yang membuat Anda mantap berangkat?',
+          a: 'Seorang kenalan dekat menyarankan saya pergi. Sebelumnya saya hanya menyukai Korea secara samar lewat drama, tetapi setelah saran itu saya bertekad benar-benar berangkat.' },
+        { q: 'Pernahkah Anda pindah tempat kerja?',
+          a: 'Pernah, sekali saat bekerja dengan visa E-9. Waktu itu membaca dan memahami panduan berbahasa Korea sendirian tidak mudah, rasanya sangat sesak.' },
+        { q: 'Bagaimana Anda melewati masa sulit itu?',
+          a: 'Karena ada kenalan yang fasih berbahasa Korea di sisi saya. Apa yang harus disiapkan, apa isi dokumennya, kapan batas waktunya — punya orang untuk ditanya lebih dulu setiap kali buntu itu sangat besar artinya.' },
+        { q: 'Kalau sekarang ada pertanyaan soal aturan atau prosedur, apa yang Anda lakukan?',
+          a: 'Sampai sekarang orang pertama yang saya cari bukan layanan telepon pemerintah, melainkan kenalan itu. Kalau ada kesulitan pun saya selesaikan lewat dia.' },
+        { q: 'Sekarang Anda bekerja apa?',
+          a: 'Sekarang saya menjalankan restoran Vietnam sendiri. Dari mulai lewat Sistem Izin Kerja sampai memperoleh kewarganegaraan Korea dan menjadi pemilik, butuh waktu yang panjang.' },
+        { q: 'Apa rencana Anda ke depan?',
+          a: 'Terus mengurus restoran ini dengan baik dan hidup dengan mantap di Korea.' },
+        { q: 'Apa pesan Anda bagi yang mengalami kesulitan serupa?',
+          a: 'Jangan berusaha menyelesaikan semuanya sendirian. Bertanya pada orang yang Anda percaya jauh lebih cepat, dan hati pun lebih ringan. Begitulah saya bertahan 17 tahun.' }
+      ],
+      useQuote: 'Akan jauh lebih mudah kalau ada situs yang merangkum ini dalam bahasa sendiri lebih dulu. Kita bisa memeriksa sendiri tanpa harus bertanya setiap kali.'
+    }
+  },
+  {
+    key: 'itv-tilo',
+    alias: 'Tilo',
+    country: 'ph',
+    age: 21,
+    field: 'rest',
+    date: '2026-08-27',
+    photo: 'assets/itv-tilo.jpg',
+    photoAlt: '주방에서 일하는 Tilo 님과 인터뷰하는 모습',
+    ko: {
+      intro: '필리핀에서 온 스물한 살. 음식점 주방에서 일하며 한식 조리를 배우고 있습니다. 언젠가 필리핀에서 한식당을 여는 것이 목표입니다.',
+      qa: [
+        { q: '현재 어떤 일을 하고 계신가요?',
+          a: '음식점 주방에서 보조로 일하고 있습니다. 재료를 손질하고 밑준비를 하고, 바쁠 때는 조리도 함께 거듭니다.' },
+        { q: '언제 일이 재미있거나 보람 있다고 느끼시나요?',
+          a: '처음에는 재료 이름도 몰랐는데, 이제는 무엇을 어떻게 준비해야 하는지 알고 손이 먼저 움직일 때가 있습니다. 그럴 때 늘고 있다는 게 느껴져서 좋습니다.' },
+        { q: '한국에 오게 된 계기는 무엇인가요?',
+          a: '한국에서 일하면 기술을 배우면서 돈도 모을 수 있다고 들었습니다. 요리에 관심이 있었기 때문에 음식점에서 일할 수 있다는 점이 마음에 들었습니다.' },
+        { q: '일하면서 가장 어려운 점은 무엇인가요?',
+          a: '한국어입니다. 주방에서 쓰는 말은 빠르고 줄임말이 많아서, 처음에는 무엇을 시키는지 알아듣기 어려웠습니다. 지금도 모르는 말이 나오면 그 자리에서 다시 물어봅니다.' },
+        { q: '앞으로의 목표는 무엇인가요?',
+          a: '여기서 한식 조리를 제대로 배운 뒤, 필리핀으로 돌아가 한식당을 여는 것이 목표입니다. 필리핀에도 한국 음식을 좋아하는 사람이 많습니다.' },
+        { q: '한국에 오려는 후배들에게 조언한다면요?',
+          a: '한국어를 조금이라도 배우고 오세요. 그리고 모르는 것은 부끄러워하지 말고 물어보세요. 묻지 않고 넘어가면 나중에 더 곤란해집니다.' }
+      ],
+      useQuote: '이런 걸 내 나라 말로 볼 수 있으면 좋겠다고 늘 생각했습니다.'
+    },
+    en: {
+      intro: 'Twenty-one, from the Philippines. He works in a restaurant kitchen and is learning Korean cooking. One day he wants to open a Korean restaurant back home.',
+      qa: [
+        { q: 'What work do you do now?',
+          a: 'I work as an assistant in a restaurant kitchen. I prepare ingredients and do the prep work, and when it gets busy I help with the cooking too.' },
+        { q: 'When does your work feel enjoyable or worthwhile?',
+          a: 'At first I did not even know the names of the ingredients. Now there are moments when my hands move before I think, because I know what to prepare and how. That is when I feel I am getting better.' },
+        { q: 'What brought you to Korea?',
+          a: 'I heard that in Korea you can learn a skill and save money at the same time. I was interested in cooking, so being able to work in a restaurant appealed to me.' },
+        { q: 'What is the hardest part of the work?',
+          a: 'Korean. The language used in a kitchen is fast and full of short forms, so at first I could not follow what I was being asked to do. Even now, when a word comes up that I do not know, I ask again right there.' },
+        { q: 'What is your goal from here?',
+          a: 'To learn Korean cooking properly, then go back to the Philippines and open a Korean restaurant. A lot of people there love Korean food.' },
+        { q: 'What would you say to people who are about to come to Korea?',
+          a: 'Learn at least a little Korean before you come. And do not be embarrassed to ask about what you do not know. If you let it pass without asking, it causes bigger trouble later.' }
+      ],
+      useQuote: 'I always wished I could read this kind of thing in my own language.'
+    },
+    vi: {
+      intro: 'Hai mươi mốt tuổi, đến từ Philippines. Anh làm trong bếp một nhà hàng và đang học nấu món Hàn. Mục tiêu là sau này mở một nhà hàng Hàn Quốc ở quê nhà.',
+      qa: [
+        { q: 'Hiện tại bạn đang làm công việc gì?',
+          a: 'Tôi làm phụ bếp trong một nhà hàng. Tôi sơ chế nguyên liệu và chuẩn bị trước, lúc đông khách thì phụ nấu luôn.' },
+        { q: 'Khi nào bạn thấy công việc thú vị hoặc đáng làm?',
+          a: 'Lúc đầu tôi còn không biết tên nguyên liệu. Bây giờ có những lúc tay tự động làm trước khi kịp nghĩ, vì đã biết phải chuẩn bị cái gì và làm thế nào. Những lúc đó tôi thấy mình đang tiến bộ.' },
+        { q: 'Điều gì đưa bạn đến Hàn Quốc?',
+          a: 'Tôi nghe nói ở Hàn Quốc vừa học được nghề vừa tích cóp được tiền. Tôi vốn thích nấu ăn nên việc được làm trong nhà hàng rất hợp với tôi.' },
+        { q: 'Điều khó khăn nhất khi làm việc là gì?',
+          a: 'Tiếng Hàn. Trong bếp người ta nói nhanh và hay nói tắt, ban đầu tôi không hiểu người ta sai mình làm gì. Giờ gặp từ không biết tôi vẫn hỏi lại ngay tại chỗ.' },
+        { q: 'Mục tiêu sắp tới của bạn là gì?',
+          a: 'Học nấu món Hàn cho thật thạo, rồi về Philippines mở một nhà hàng Hàn Quốc. Ở đó cũng có rất nhiều người thích món Hàn.' },
+        { q: 'Bạn muốn nói gì với những người sắp sang Hàn Quốc?',
+          a: 'Hãy học một chút tiếng Hàn trước khi sang. Và đừng ngại hỏi những gì mình chưa biết. Bỏ qua không hỏi thì về sau càng rắc rối hơn.' }
+      ],
+      useQuote: 'Tôi luôn ước có thể đọc những thông tin như thế này bằng tiếng nước mình.'
+    },
+    th: {
+      intro: 'อายุยี่สิบเอ็ดปี มาจากฟิลิปปินส์ ทำงานในครัวร้านอาหารและกำลังเรียนทำอาหารเกาหลี เป้าหมายคือกลับไปเปิดร้านอาหารเกาหลีที่บ้านเกิด',
+      qa: [
+        { q: 'ตอนนี้ทำงานอะไรอยู่',
+          a: 'ผมเป็นผู้ช่วยในครัวร้านอาหาร เตรียมวัตถุดิบและงานเตรียมล่วงหน้า เวลาลูกค้าเยอะก็ช่วยปรุงด้วย' },
+        { q: 'เมื่อไรที่รู้สึกว่างานสนุกหรือมีคุณค่า',
+          a: 'ตอนแรกผมไม่รู้แม้แต่ชื่อวัตถุดิบ ตอนนี้มีบางจังหวะที่มือขยับก่อนที่จะคิด เพราะรู้แล้วว่าต้องเตรียมอะไรและเตรียมอย่างไร ตอนนั้นแหละที่รู้สึกว่าตัวเองเก่งขึ้น' },
+        { q: 'อะไรทำให้มาเกาหลี',
+          a: 'ผมได้ยินว่าที่เกาหลีได้เรียนทักษะไปพร้อมกับเก็บเงินได้ ผมสนใจการทำอาหารอยู่แล้ว การได้ทำงานในร้านอาหารจึงถูกใจผมมาก' },
+        { q: 'อะไรคือสิ่งที่ยากที่สุดในการทำงาน',
+          a: 'ภาษาเกาหลีครับ ในครัวพูดกันเร็วและใช้คำย่อเยอะ ตอนแรกผมฟังไม่ทันว่าเขาสั่งอะไร ตอนนี้ถ้าเจอคำที่ไม่รู้ ผมก็ยังถามซ้ำตรงนั้นเลย' },
+        { q: 'เป้าหมายต่อไปคืออะไร',
+          a: 'เรียนทำอาหารเกาหลีให้ชำนาญจริง ๆ แล้วกลับฟิลิปปินส์ไปเปิดร้านอาหารเกาหลี ที่นั่นก็มีคนชอบอาหารเกาหลีเยอะเหมือนกัน' },
+        { q: 'อยากบอกอะไรกับคนที่กำลังจะมาเกาหลี',
+          a: 'เรียนภาษาเกาหลีไว้สักนิดก่อนมา และอย่าอายที่จะถามในสิ่งที่ไม่รู้ ถ้าปล่อยผ่านไปโดยไม่ถาม ทีหลังจะยิ่งลำบากกว่าเดิม' }
+      ],
+      useQuote: 'ผมคิดมาตลอดว่าถ้าได้อ่านเรื่องแบบนี้เป็นภาษาบ้านตัวเองก็คงดี'
+    },
+    id: {
+      intro: 'Dua puluh satu tahun, dari Filipina. Ia bekerja di dapur sebuah restoran dan sedang belajar memasak masakan Korea. Suatu hari ia ingin membuka restoran Korea di kampung halamannya.',
+      qa: [
+        { q: 'Sekarang Anda bekerja apa?',
+          a: 'Saya bekerja sebagai asisten di dapur restoran. Saya menyiapkan bahan dan melakukan persiapan awal, dan saat ramai saya ikut memasak juga.' },
+        { q: 'Kapan Anda merasa pekerjaan ini menyenangkan atau berarti?',
+          a: 'Awalnya saya bahkan tidak tahu nama bahan-bahannya. Sekarang ada saat tangan saya bergerak lebih dulu sebelum berpikir, karena sudah tahu apa yang harus disiapkan dan bagaimana caranya. Saat itulah saya merasa berkembang.' },
+        { q: 'Apa yang membawa Anda ke Korea?',
+          a: 'Saya dengar di Korea bisa belajar keterampilan sekaligus menabung. Saya memang tertarik memasak, jadi bisa bekerja di restoran terasa cocok untuk saya.' },
+        { q: 'Apa bagian paling sulit dari pekerjaan ini?',
+          a: 'Bahasa Korea. Bahasa di dapur cepat dan banyak singkatan, awalnya saya tidak paham apa yang diminta. Sekarang pun kalau ada kata yang tidak saya tahu, saya langsung bertanya di tempat.' },
+        { q: 'Apa tujuan Anda ke depan?',
+          a: 'Belajar masakan Korea sampai benar-benar bisa, lalu pulang ke Filipina dan membuka restoran Korea. Di sana juga banyak orang menyukai makanan Korea.' },
+        { q: 'Apa pesan Anda untuk yang akan datang ke Korea?',
+          a: 'Pelajari sedikit bahasa Korea sebelum berangkat. Dan jangan malu bertanya soal yang belum Anda ketahui. Kalau dibiarkan tanpa bertanya, nanti malah lebih repot.' }
+      ],
+      useQuote: 'Saya selalu berharap bisa membaca hal seperti ini dalam bahasa saya sendiri.'
+    }
+  }
+];
+
 
 /* ---------------- 질문 답변 지식베이스 ---------------- */
 
