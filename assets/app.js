@@ -124,6 +124,22 @@
       sel.value = lang;
     }
 
+    /* 검수 전 언어를 고르면 그 사실을 화면에 적어 둡니다.
+       번역이 덜 된 것을 다 된 것처럼 두면, 영어로 남은 문장을
+       "내 언어로 확인했다"고 잘못 믿게 됩니다. */
+    var draft = typeof EUM_DRAFT_LANGS !== 'undefined' && EUM_DRAFT_LANGS.indexOf(lang) !== -1;
+    var bar = $('#draftBar');
+    if (draft && !bar) {
+      bar = el('div', 'draft-bar');
+      bar.id = 'draftBar';
+      var host = document.querySelector('main') || document.body;
+      host.insertBefore(bar, host.firstChild);
+    }
+    if (bar) {
+      bar.hidden = !draft;
+      if (draft) bar.textContent = T.draftNote || 'This language is a draft. Some sentences remain in English.';
+    }
+
     /* 페이지마다 들어 있는 기능이 다릅니다. 각 함수가 자기 요소가 없으면
        조용히 넘어가므로 여기서는 그냥 다 부릅니다. */
     renderNotices();

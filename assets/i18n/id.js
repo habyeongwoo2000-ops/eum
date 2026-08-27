@@ -3,6 +3,7 @@
    공용 상수(CHECKED_ON 등)는 core.js 에 있습니다. */
 
 I18N.id = {
+  draftNote: 'Bahasa ini masih draf. Sebagian kalimat masih dalam bahasa Inggris.',
   pyHeroLead: 'Ketuk nomor untuk langsung menelepon. Melewatkan satu saja membuat klaim nanti menjadi sulit, jadi periksa kelimanya sebelum Anda pulang.',
   navFaq: 'FAQ',
   navChatbot: 'Tanya chatbot',

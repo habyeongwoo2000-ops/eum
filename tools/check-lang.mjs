@@ -35,6 +35,13 @@ function flatten(node, out, trail) {
 const PHONES = ['1345', '1350', '1355', '1600-0266', '1331'];
 const PLACEHOLDER = /\{[a-z]\}/g;
 
+/* core.js 에 적힌 초안 언어는 "덜 됐다"가 정상입니다. 실패로 세지 않고
+   따로 보고합니다. 검수가 끝나 EUM_DRAFT_LANGS 에서 빠지는 순간부터
+   다른 언어와 똑같은 기준으로 검사합니다. */
+const coreSrc = fs.readFileSync(path.join(DIR, 'core.js'), 'utf8');
+const DRAFT = (coreSrc.match(/EUM_DRAFT_LANGS\s*=\s*\[([^\]]*)\]/) || [, ''])[1]
+  .split(',').map((x) => x.replace(/['"\s]/g, '')).filter(Boolean);
+
 const files = fs.readdirSync(DIR).filter((f) => f.endsWith('.js') && f !== 'core.js');
 const codes = files.map((f) => f.replace('.js', ''));
 
@@ -64,7 +71,20 @@ for (const code of codes) {
     if (want !== got) holderBad.push(`${k} (${want || '없음'} → ${got || '없음'})`);
   }
 
+  const isDraft = DRAFT.includes(code);
   const ok = !missing.length && !extra.length && !phoneBad.length && !holderBad.length;
+
+  if (isDraft) {
+    const done = koKeys.length - missing.length;
+    const pct = Math.round(done / koKeys.length * 100);
+    console.log(`  초안  ${code}: ${done}/${koKeys.length} (${pct}%) — 나머지는 영어로 채워집니다`);
+    if (extra.length) console.log(`        없는 키 ${extra.length}: ${extra.slice(0, 5).join(', ')}`);
+    if (phoneBad.length) console.log(`        !! 전화번호 사라짐: ${phoneBad.slice(0, 5).join(' / ')}`);
+    if (holderBad.length) console.log(`        !! 자리표시자 깨짐: ${holderBad.slice(0, 5).join(' / ')}`);
+    if (extra.length || phoneBad.length || holderBad.length) bad++;
+    continue;
+  }
+
   console.log(`${ok ? '  OK  ' : '  !!  '}${code}: ${Object.keys(cur).length}개`);
   if (missing.length) console.log(`        빠진 키 ${missing.length}: ${missing.slice(0, 5).join(', ')}${missing.length > 5 ? ' …' : ''}`);
   if (extra.length) console.log(`        없는 키 ${extra.length}: ${extra.slice(0, 5).join(', ')}`);

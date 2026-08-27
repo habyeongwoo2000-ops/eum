@@ -9,7 +9,7 @@
 
 /* 지금 파일이 있는 언어만 넣습니다. 새 언어 파일을 만들면 여기에 코드를 더하세요.
    목록에 없는 코드는 감지에서도 선택기에서도 제외됩니다. */
-var EUM_LANGS = ['ko', 'en', 'vi', 'th', 'id'];
+var EUM_LANGS = ['ko', 'en', 'vi', 'th', 'id', 'km', 'ne', 'my', 'si', 'uz'];
 
 /* 고용허가제(E-9) 송출국에서 쓰는 말들. 화면에 보일 이름을 그 언어 그대로 적습니다.
    자기 언어를 찾는 사람은 "Khmer" 가 아니라 "ខ្មែរ" 를 찾습니다.
@@ -67,15 +67,41 @@ var EUM_LANG = (function () {
   return 'en';
 })();
 
+/* 검수가 끝나지 않은 언어. 아직 번역되지 않은 문장은 영어로 채우고,
+   화면 위에 "초안" 이라고 알려 줍니다. 빈칸으로 두는 것보다 낫고,
+   다 된 것처럼 보이게 두는 것보다도 낫습니다. */
+var EUM_DRAFT_LANGS = ['ne', 'my', 'si', 'uz'];
+
 /* 언어를 나중에 바꿀 때 그 언어 파일을 그때 받아 옵니다.
    이미 받아 둔 언어면 곧바로 콜백을 부릅니다. */
 function eumLoadLang(code, cb) {
   if (EUM_LANGS.indexOf(code) < 0) { cb(false); return; }
   if (I18N[code]) { cb(true); return; }
 
-  var s = document.createElement('script');
-  s.src = 'assets/i18n/' + code + '.js';
-  s.onload = function () { cb(!!I18N[code]); };
-  s.onerror = function () { cb(false); };
-  document.head.appendChild(s);
+  /* 초안 언어는 영어를 먼저 받아 두어야 합니다. 빠진 문장을 영어로 메웁니다. */
+  var needEn = EUM_DRAFT_LANGS.indexOf(code) !== -1 && !I18N.en;
+
+  function grab(c, done) {
+    var s = document.createElement('script');
+    s.src = 'assets/i18n/' + c + '.js';
+    s.onload = function () { done(!!I18N[c]); };
+    s.onerror = function () { done(false); };
+    document.head.appendChild(s);
+  }
+
+  function after() {
+    grab(code, function (ok) {
+      if (ok && I18N.en && EUM_DRAFT_LANGS.indexOf(code) !== -1) {
+        // 영어를 바탕에 깔고 그 위에 번역된 것만 덮어씁니다.
+        var merged = {}, k;
+        for (k in I18N.en) merged[k] = I18N.en[k];
+        for (k in I18N[code]) merged[k] = I18N[code][k];
+        I18N[code] = merged;
+      }
+      cb(ok);
+    });
+  }
+
+  if (needEn) grab('en', function () { after(); });
+  else after();
 }
