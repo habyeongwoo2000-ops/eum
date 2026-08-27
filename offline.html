@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연결이 없습니다 · E9-Bridge</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#8a5a34">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* 이 화면은 인터넷이 끊긴 상태에서만 뜹니다. 저장해 둔 CSS 로만 그려지므로
+     따로 꾸미지 않고 있는 토큰만 씁니다. */
+  .off-wrap{max-width:520px;margin:0 auto;padding:64px 20px;text-align:center}
+  .off-mark{width:72px;height:72px;margin:0 auto 20px;display:block}
+  .off-title{font-family:var(--f-disp);font-size:26px;font-weight:800;color:var(--ink);margin:0 0 12px}
+  .off-lead{font-size:16px;line-height:1.7;color:var(--ink-2);margin:0 0 28px}
+  .off-list{text-align:left;background:var(--card);border:1.5px solid var(--line);
+            border-radius:var(--r);padding:18px 20px;margin:0 0 24px}
+  .off-list p{margin:0 0 10px;font-size:15px;color:var(--ink-2);line-height:1.6}
+  .off-list p:last-child{margin:0}
+  .off-ok{color:var(--go-d);font-weight:700}
+  .off-no{color:var(--ink-3)}
+</style>
+</head>
+<body>
+  <div class="off-wrap">
+    <img class="off-mark" src="assets/icons/icon-192.png" alt="E9-Bridge">
+
+    <h1 class="off-title" id="t">연결이 없습니다</h1>
+    <p class="off-lead" id="l">인터넷에 연결되면 자동으로 다시 열립니다.<br>연결 없이도 쓸 수 있는 기능이 있습니다.</p>
+
+    <div class="off-list">
+      <p><span class="off-ok">○</span> <span id="a">기한 계산 — 퇴사일만 넣으면 됩니다</span></p>
+      <p><span class="off-ok">○</span> <span id="b">이미 열어 본 화면은 다시 볼 수 있습니다</span></p>
+      <p><span class="off-no">×</span> <span id="c">질문하기와 게시판은 연결이 필요합니다</span></p>
+    </div>
+
+    <p><a class="btn btn-go" href="/index.html" id="btn">첫 화면으로</a></p>
+  </div>
+
+<script>
+/* 오프라인 화면은 언어 파일도 못 받을 수 있어서, 꼭 필요한 다섯 문장만
+   여기에 직접 담아 둡니다. 기기 언어를 보고 골라 씁니다. */
+(function () {
+  var T = {
+    ko: ['연결이 없습니다', '인터넷에 연결되면 자동으로 다시 열립니다. 연결 없이도 쓸 수 있는 기능이 있습니다.',
+         '기한 계산 — 퇴사일만 넣으면 됩니다', '이미 열어 본 화면은 다시 볼 수 있습니다',
+         '질문하기와 게시판은 연결이 필요합니다', '첫 화면으로'],
+    en: ['No connection', 'This page will reload once you are back online. Some features work without a connection.',
+         'Deadline calculator — you only need your last working day', 'Pages you already opened can be viewed again',
+         'Asking questions and the board need a connection', 'Go to the home screen'],
+    vi: ['Không có kết nối', 'Trang sẽ tự mở lại khi có mạng. Một số chức năng vẫn dùng được khi không có mạng.',
+         'Tính hạn — chỉ cần ngày nghỉ việc', 'Những trang đã mở vẫn xem lại được',
+         'Đặt câu hỏi và diễn đàn cần có mạng', 'Về trang đầu'],
+    th: ['ไม่มีการเชื่อมต่อ', 'หน้านี้จะเปิดใหม่เมื่อกลับมาออนไลน์ บางฟังก์ชันใช้ได้แม้ไม่มีอินเทอร์เน็ต',
+         'คำนวณกำหนดเวลา — ใส่แค่วันที่ลาออก', 'หน้าที่เคยเปิดแล้วยังดูซ้ำได้',
+         'การถามคำถามและกระดานสนทนาต้องใช้อินเทอร์เน็ต', 'ไปหน้าแรก'],
+    id: ['Tidak ada koneksi', 'Halaman akan terbuka lagi saat kembali online. Beberapa fungsi tetap bisa dipakai tanpa koneksi.',
+         'Hitung batas waktu — cukup tanggal berhenti kerja', 'Halaman yang pernah dibuka masih bisa dilihat',
+         'Bertanya dan papan diskusi butuh koneksi', 'Ke halaman awal']
+  };
+  var langs = (navigator.languages || [navigator.language || 'ko']);
+  var pick = 'ko';
+  for (var i = 0; i < langs.length; i++) {
+    var two = String(langs[i]).slice(0, 2).toLowerCase();
+    if (T[two]) { pick = two; break; }
+  }
+  var t = T[pick];
+  document.documentElement.lang = pick;
+  var ids = ['t', 'l', 'a', 'b', 'c', 'btn'];
+  for (var j = 0; j < ids.length; j++) {
+    var n = document.getElementById(ids[j]);
+    if (n) n.textContent = t[j];
+  }
+
+  /* 연결이 돌아오면 알아서 다시 엽니다. */
+  window.addEventListener('online', function () { location.replace('/index.html'); });
+})();
+</script>
+</body>
+</html>

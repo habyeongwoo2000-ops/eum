@@ -7,7 +7,12 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light">
 <link rel="stylesheet" href="assets/style.css">
-<link rel="icon" type="image/png" href="assets/favicon.png"><rect width='100' height='100' rx='22' fill='%230E7A57'/><path d='M28 34h44M28 50h30M28 66h44' stroke='white' stroke-width='9' stroke-linecap='round'/></svg>">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#8a5a34">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="E9-Bridge"><rect width='100' height='100' rx='22' fill='%230E7A57'/><path d='M28 34h44M28 50h30M28 66h44' stroke='white' stroke-width='9' stroke-linecap='round'/></svg>">
 </head>
 <body>
 <main id="top">
@@ -86,6 +91,19 @@
       });
   });
 })();
+</script>
+
+<!-- 설치형 앱(PWA) — 서비스 워커를 등록합니다.
+     연결이 끊겨도 기한 계산은 계속 되고, 홈 화면에 추가할 수 있게 됩니다.
+     지원하지 않는 브라우저에서는 조용히 넘어갑니다. -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function (e) {
+      console.warn('service worker 등록 실패', e);
+    });
+  });
+}
 </script>
 </body>
 </html>

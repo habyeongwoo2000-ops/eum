@@ -20,6 +20,11 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#8a5a34">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="E9-Bridge">
 </head>
 <body data-page-title="authLoginTitle">
 
@@ -185,6 +190,7 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
       <div class="official-foot">
         <p data-i18n="disclaimer">참고용 정보이며 법률 자문이 아닙니다. 최종 확인은 관할 고용센터 또는 외국인종합안내센터(1345)에서 해주세요.</p>
         <p>E9-Bridge · <span data-i18n="brandSub">사업장 변경 안내</span> · <span data-i18n="ftTeam">팀 안녕하세요 병우입니다</span></p>
+        <p><a class="foot-privacy" href="privacy.html" data-i18n="navPrivacy">개인정보처리방침</a></p>
       </div>
     </div>
   </section>
@@ -195,5 +201,18 @@ h.setAttribute('data-lang-pending','1');setTimeout(function(){h.removeAttribute(
 <script>document.write('<scr' + 'ipt src="assets/i18n/' + EUM_LANG + '.js"><\/scr' + 'ipt>');</script>
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>
+
+<!-- 설치형 앱(PWA) — 서비스 워커를 등록합니다.
+     연결이 끊겨도 기한 계산은 계속 되고, 홈 화면에 추가할 수 있게 됩니다.
+     지원하지 않는 브라우저에서는 조용히 넘어갑니다. -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function (e) {
+      console.warn('service worker 등록 실패', e);
+    });
+  });
+}
+</script>
 </body>
 </html>

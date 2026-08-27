@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!-- E9-Bridge 마크 (벡터)
+       96px PNG 원본을 512px 로 키우면 흐려져서 같은 모양을 벡터로 다시 그렸습니다.
+         · 왼쪽 세 줄(주황) = E, 오른쪽 고리(회갈) = 9
+         · 아래 아치와 기둥 = 다리(bridge)
+       색은 원본 파일에서 뽑은 값입니다. -->
+  <defs>
+    <!-- 세 번째 줄이 다리 아치를 따라 깎이도록 잘라 냅니다. -->
+    <clipPath id="aboveArch">
+      <path d="M0 0 H96 V72 H62 C54 52 30 52 22 72 H0 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- E — 오른쪽 끝을 비스듬히 자릅니다 -->
+  <g clip-path="url(#aboveArch)" fill="#C78868">
+    <path d="M9 21 H60 L51 34 H9 Z"/>
+    <path d="M9 39 H52 L43 52 H9 Z"/>
+    <path d="M9 57 H44 L35 70 H9 Z"/>
+  </g>
+
+  <!-- 9 — 위쪽 고리와 오른쪽 아래로 흐르는 꼬리 -->
+  <path d="M66 14
+           C79 14 89 23 89 35
+           C89 44 85 50 79 57
+           L67 76
+           L53 76
+           L69 54
+           C56 53 46 45 46 35
+           C46 23 55 14 66 14 Z
+           M67 25
+           C60 25 56 30 56 35
+           C56 41 60 45 67 45
+           C74 45 79 41 79 35
+           C79 30 74 25 67 25 Z"
+        fill="#AD9B88"/>
+
+  <!-- 다리 — 아치와 기둥 -->
+  <g stroke="#AD9B88" fill="none" stroke-linecap="round">
+    <path d="M11 79 C19 57 49 57 57 79" stroke-width="4.2"/>
+    <g stroke-width="3">
+      <path d="M19 79 V70"/>
+      <path d="M26 79 V65"/>
+      <path d="M34 79 V63"/>
+      <path d="M42 79 V65"/>
+      <path d="M49 79 V70"/>
+    </g>
+  </g>
+</svg>
