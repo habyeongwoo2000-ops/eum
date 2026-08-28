@@ -1603,7 +1603,8 @@
         return apiPost('/api/read-doc', { image: b64, mediaType: 'image/jpeg', lang: lang });
       })
       .then(function (d) { showRead(d); })
-      .catch(function () {
+      .catch(function (e) {
+        console.warn('read-doc failed', e);
         out.className = 'read-out is-warn';
         out.innerHTML = '';
         out.appendChild(el('p', null, T.ckReadFail));
@@ -1627,15 +1628,20 @@
     row(T.ckReadReason, d.statedReason);
     out.appendChild(dl);
 
-    // 읽은 값을 화면에 채워 넣습니다. 판단은 아래 규칙 엔진이 합니다.
+    /* 읽은 값을 화면에 채워 넣습니다. 판단은 아래 규칙 엔진이 합니다.
+       사진 읽기는 사유 자가진단(reason.html)에 있고 퇴사일 칸은 첫 화면에
+       있습니다. 그래서 요소가 없을 수 있어, 있을 때만 손댑니다.
+       (없는 요소에 값을 넣으려다 오류가 나면, 서버가 잘 읽어 줬는데도
+        화면에는 "사진을 읽지 못했습니다"가 뜹니다.) */
     var applied = false;
-    if (d.endDate && !$('#leaveDate').value) {
-      $('#leaveDate').value = d.endDate;
-      calcDday();
+    var leave = $('#leaveDate');
+    if (d.endDate && leave && !leave.value) {
+      leave.value = d.endDate;
+      if (typeof calcDday === 'function') calcDday();
       applied = true;
     }
     if (d.reasonCategory && d.reasonCategory !== 'unknown') {
-      var radio = document.querySelector('input[name=q1][value=' + d.reasonCategory + ']');
+      var radio = document.querySelector('input[name=q1][value="' + d.reasonCategory + '"]');
       if (radio) { radio.checked = true; applied = true; }
     }
     if (applied) out.appendChild(el('p', 'read-note', T.ckReadApplied));
