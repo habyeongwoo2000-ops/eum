@@ -41,7 +41,7 @@ const MODELS = String(process.env.GEMINI_MODELS || '')
   .split(',').map((s) => s.trim()).filter(Boolean);
 const MODEL_CHAIN = MODELS.length ? MODELS : [
   MODEL,
-  'gemini-2.0-flash',
+  'gemini-3.6-flash',
   'gemini-flash-lite-latest'
 ];
 
@@ -126,6 +126,7 @@ async function generate(payload, opts) {
     let modelBusy = 0;
 
     for (const key of order) {
+      if (modelCooldown[m] > Date.now()) break;   // 위에서 접힌 모델
       tried++;
       const url = ENDPOINT + m + ':generateContent?key=' + encodeURIComponent(key);
 
@@ -165,7 +166,18 @@ async function generate(payload, opts) {
           break;                       // 다음 키로
         }
 
-        if (r.status === 503) { modelBusy++; break; }   // 다음 키로 (재시도 없음)
+        if (r.status === 503) { modelBusy++; break; }   // 붐빔 → 다음 키로
+
+        /* 404 는 "그런 모델이 없다"입니다. 구글이 모델을 정리하면 이름이
+           사라집니다. 키를 바꿔도 소용없으니 이 모델은 통째로 접고
+           다음 모델로 넘어갑니다. 다시 살아날 이름이 아니므로 오래 쉬게 합니다. */
+        if (r.status === 404) {
+          modelCooldown[m] = Date.now() + 24 * 60 * 60 * 1000;
+          console.warn('gemini gone: 모델 ' + m + ' 없어짐 → 다음 모델로  ' +
+            lastDetail.slice(0, 160));
+          modelBusy = order.length;     // 이 모델의 남은 키는 건너뜁니다
+          break;
+        }
 
         if (TRANSIENT.indexOf(r.status) !== -1 && attempt < WAITS.length) {
           await sleep(WAITS[attempt]);
