@@ -64,7 +64,7 @@ I18N.vi = {
   itvAlias: '{n}',
   itvYears: 'năm thứ {y} ở Hàn Quốc',
   itvAge: '{a} tuổi',
-  itvCountries: { vi: 'Việt Nam', th: 'Thái Lan', id: 'Indonesia', kh: 'Campuchia', np: 'Nepal', uz: 'Uzbekistan', ph: 'Philippines', mm: 'Myanmar', lk: 'Sri Lanka', other: 'Khác' },
+  itvCountries: { pk: 'Pakistan', vi: 'Việt Nam', th: 'Thái Lan', id: 'Indonesia', kh: 'Campuchia', np: 'Nepal', uz: 'Uzbekistan', ph: 'Philippines', mm: 'Myanmar', lk: 'Sri Lanka', other: 'Khác' },
   itvFields: { rest: 'nhà hàng', metal: 'Kim loại và cơ khí', food: 'Chế biến thực phẩm', farm: 'Nông nghiệp và chăn nuôi', fish: 'Ngư nghiệp', build: 'Xây dựng', plastic: 'Nhựa và cao su', textile: 'Dệt may', other: 'Ngành khác' },
   faqTitle: 'Câu hỏi thường gặp',
   faqLead: 'Những câu hỏi thường gặp nhất về việc đổi nơi làm việc, kèm điều luật căn cứ và ngày kiểm tra.',

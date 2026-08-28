@@ -64,7 +64,7 @@ I18N.id = {
   itvAlias: '{n}',
   itvYears: 'tahun ke-{y} di Korea',
   itvAge: '{a} tahun',
-  itvCountries: { vi: 'Vietnam', th: 'Thailand', id: 'Indonesia', kh: 'Kamboja', np: 'Nepal', uz: 'Uzbekistan', ph: 'Filipina', mm: 'Myanmar', lk: 'Sri Lanka', other: 'Lainnya' },
+  itvCountries: { pk: 'Pakistan', vi: 'Vietnam', th: 'Thailand', id: 'Indonesia', kh: 'Kamboja', np: 'Nepal', uz: 'Uzbekistan', ph: 'Filipina', mm: 'Myanmar', lk: 'Sri Lanka', other: 'Lainnya' },
   itvFields: { rest: 'restoran', metal: 'Logam dan mesin', food: 'Pengolahan makanan', farm: 'Pertanian dan peternakan', fish: 'Perikanan', build: 'Konstruksi', plastic: 'Plastik dan karet', textile: 'Tekstil', other: 'Industri lain' },
   faqTitle: 'Pertanyaan yang sering diajukan',
   faqLead: 'Pertanyaan yang paling sering muncul soal pindah tempat kerja, lengkap dengan dasar hukum dan tanggal pemeriksaan.',

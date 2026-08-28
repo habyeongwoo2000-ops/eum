@@ -64,7 +64,7 @@ I18N.ko = {
   itvAlias: '{n} 님',
   itvYears: '{y}년째',
   itvAge: '{a}세',
-  itvCountries: { vi: '베트남', th: '태국', id: '인도네시아', kh: '캄보디아', np: '네팔', uz: '우즈베키스탄', ph: '필리핀', mm: '미얀마', lk: '스리랑카', other: '기타' },
+  itvCountries: { pk: '파키스탄', vi: '베트남', th: '태국', id: '인도네시아', kh: '캄보디아', np: '네팔', uz: '우즈베키스탄', ph: '필리핀', mm: '미얀마', lk: '스리랑카', other: '기타' },
   itvFields: { rest: '음식점', metal: '금속·기계', food: '식품 가공', farm: '농축산', fish: '어업', build: '건설', plastic: '플라스틱·고무', textile: '섬유', other: '기타 업종' },
   faqTitle: '자주 묻는 질문',
   faqLead: '사업장 변경에서 가장 많이 나오는 질문을 모았습니다. 근거가 되는 법 조문과 확인한 날짜를 함께 적었습니다.',

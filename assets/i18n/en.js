@@ -64,7 +64,7 @@ I18N.en = {
   itvAlias: '{n}',
   itvYears: 'year {y} in Korea',
   itvAge: 'age {a}',
-  itvCountries: { vi: 'Vietnam', th: 'Thailand', id: 'Indonesia', kh: 'Cambodia', np: 'Nepal', uz: 'Uzbekistan', ph: 'Philippines', mm: 'Myanmar', lk: 'Sri Lanka', other: 'Other' },
+  itvCountries: { pk: 'Pakistan', vi: 'Vietnam', th: 'Thailand', id: 'Indonesia', kh: 'Cambodia', np: 'Nepal', uz: 'Uzbekistan', ph: 'Philippines', mm: 'Myanmar', lk: 'Sri Lanka', other: 'Other' },
   itvFields: { rest: 'restaurant', metal: 'Metal and machinery', food: 'Food processing', farm: 'Farming and livestock', fish: 'Fishing', build: 'Construction', plastic: 'Plastic and rubber', textile: 'Textiles', other: 'Other industry' },
   faqTitle: 'Frequently asked questions',
   faqLead: 'The questions that come up most often about changing workplace, each with the law it rests on and the date it was checked.',
