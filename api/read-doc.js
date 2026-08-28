@@ -11,7 +11,8 @@ const { LANG_NAME } = require('./_kb');
 
 const G = require('./_gemini');
 
-const MODEL = 'gemini-flash-latest';
+/* 쓸 모델은 _gemini.js 의 MODEL_CHAIN 이 정합니다.
+   여기서 하나로 못박으면 붐빌 때 대체가 안 걸립니다. */
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 const CATEGORIES = ['wage', 'abuse', 'terms', 'closed', 'own', 'unknown'];
 
@@ -71,7 +72,7 @@ Rules:
         temperature: 0,
         responseMimeType: 'application/json'
       }
-    }, { model: MODEL });
+    });   // 모델을 못박지 않습니다 — 붐비면 _gemini.js 가 다음 모델로 넘깁니다
 
     if (!call.ok) {
       const busy = call.reason === 'busy' || call.reason === 'quota';
