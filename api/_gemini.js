@@ -29,6 +29,26 @@
    쉬게 하면 그만입니다. 이것 때문에 외부 저장소를 두는 것은 과합니다. */
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+
+/* 쓸 모델을 순서대로 적어 둡니다.
+   503(UNAVAILABLE)은 "이 키의 한도 초과"가 아니라 "이 모델이 지금 붐빈다"는
+   뜻입니다. 그래서 키를 아무리 돌려도 같은 모델로 가면 똑같이 막힙니다.
+   앞 모델이 붐비면 다음 모델로 넘어가야 뚫립니다.
+
+   환경변수 GEMINI_MODELS 에 쉼표로 적어 바꿀 수 있습니다.
+   앞쪽이 품질이 좋고, 뒤로 갈수록 가볍고 덜 붐빕니다. */
+const MODELS = String(process.env.GEMINI_MODELS || '')
+  .split(',').map((s) => s.trim()).filter(Boolean);
+const MODEL_CHAIN = MODELS.length ? MODELS : [
+  MODEL,
+  'gemini-2.0-flash',
+  'gemini-flash-lite-latest'
+];
+
+/* 붐비는 모델도 잠시 쉬게 합니다. 한 요청에서 막힌 모델을
+   같은 인스턴스의 다음 요청에서 또 처음부터 두드릴 이유가 없습니다. */
+const modelCooldown = Object.create(null);
+const MODEL_REST = 45 * 1000;
 const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
 /* 다시 시도해 볼 만한 오류 — 잠깐 몰렸거나 서버가 흔들린 경우 */
@@ -96,70 +116,90 @@ async function generate(payload, opts) {
   const body = JSON.stringify(payload);
   let lastStatus = 0, lastDetail = '', tried = 0;
 
-  for (const key of order) {
-    tried++;
-    const url = ENDPOINT + model + ':generateContent?key=' + encodeURIComponent(key);
+  /* 지정한 모델이 있으면 그것만, 없으면 목록을 순서대로 시도합니다. */
+  const chain = options.model ? [options.model] : MODEL_CHAIN;
+  const now0 = Date.now();
+  const models = chain.filter((m) => !(modelCooldown[m] > now0));
+  const useModels = models.length ? models : chain.slice();
 
-    for (let attempt = 0; attempt <= WAITS.length; attempt++) {
-      let r;
-      try {
-        r = await fetch(url, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: body
-        });
-      } catch (e) {
-        // 네트워크가 끊긴 경우. 같은 키로 한 번 더 해 봅니다.
-        lastStatus = 0;
-        lastDetail = String((e && e.message) || e);
-        if (attempt < WAITS.length) { await sleep(WAITS[attempt]); continue; }
+  for (const m of useModels) {
+    let modelBusy = 0;
+
+    for (const key of order) {
+      tried++;
+      const url = ENDPOINT + m + ':generateContent?key=' + encodeURIComponent(key);
+
+      /* 503 은 같은 모델로 다시 눌러도 대개 그대로입니다. 그래서 재시도는
+         500·502·504(서버가 잠깐 흔들린 경우)에만 씁니다. 503 이면 곧바로
+         다음 키 → 다음 모델로 넘어가, 사용자를 오래 기다리게 하지 않습니다. */
+      for (let attempt = 0; attempt <= WAITS.length; attempt++) {
+        let r;
+        try {
+          r = await fetch(url, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: body
+          });
+        } catch (e) {
+          lastStatus = 0;
+          lastDetail = String((e && e.message) || e);
+          if (attempt < WAITS.length) { await sleep(WAITS[attempt]); continue; }
+          break;
+        }
+
+        if (r.ok) {
+          return {
+            ok: true, status: 200, data: await r.json(),
+            model: m, keyIndex: keys.indexOf(key) + 1, triedKeys: tried
+          };
+        }
+
+        lastStatus = r.status;
+        lastDetail = await r.text();
+
+        if (QUOTA.indexOf(r.status) !== -1) {
+          const ms = cooldownMs(lastDetail);
+          cooldown[key] = Date.now() + ms;
+          console.warn('gemini quota: key #' + (keys.indexOf(key) + 1) +
+            ' 쉼 ' + Math.round(ms / 1000) + 's');
+          break;                       // 다음 키로
+        }
+
+        if (r.status === 503) { modelBusy++; break; }   // 다음 키로 (재시도 없음)
+
+        if (TRANSIENT.indexOf(r.status) !== -1 && attempt < WAITS.length) {
+          await sleep(WAITS[attempt]);
+          continue;
+        }
+
+        if (TRANSIENT.indexOf(r.status) === -1) {
+          // 400·401·403 — 모델을 바꿔도 같은 결과입니다. 그 자리에서 멈춥니다.
+          console.error('gemini error', r.status, lastDetail.slice(0, 300));
+          return {
+            ok: false, status: r.status, detail: lastDetail,
+            reason: 'bad', model: m, keyIndex: keys.indexOf(key) + 1
+          };
+        }
         break;
       }
+    }
 
-      if (r.ok) {
-        return {
-          ok: true, status: 200, data: await r.json(),
-          keyIndex: keys.indexOf(key) + 1, triedKeys: tried
-        };
-      }
-
-      lastStatus = r.status;
-      lastDetail = await r.text();
-
-      if (QUOTA.indexOf(r.status) !== -1) {
-        // 한도가 찼습니다. 이 키를 쉬게 하고 곧바로 다음 키로 넘어갑니다.
-        const ms = cooldownMs(lastDetail);
-        cooldown[key] = Date.now() + ms;
-        console.warn('gemini quota: key #' + (keys.indexOf(key) + 1) +
-          ' 쉼 ' + Math.round(ms / 1000) + 's');
-        break;
-      }
-
-      if (TRANSIENT.indexOf(r.status) !== -1 && attempt < WAITS.length) {
-        await sleep(WAITS[attempt]);
-        continue;
-      }
-
-      // 400·401·403 처럼 다시 해도 같은 오류
-      if (TRANSIENT.indexOf(r.status) === -1) {
-        console.error('gemini error', r.status, lastDetail.slice(0, 300));
-        return {
-          ok: false, status: r.status, detail: lastDetail,
-          reason: 'bad', keyIndex: keys.indexOf(key) + 1
-        };
-      }
-      break;      // 일시적 오류인데 대기까지 다 썼습니다 → 다음 키로
+    if (modelBusy >= order.length) {
+      // 이 모델은 어느 키로 가도 붐빕니다. 잠시 쉬게 하고 다음 모델로.
+      modelCooldown[m] = Date.now() + MODEL_REST;
+      console.warn('gemini busy: 모델 ' + m + ' 붐빔 → 다음 모델로');
     }
   }
 
-  console.error('gemini 모든 키 실패', lastStatus, String(lastDetail).slice(0, 300));
+  console.error('gemini 모든 모델 실패', lastStatus, String(lastDetail).slice(0, 200));
   return {
     ok: false,
     status: lastStatus || 503,
     detail: lastDetail,
     reason: QUOTA.indexOf(lastStatus) !== -1 ? 'quota' : 'busy',
     triedKeys: tried,
-    totalKeys: keys.length
+    totalKeys: keys.length,
+    triedModels: useModels.length
   };
 }
 
@@ -174,4 +214,4 @@ function keyCount() {
   return loadKeys().length;
 }
 
-module.exports = { generate, textOf, keyCount, MODEL };
+module.exports = { generate, textOf, keyCount, MODEL, MODEL_CHAIN };
