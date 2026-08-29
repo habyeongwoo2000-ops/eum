@@ -1501,11 +1501,30 @@
     return bestScore > 0 ? best : null;
   }
 
-  function apiPost(path, payload) {
+  function apiPost(path, payload, waitMs) {
+    /* 브라우저 쪽에도 기다림의 한계를 둡니다. 서버가 답을 안 주면
+       사용자는 버튼을 누른 채로 몇 분을 기다리게 됩니다. 그러면
+       고장 난 줄 알고 창을 닫아 버립니다. 차라리 일찍 안내하는 편이 낫습니다. */
+    var ac = typeof AbortController === 'function' ? new AbortController() : null;
+    var killer = ac ? setTimeout(function () { ac.abort(); }, waitMs || 70000) : null;
+
     return fetch(path, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: ac ? ac.signal : undefined
+    }).then(function (r) {
+      if (killer) clearTimeout(killer);
+      return r;
+    }, function (e) {
+      if (killer) clearTimeout(killer);
+      // 시간 초과도 "지금 붐빈다"와 같은 안내를 쓰도록 표시해 둡니다.
+      if (e && (e.name === 'AbortError' || /abort/i.test(String(e.message || '')))) {
+        var t = new Error('timeout');
+        t.retryable = true;
+        throw t;
+      }
+      throw e;
     }).then(function (r) {
       if (!r.ok) {
         // 왜 실패했는지 화면에서 구분할 수 있도록 상태를 함께 실어 보냅니다.
@@ -1600,7 +1619,8 @@
 
     shrink(f)
       .then(function (b64) {
-        return apiPost('/api/read-doc', { image: b64, mediaType: 'image/jpeg', lang: lang });
+        // 사진은 글보다 오래 걸립니다. 조금 더 기다려 줍니다.
+        return apiPost('/api/read-doc', { image: b64, mediaType: 'image/jpeg', lang: lang }, 75000);
       })
       .then(function (d) { showRead(d); })
       .catch(function (e) {
