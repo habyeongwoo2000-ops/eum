@@ -65,8 +65,12 @@ const WAITS = [600, 1500];        // 일시적 오류일 때만 쓰는 대기(ms
 
    한 번 호출에 걸 시간, 그리고 전체에 걸 시간을 따로 둡니다.
    전체 제한이 있어야 "모델을 더 시도하다 시간 초과"를 막을 수 있습니다. */
-const CALL_MS = Number(process.env.GEMINI_CALL_MS || 25000);   // 한 번 호출
-const TOTAL_MS = Number(process.env.GEMINI_TOTAL_MS || 55000); // 전체
+const CALL_MS = Number(process.env.GEMINI_CALL_MS || 12000);   // 한 번 호출
+const TOTAL_MS = Number(process.env.GEMINI_TOTAL_MS || 40000); // 전체
+
+/* 12초 × 3개 모델 = 36초. Vercel 함수 제한(60초) 안에 넉넉히 들어옵니다.
+   전에는 25초로 잡아, 두 번만 기다려도 50초를 써서 함수가 먼저 죽었습니다.
+   그러면 "붐빈다"는 안내조차 사용자에게 못 갑니다. */
 
 /* 키마다 "언제까지 쉰다"를 적어 둡니다. { [key]: 밀리초 타임스탬프 } */
 const cooldown = Object.create(null);
@@ -171,9 +175,12 @@ async function generate(payload, opts) {
           lastStatus = 0;
           lastDetail = aborted ? ('no response in ' + CALL_MS + 'ms') : String((e && e.message) || e);
           if (aborted) {
-            // 응답을 안 주는 모델입니다. 같은 모델로 더 기다릴 이유가 없습니다.
-            console.warn('gemini slow: 모델 ' + m + ' 응답 없음 → 다음으로');
-            modelBusy++;
+            /* 응답이 없는 모델입니다. 키를 바꿔도 같은 모델이면 마찬가지라,
+               남은 키를 두드리지 않고 이 모델을 통째로 접습니다.
+               (예전에는 키마다 25초씩 기다려 50초를 헛되이 썼습니다.) */
+            modelCooldown[m] = Date.now() + MODEL_REST;
+            modelBusy = order.length;
+            console.warn('gemini slow: 모델 ' + m + ' 응답 없음 → 이 모델 건너뜀');
             break;
           }
           if (attempt < WAITS.length) { await sleep(WAITS[attempt]); continue; }
